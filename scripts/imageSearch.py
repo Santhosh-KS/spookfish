@@ -31,9 +31,13 @@ def imageLookup():
   sourceCode = opener.open(googlepath).read()
   
   
-  print(sourceCode)
-  
-  findLinks = re.findall(r'<dif class=":(.*?)rg_meta">{"os":".*?","cb":.*?,"ou":(.*?),"rh":"', sourceCode)
+  #print(sourceCode)
+  #<div class="tHqoQ rg_meta notranslate">{"cl":15,"cr":15,"id":"Ndslvd9iG03VSM:","oh":675,"ou":"https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg","ow":1200,"
+  #<div class="tHqoQ rg_meta  notranslate">{"cl":15,"cr":15,"id":"Ndslvd9iG03VSM:","oh":675,"ou"
+  findLinks = re.findall(r'<div class=".*?\srg_meta\s.*?">{"cl":.*?,"cr":.*?,"id":.*?,"oh":.*?,"ou":"(.*?)","ow":.*?',sourceCode)
+  #findLinks = re.findall(r'<div class=".*?rg_meta.*?">{"cl":".*?","cr":.*?,"id":.*?,"oh":.*?,"ou":"(.*?)",.*?',sourceCode) 
+  #findLinks = re.findall(r'<div class=".*?rg_meta">{"os":".*?","cb":.*?,"ou":(.*?),"rh":"', sourceCode)
+  #findLinks = re.findall(r'<div class="(.*?)</div>', sourceCode)
 
   
   for eachThing in findLinks:
