@@ -62,6 +62,5 @@ script:
   - cd my_dir
   - git clone https://github.com/Santhosh-KS/spookfish
   - cd spookfish/cpp/build 
-  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE . 
-  - cmake --build --release . -- -j2 
+  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE .
   - cmake --build . --config Release -- -j2
