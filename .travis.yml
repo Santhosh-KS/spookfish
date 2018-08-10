@@ -40,7 +40,7 @@ addons:
       - libopencore-amrwb-dev
       - x264 
       - v4l-utils
-      - ibeigen3-dev
+      - libeigen3-dev
 
 script:
   - mkdir -p /opt
@@ -48,6 +48,7 @@ script:
   - git clone https://github.com/davisking/dlib.git dlib
   - git clone https://github.com/opencv/opencv.git
   - git clone https://github.com/opencv/opencv_contrib.git
+  - git clone https://github.com/Tencent/rapidjson.git
   - cd opencv_contrib
   - git checkout 3.3.1
   - cd /opt/opencv

@@ -24,7 +24,8 @@
 #include <dlib/image_processing.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 
-#include "RsNetDlib.h"
+#include "RsNetDlib.hpp"
+#include "JsonParser.hpp"
 
 #define SKIP_FRAMES 10
 #define THRESHOLD 0.5
@@ -138,7 +139,8 @@ void NearestNeighbor(dlib::matrix<float, 0, 1>& faceDescriptorQuery,
 
 int main(int argc, char** argv)
 {
-  std::string  predictorPath("../data/shape_predictor_68_face_landmarks.dat");
+  //std::string  predictorPath("../data/shape_predictor_68_face_landmarks.dat");
+  std::string  predictorPath("../data/shape_predictor_5_face_landmarks.dat");
   std::string  faceRecognitionModelPath("../data/dlib_face_recognition_resnet_model_v1.dat");
 
   dlib::frontal_face_detector faceDetector = dlib::get_frontal_face_detector();
