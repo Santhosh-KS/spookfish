@@ -10,7 +10,7 @@ SET(bin_src src/main.cpp)
 SET(bin_name videoAnalyser)
 
 # set your dlib path
-SET(dlib_path /home/santhosh/course/common/dlib/dlib/cmake)
+SET(dlib_path /opt/dlib/dlib/cmake)
 
 INCLUDE_DIRECTORIES( ${OpenCV_INCLUDE_DIRS})
 INCLUDE(${dlib_path})

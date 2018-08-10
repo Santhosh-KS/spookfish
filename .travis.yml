@@ -8,13 +8,48 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-5
+      - build-essential
+      - checkinstall 
+      - cmake 
+      - pkg-config 
+      - yasm
+      - git 
+      - gfortran
+      - libtiff4-dev
+      - libjpeg8-dev
+      - libjasper-dev
+      - libpng12-dev
+      - libavcodec-dev
+      - libavformat-dev
+      - libswscale-dev
+      - libdc1394-22-dev
+      - libxine2-dev
+      - libv4l-dev
+      - libgstreamer0.10-dev 
+      - libgstreamer-plugins-base0.10-dev
+      - qt5-default
+      - libgtk2.0-dev
+      - libtbb-dev
+      - libatlas-base-dev
+      - libfaac-dev
+      - libmp3lame-dev 
+      - libtheora-dev
+      - libvorbis-dev 
+      - libxvidcore-dev
+      - libopencore-amrnb-dev 
+      - libopencore-amrwb-dev
+      - x264 
+      - v4l-utils
 
 script:
+  - mkdir -p /opt
+  - cd /opt
+  - git clone https://github.com/davisking/dlib.git dlib
+  - cd
   - mkdir my_dir 
   - cd my_dir
   - git clone https://github.com/Santhosh-KS/spookfish
-  - cd cpp/build 
+  - cd spookfish/cpp/build 
   - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE . 
   - cmake --build --release . -- -j2 
   - cmake --build . --config Release -- -j2
-
