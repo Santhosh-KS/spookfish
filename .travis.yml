@@ -42,6 +42,13 @@ addons:
       - libopencore-amrwb-dev
       - x264 
       - v4l-utils
+      - python-dev 
+      - python-numpy
+      - libtbb2 
+      - libjpeg-dev 
+      - libpng-dev 
+      - libtiff-dev 
+
 
 script:
   - mkdir -p /opt
