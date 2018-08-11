@@ -42,6 +42,8 @@ addons:
       - libopencore-amrwb-dev
       - x264 
       - v4l-utils
+      - python3.5 
+      - python3.5-dev 
       - python-dev 
       - python-numpy
       - libtbb2 
@@ -49,6 +51,12 @@ addons:
       - libpng-dev 
       - libtiff-dev 
 
+before_install:
+    - sudo apt-get update
+
+install:
+  - sudo apt-get install python-pip  
+  - sudo pip install numpy scipy
 
 script:
   - mkdir -p /opt
