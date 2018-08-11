@@ -40,7 +40,6 @@ addons:
       - libopencore-amrwb-dev
       - x264 
       - v4l-utils
-      - libeigen3-dev
 
 script:
   - mkdir -p /opt
@@ -49,6 +48,7 @@ script:
   - git clone https://github.com/opencv/opencv.git
   - git clone https://github.com/opencv/opencv_contrib.git
   - git clone https://github.com/Tencent/rapidjson.git
+  - git clone https://github.com/Santhosh-KS/spookfish
   - cd opencv_contrib
   - git checkout 3.3.1
   - cd /opt/opencv
@@ -62,9 +62,8 @@ script:
   - ldconfig
   - source ~/.bashrc
   - cd /opt
-  - mkdir my_dir 
-  - cd my_dir
-  - git clone https://github.com/Santhosh-KS/spookfish
-  - cd spookfish/cpp/build 
+  - cd spookfish/cpp
+  - mkdir build
+  - cd build
   - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE .
   - cmake --build . --config Release -- -j2

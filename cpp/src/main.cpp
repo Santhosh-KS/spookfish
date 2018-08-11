@@ -4,6 +4,7 @@
 #include <sstream>
 #include <math.h>
 #include <map>
+#include <ctime>
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
 
@@ -134,11 +135,24 @@ void NearestNeighbor(dlib::matrix<float, 0, 1>& faceDescriptorQuery,
     label = faceLabels[minDistIndex];
   }
 }
+/*
+static GetConfigs(JsonParser parser)
+{
+}
+*/
 
-
+static std::time_t GetEpcohTime()
+{
+  std::time_t result = std::time(nullptr);
+  //cout << std::asctime(std::localtime(&result));
+  //std::string str(std::asctime(std::localtime(&result)));
+  return result;
+}
 
 int main(int argc, char** argv)
 {
+  std::string jsonFile("../data/DataPath.json");
+  JsonParser parser(jsonFile);
   //std::string  predictorPath("../data/shape_predictor_68_face_landmarks.dat");
   std::string  predictorPath("../data/shape_predictor_5_face_landmarks.dat");
   std::string  faceRecognitionModelPath("../data/dlib_face_recognition_resnet_model_v1.dat");
@@ -166,7 +180,8 @@ int main(int argc, char** argv)
 
   // Create a VideoCapture object
   //cv::VideoCapture cap(0);
-  cv::VideoCapture cap("../data/tom_interview.mp4");
+  //cv::VideoCapture cap("../data/tom_interview.mp4");
+  cv::VideoCapture cap("../data/got_1.mp4");
 
   // Check if OpenCV is able to read feed from camera
   if (!cap.isOpened()) {
@@ -201,6 +216,13 @@ int main(int argc, char** argv)
       std::vector<dlib::rectangle> faceRects = faceDetector(imDlib);
       // Now process each face we found
       for (int i = 0; i < faceRects.size(); i++) {
+        std::time_t localTime(GetEpcohTime());
+        std::stringstream ss;
+        ss << localTime;
+        std::string imgStorePath("./capture/");
+        std::string imgName(ss.str());
+        imgStorePath += imgName + ".jpg";
+        cv::imwrite(imgStorePath, im);
 
         // Find facial landmarks for each detected face
         dlib::full_object_detection landmarks = landmarkDetector(imDlib, faceRects[i]);
