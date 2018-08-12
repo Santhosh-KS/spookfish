@@ -1,10 +1,26 @@
+#include <assert.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <sys/stat.h>
 #include "JsonParser.hpp"
 
-JsonParser::JsonParser(std::string &file) :
+JsonParser::JsonParser(const std::string &file) :
   JsonFile(file)
 {
-  Jdoc.Parse(file.c_str());
-  assert(Jdoc.IsObject());
+  struct stat buffer;
+  if ((stat(file.c_str(), &buffer) == 0)) {
+    std::ifstream tmp(file);
+    std::stringstream buffer;
+    buffer << tmp.rdbuf();
+    Jdoc.Parse(buffer.str().c_str());
+    if (!Jdoc.IsObject()) {
+      std::cerr << "ERROR: Invalid object. Json Syntax error in " << file.c_str() << "\n";
+    }
+  }
+  else {
+    std::cerr << "ERROR: File : " << file.c_str() << " not found.\n";
+  }
 }
 
 JsonParser::~JsonParser()
@@ -12,32 +28,16 @@ JsonParser::~JsonParser()
   // Empty
 }
 
-#if 0
-assert(document["hello"].IsString());
-printf("hello = %s\n", document["hello"].GetString());
-
-assert(document["t"].IsBool());
-printf("t = %s\n", document["t"].GetBool() ? "true" : "false");
-
-printf("n = %s\n", document["n"].IsNull() ? "null" : "?");
-
-assert(document["i"].IsNumber());
-// In this case, IsUint()/IsInt64()/IsUInt64() also return true.
-assert(document["i"].IsInt());
-printf("i = %d\n", document["i"].GetInt());
-
-// Alternative (int)document["i"]
-assert(document["pi"].IsNumber());
-assert(document["pi"].IsDouble());
-printf("pi = %g\n", document["pi"].GetDouble());
-
-// Using a reference for consecutive access is handy and faster.
-const Value& a = document["a"];
-assert(a.IsArray());
-for (SizeType i = 0; i < a.Size(); i++) // Uses SizeType instead of size_t
-printf("a[%d] = %d\n", i, a[i].GetInt());
-
-for (auto& v : a.GetArray())
-      printf("%d ", v.GetInt());
-
-#endif
+std::string JsonParser::Value(const std::string &key)
+{
+  if (!HasMember(key)) {
+    std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
+  }
+  std::string retVal(Jdoc[key.c_str()].GetString());
+  struct stat buffer;
+  if ((stat(retVal.c_str(), &buffer) != 0)) {
+    std::cerr << "ERROR: File \"" << retVal.c_str() << "\" Not found\n";
+    std::cerr << "ERROR: please change the path values accordingly in \"" << JsonFile.c_str() << "\"\n";
+  }
+  return retVal;
+}

@@ -22,7 +22,9 @@ def imageLookup():
   s.close()
   '''
   #imagepath = 'http://pythonprogramming.net/imagerec/currentImage'+numToAdd+'.jpg'
-  imagepath = 'https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg'
+  #imagepath = 'https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg'
+  #imagepath =  'https://m.media-amazon.com/images/M/MV5BMTQ2MjMwNDA3Nl5BMl5BanBnXkFtZTcwMTA2NDY3NQ@@._V1_QL50_SY1000_CR0,0,691,1000_AL_.jpg'
+  imagepath =  'http://www.gstatic.com/tv/thumb/persons/613075/613075_v9_ba.jpg'
 
   
   #googlepath = 'https://google.com/searchbyimage?image_url=' + imagepath
@@ -30,14 +32,13 @@ def imageLookup():
   
   sourceCode = opener.open(googlepath).read()
   
-  
+  #print(googlepath);
   #print(sourceCode)
   #<div class="tHqoQ rg_meta notranslate">{"cl":15,"cr":15,"id":"Ndslvd9iG03VSM:","oh":675,"ou":"https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg","ow":1200,"
   #<div class="tHqoQ rg_meta  notranslate">{"cl":15,"cr":15,"id":"Ndslvd9iG03VSM:","oh":675,"ou"
-  findLinks = re.findall(r'<div class=".*?\srg_meta\s.*?">{"cl":.*?,"cr":.*?,"id":.*?,"oh":.*?,"ou":"(.*?)","ow":.*?',sourceCode)
-  #findLinks = re.findall(r'<div class=".*?rg_meta.*?">{"cl":".*?","cr":.*?,"id":.*?,"oh":.*?,"ou":"(.*?)",.*?',sourceCode) 
-  #findLinks = re.findall(r'<div class=".*?rg_meta">{"os":".*?","cb":.*?,"ou":(.*?),"rh":"', sourceCode)
-  #findLinks = re.findall(r'<div class="(.*?)</div>', sourceCode)
+  #findLinks = re.findall(r'<div class=".*?\srg_meta\s.*?">{"cl":.*?,"cr":.*?,"id":.*?,"oh":.*?,"ou":"(.*?)","ow":.*?',sourceCode)
+  #findLinks = re.findall(r'<div class=".*?\ssrg_meta\s.*?">{.*?"id":.*?"ou":"(.*?)","ow":.*?',sourceCode)
+  findLinks = re.findall(r'<dif class="tHqoQ rg_meta notranslate">.*?"ou":"(.*?)","ow":.*?', sourceCode);
 
   
   for eachThing in findLinks:

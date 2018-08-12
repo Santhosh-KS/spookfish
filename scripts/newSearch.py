@@ -15,6 +15,7 @@ def SearchImage(imgPath):
     imgSearchApi = 'searchbyimage?image_url='
     
     searchUrl = imgSearchEngine + imgSearchApi + imgPath
+    #searchUrl = 'https://depositphotos.com/search/tom-cruise.html' 
 
     print('search URL: {}'.format(searchUrl))
     headers = {}
@@ -31,7 +32,8 @@ def SearchImage(imgPath):
       print('SearchImage exception : {}'.format(str(e)))
 
 
-myImg = 'https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg'
+#myImg = 'https://www.biography.com/.image/t_share/MTQ1MjI5NDUxNTc0MTI1OTc2/tom-hanks---early-years.jpg'
+myImg = 'https://st.depositphotos.com/1694341/3667/i/950/depositphotos_36679759-stock-photo-tom-cruise.jpg'
 #myImg = 'https://d3m9459r9kwism.cloudfront.net/img/examples/example-bec.jpg'
 #myImg = 'https://storage.googleapis.com/sant-test-bucket/1.jpg'
 SearchImage(myImg)

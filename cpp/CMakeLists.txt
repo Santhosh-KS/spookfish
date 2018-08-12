@@ -16,7 +16,7 @@ SET(rapid_json /opt/rapidjson/include)
 #####################################################################
 
 # all source files
-SET(bin_src src/main.cpp src/JsonParser.cpp)
+SET(bin_src src/main.cpp src/JsonParser.cpp )
 
 # binary name
 SET(bin_name videoAnalyser)

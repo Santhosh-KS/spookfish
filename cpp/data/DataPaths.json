@@ -1,0 +1,8 @@
+{
+  "PredictorFile"    : "/opt/spookfish/cpp/data/shape_predictor_5_face_landmarks.dat",
+  "FaceRecModelFile" : "/opt/spookfish/cpp/data/dlib_face_recognition_resnet_model_v1.dat",
+  "LableFile"        : "/opt/spookfish/cpp/data/label_name.txt",
+  "DescriptorFile"   : "/opt/spookfish/cpp/data/descriptors.csv",
+  "TestVideoFile"    : "/your/test/video/file/path/test_vid.mp4",
+  "ImgCapturePath"   : "/opt/spookfish/cpp/data/capture/"
+}

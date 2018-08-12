@@ -5,6 +5,7 @@
 #include <math.h>
 #include <map>
 #include <ctime>
+#include <chrono>
 #include <iomanip> // setprecision
 #include <sstream> // stringstream
 
@@ -135,27 +136,31 @@ void NearestNeighbor(dlib::matrix<float, 0, 1>& faceDescriptorQuery,
     label = faceLabels[minDistIndex];
   }
 }
-/*
-static GetConfigs(JsonParser parser)
-{
-}
-*/
 
-static std::time_t GetEpcohTime()
+static std::string GetEpcohTime()
 {
-  std::time_t result = std::time(nullptr);
-  //cout << std::asctime(std::localtime(&result));
-  //std::string str(std::asctime(std::localtime(&result)));
-  return result;
+  using namespace  std::chrono;
+  milliseconds ms = duration_cast< milliseconds >
+    (system_clock::now().time_since_epoch());
+  return std::to_string(ms.count());
 }
 
 int main(int argc, char** argv)
 {
-  std::string jsonFile("../data/DataPath.json");
+  //auto jsonFile("../data/bkup_DataPaths.json");
+  auto jsonFile("../data/DataPaths.json");
+
   JsonParser parser(jsonFile);
-  //std::string  predictorPath("../data/shape_predictor_68_face_landmarks.dat");
-  std::string  predictorPath("../data/shape_predictor_5_face_landmarks.dat");
-  std::string  faceRecognitionModelPath("../data/dlib_face_recognition_resnet_model_v1.dat");
+  // Watchout for the JsonParser lifetime. as parser object
+  // is moved and not copied. This is the behaviour of the
+  // RapidJson.
+
+  auto labelNameFile(parser.Value("LableFile"));
+  auto predictorPath(parser.Value("PredictorFile"));
+  auto faceRecognitionModelPath(parser.Value("FaceRecModelFile"));
+  auto faceDescriptorFile(parser.Value("DescriptorFile"));
+  auto videoFile(parser.Value("TestVideoFile"));
+  auto imgCapturePath(parser.Value("ImgCapturePath"));
 
   dlib::frontal_face_detector faceDetector = dlib::get_frontal_face_detector();
   dlib::shape_predictor landmarkDetector;
@@ -169,11 +174,9 @@ int main(int argc, char** argv)
   std::map<int, std::string> labelNameMap;
   std::vector<std::string> names;
   std::vector<int> labels;
-  const std::string labelNameFile = "../data/label_name.txt";
   ReadLableNameMap(labelNameFile, names, labels, labelNameMap);
 
   // read descriptors of enrolled faces from file
-  const std::string faceDescriptorFile = "../data/descriptors.csv";
   std::vector<int> faceLabels;
   std::vector<dlib::matrix<float,0,1>> faceDescriptors;
   ReadDescriptors(faceDescriptorFile, faceLabels, faceDescriptors);
@@ -181,15 +184,15 @@ int main(int argc, char** argv)
   // Create a VideoCapture object
   //cv::VideoCapture cap(0);
   //cv::VideoCapture cap("../data/tom_interview.mp4");
-  cv::VideoCapture cap("../data/got_1.mp4");
+  cv::VideoCapture cap(videoFile);
 
   // Check if OpenCV is able to read feed from camera
   if (!cap.isOpened()) {
-    std::cerr << "Unable to connect to camera\n";
+    std::cerr << "Unable to find the file " << videoFile.c_str() <<"\n";
     return 1;
   }
   int count = 0;
-  while (1) {
+  while (true) {
     // Capture frame
     cv::Mat im;
     cap >> im;
@@ -202,7 +205,6 @@ int main(int argc, char** argv)
     // We will be processing frames after an interval
     // of SKIP_FRAMES to increase processing speed
     if ((count % SKIP_FRAMES) == 0) {
-    //if (1) {
 
       // convert image from BGR to RGB
       // because Dlib used RGB format
@@ -216,11 +218,9 @@ int main(int argc, char** argv)
       std::vector<dlib::rectangle> faceRects = faceDetector(imDlib);
       // Now process each face we found
       for (int i = 0; i < faceRects.size(); i++) {
-        std::time_t localTime(GetEpcohTime());
-        std::stringstream ss;
-        ss << localTime;
-        std::string imgStorePath("./capture/");
-        std::string imgName(ss.str());
+        auto localTime(GetEpcohTime());
+        std::string imgStorePath(imgCapturePath);
+        std::string imgName(localTime);
         imgStorePath += imgName + ".jpg";
         cv::imwrite(imgStorePath, im);
 

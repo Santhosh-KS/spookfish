@@ -124,8 +124,8 @@ from landmark.facialLandmarkDetector import LandMarkDetector
 
 if __name__ == "__main__":
   imgs = glob.glob('/home/santhosh/course/week9/data/images/faces/ema/*.jpg')
-  predictoPath = '/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat'
+  predictorPath = '/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat'
   for img in imgs:
     print(img)
-    LandMarkDetector(predictoPath, img)
+    LandMarkDetector(predictorPath, img)
     ProcessImage(img)
