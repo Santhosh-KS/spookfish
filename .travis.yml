@@ -16,6 +16,7 @@ addons:
       - git 
       - gfortran
       - libqt5opengl5
+      - libqt5opengl5-dev
       - libtiff4-dev
       - libjpeg8-dev
       - libjasper-dev
