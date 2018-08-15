@@ -41,3 +41,28 @@ std::string JsonParser::Value(const std::string &key)
   }
   return retVal;
 }
+
+std::string JsonParser::GetString(const std::string &key)
+{
+  return Value(key);
+}
+
+bool JsonParser::SetString(const std::string &key, const std::string &newVal)
+{
+  if (!HasMember(key)) {
+    std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
+    return false;
+  }
+  Jdoc[key.c_str()].SetString(newVal.c_str(),newVal.length());
+  return true;
+}
+
+bool JsonParser::SetUInt64(const std::string &key,uint64_t count)
+{
+  if (!HasMember(key)) {
+    std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
+    return false;
+  }
+  Jdoc[key.c_str()].SetUint64(count);
+  return true;
+}

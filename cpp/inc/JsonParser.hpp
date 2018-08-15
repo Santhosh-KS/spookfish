@@ -3,14 +3,14 @@
 
 #include<string>
 
+#include "NotCopyable.hpp"
 #include "rapidjson/document.h"
 
-class JsonParser
+class JsonParser: public NotCopyable
 {
 private:
   const std::string JsonFile;
   rapidjson::Document Jdoc;
-  JsonParser();
 public:
   explicit JsonParser(const std::string &file);
   ~JsonParser();
@@ -21,9 +21,14 @@ public:
   inline bool IsNull(const std::string &str) { return Jdoc[str.c_str()].IsNull(); }
   inline bool IsNumber(const std::string &str) { return Jdoc[str.c_str()].IsNumber(); }
   inline bool IsInt(const std::string &str) { return Jdoc[str.c_str()].IsInt(); }
+//  inline bool IsUInt64(const std::string &str) { return Jdoc[str.c_str()].IsUInt64(); }
   inline bool IsDouble(const std::string &str) { return Jdoc[str.c_str()].IsDouble(); }
   inline std::string FileName() { return JsonFile;}
   std::string Value(const std::string &key);
+  std::string GetString(const std::string &key);
+  inline uint64_t GetUInt64(const std::string &key) { return Jdoc[key.c_str()].GetUint64(); }
+  bool SetString(const std::string &key, const std::string &newVal);
+  bool SetUInt64(const std::string &key, uint64_t);
 };
 
 #endif // JSON_PARSER_HPP
