@@ -15,6 +15,7 @@ addons:
       - yasm
       - git 
       - gfortran
+      - libqt5opengl5
       - libtiff4-dev
       - libjpeg8-dev
       - libjasper-dev
