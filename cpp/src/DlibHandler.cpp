@@ -4,10 +4,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 //DlibHandler::DlibHandler(cv::Mat imgBgr):
-DlibHandler::DlibHandler(cv::Mat &imgBgr,
-    std::string &shapePredictFile, std::string &faceRecRsNetFile):
-  BgrImage(imgBgr.clone()),
-  RgbImage(imgBgr.clone()),
+DlibHandler::DlibHandler(std::string &shapePredictFile, std::string &faceRecRsNetFile):
   TotalFacesInImage(0),
   Shape(),
   FaceDetector(dlib::get_frontal_face_detector())
@@ -15,10 +12,6 @@ DlibHandler::DlibHandler(cv::Mat &imgBgr,
   //FaceDetector = dlib::get_frontal_face_detector();
   dlib::deserialize(shapePredictFile) >> LandMarkDetector;
   dlib::deserialize(faceRecRsNetFile) >> AnetType;
-  ProcessImage();
-  FaceDetection();
-  LandmarkDetector();
-  DrawShapes(imgBgr);
 }
 
 DlibHandler ::~DlibHandler()
@@ -36,6 +29,7 @@ void DlibHandler::FaceDetection()
 {
   FaceRectangles = FaceDetector(DlibImageMat);
   TotalFacesInImage = FaceRectangles.size();
+  std::cout << "Total faces = " << TotalFacesInImage << "\n";
 }
 
 void DlibHandler::LandmarkDetector()
@@ -54,4 +48,15 @@ void DlibHandler::DrawShapes(cv::Mat &img)
 {
   Shape.BoundinBox(img, FaceRectangles);
   Shape.Circle(img, FaceRectangles);
+}
+
+void DlibHandler::ProcessData(cv::Mat &img)
+{
+  BgrImage = img.clone();
+  RgbImage = img.clone();
+  ProcessImage();
+  FaceDetection();
+  LandmarkDetector();
+  DrawShapes(img);
+  return;
 }

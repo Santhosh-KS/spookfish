@@ -14,6 +14,7 @@ CaptureVideo::CaptureVideo(std::string file, uint16_t skipFrame = 10):
     VidCapture.release();
     throw std::runtime_error("File Not Found : " + file);
   }
+  /*
   try {
     std::string win("default Name");
     cv::Mat im;
@@ -23,7 +24,7 @@ CaptureVideo::CaptureVideo(std::string file, uint16_t skipFrame = 10):
   }
   catch (const std::exception& e) {
     std::cerr << e.what() << "\n";
-  }
+  }*/
 }
 
 CaptureVideo::~CaptureVideo()
@@ -65,6 +66,7 @@ bool CaptureVideo::Run()
   std::string windowName("Video Playback");
   std::string shapePredictFile("/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat");
   std::string faceRecRsNetFile("/home/santhosh/course/final_project/cpp/data/dlib_face_recognition_resnet_model_v1.dat");
+  DlibHandler handler(shapePredictFile, faceRecRsNetFile);
   while(true) {
     try {
       count++;
@@ -76,7 +78,7 @@ bool CaptureVideo::Run()
       //std::cout << "Got Img count = " << count << "\n";
       if (count % SkipFrame == 0) {
         // std::cout << "Show img count xskipFrame\n";
-        DlibHandler handler(im, shapePredictFile, faceRecRsNetFile);
+        handler.ProcessData(im);
         if (!ShowImage(windowName, im)) {
           //std::cout << "Escape key recognized\n";
           return true;

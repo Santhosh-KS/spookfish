@@ -36,8 +36,9 @@ class DlibHandler : public NotCopyable
     void LandmarkDetector();
     void DrawShapes(cv::Mat &);
   public:
-    explicit DlibHandler(cv::Mat &imgBgr,std::string &shapePredictFile, std::string &faceRecRsNetFile);
+    explicit DlibHandler(std::string &shapePredictFile, std::string &faceRecRsNetFile);
     ~DlibHandler();
+    void ProcessData(cv::Mat &);
 };
 
 #endif // DLIB_HANDLER_HPP
