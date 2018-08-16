@@ -19,12 +19,13 @@ DrawingUtils::~DrawingUtils()
   // Empty.
 }
 
-void DrawingUtils::BoundinBox(cv::Mat &im, std::vector<dlib::rectangle> &bb)
+void DrawingUtils::BoundinBox(cv::Mat &im, std::vector<dlib::rectangle> &bb, const std::string &text)
 {
   for(auto &v: bb) {
     cv::Point2d p1 = cv::Point2d(v.left(), v.top());
     cv::Point2d p2 = cv::Point2d(v.right(), v.bottom());
     cv::rectangle(im, p1, p2, cv::Scalar(0, 0, 255), 1, cv::LINE_8);
+    cv::putText(im, text.c_str(), p1, cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(255, 0, 0), 2);
   }
   return;
 }

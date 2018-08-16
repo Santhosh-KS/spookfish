@@ -47,8 +47,9 @@ bool CaptureVideo::GetImage(cv::Mat &im)
   return false;
 }
 
-bool CaptureVideo::ShowImage(const std::string &windowName, cv::Mat &img)
+bool CaptureVideo::ShowImage(const std::string &windowName, const cv::Mat &img)
 {
+  cv::namedWindow(windowName.c_str(), CV_WINDOW_NORMAL);
   cv::imshow(windowName.c_str(), img);
   //std::cout << "Show img\n";
   int k = cv::waitKey(30);
@@ -66,13 +67,15 @@ bool CaptureVideo::Run()
   std::string windowName("Video Playback");
   std::string shapePredictFile("/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat");
   std::string faceRecRsNetFile("/home/santhosh/course/final_project/cpp/data/dlib_face_recognition_resnet_model_v1.dat");
-  DlibHandler handler(shapePredictFile, faceRecRsNetFile);
+  std::string lableFile("/home/santhosh/course/final_project/cpp/data/label_name.txt");
+  std::string faceDescriptorFile("/home/santhosh/course/final_project/cpp/data/descriptors.csv");
+  DlibHandler handler(shapePredictFile, faceRecRsNetFile, lableFile, faceDescriptorFile);
   while(true) {
     try {
       count++;
       cv::Mat im;
       if (!GetImage(im)) {
-        //std::cout << "img is null\n";
+        //std::cout << "img is empty\n";
         return false;
       }
       //std::cout << "Got Img count = " << count << "\n";

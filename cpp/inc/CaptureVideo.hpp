@@ -16,7 +16,7 @@ class CaptureVideo: public NotCopyable
 
    CaptureVideo() = delete;
    bool GetImage(cv::Mat &im);
-   bool ShowImage(const std::string &windowName, cv::Mat &img);
+   bool ShowImage(const std::string &windowName, const cv::Mat &img);
  public:
    explicit CaptureVideo(std::string file, uint16_t skipFrame);
    ~CaptureVideo();

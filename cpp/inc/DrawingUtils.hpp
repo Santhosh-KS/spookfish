@@ -14,7 +14,7 @@ class DrawingUtils : public NotCopyable
     //explicit DrawingUtils(cv::Mat img);
     DrawingUtils();
     ~DrawingUtils();
-    void BoundinBox(cv::Mat &im, std::vector<dlib::rectangle> &bb);
+    void BoundinBox(cv::Mat &im, std::vector<dlib::rectangle> &bb, const std::string &);
     void Circle(cv::Mat &im, std::vector<dlib::rectangle> &bb);
 };
 
