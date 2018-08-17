@@ -23,7 +23,7 @@
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
+   */
 
 #include <vector>
 #include <map>
@@ -59,6 +59,30 @@ class DlibHandler : public NotCopyable
     std::map<int,std::string> IdPersonMap;
     std::map<std::string,int> FaceDescriptorIdMap;
 
+    struct ImageStats {
+      ImageStats(): TotalImages(0),
+      TotalFaceRecognizedImages(0),
+      TotalImagesWithOneFace(0),
+      TotalImagesWithTwoFace(0),
+      TotalImagesWithThreeFace(0),
+      TotalImagesWithFourFace(0),
+      TotalImagesWithFiveFace(0),
+      TotalImagesWithSixOrMoreFace(0)
+      {
+        //Empty
+      }
+      uint64_t TotalImages;
+      uint64_t TotalFaceRecognizedImages;
+      uint64_t TotalImagesWithOneFace;
+      uint64_t TotalImagesWithTwoFace;
+      uint64_t TotalImagesWithThreeFace;
+      uint64_t TotalImagesWithFourFace;
+      uint64_t TotalImagesWithFiveFace;
+      uint64_t TotalImagesWithSixOrMoreFace;
+    };
+
+    struct ImageStats ImgStats;
+
     DlibHandler() = delete;
     void ProcessImage();
     void FaceDetection();
@@ -66,7 +90,10 @@ class DlibHandler : public NotCopyable
     void DrawShapes(const cv::Mat &);
     void CreateFaceDescriptorIdMap(const std::string &file);
     void CreateIdPersonMap(const std::string &file);
+    void SaveImage(const cv::Mat &im, const std::string &path);
     int FindMatchingFace(dlib::matrix<float,0,1> &fDesqry);
+    std::string GetEpcohTime();
+    void PrintStats();
   public:
     explicit DlibHandler(std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personFile, std::string &faceDescFile);

@@ -25,6 +25,9 @@
 
 #include <iostream>
 #include <limits>
+#include <ctime>
+#include <chrono>
+
 
 #include "DlibHandler.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
@@ -42,7 +45,7 @@ DlibHandler::DlibHandler(std::string &shapePredictFile, std::string &faceRecRsNe
 
 DlibHandler ::~DlibHandler()
 {
-  // Empty.
+  PrintStats();
 }
 
 void DlibHandler::ProcessImage()
@@ -109,9 +112,39 @@ void DlibHandler::ProcessData(const cv::Mat &img)
   RgbImage = img.clone();
   ProcessImage();
   FaceDetection();
+  ImgStats.TotalImages++;
   if (TotalFacesInImage > 0) {
     FaceLandMarkDetector();
     DrawShapes(img);
+    std::string path("/home/santhosh/course/final_project/cpp/output");
+    // Get the images captured stats.
+    ImgStats.TotalFaceRecognizedImages++;
+    if (TotalFacesInImage < 6) {
+      path += "/"+std::to_string(TotalFacesInImage)+"/";
+      switch(TotalFacesInImage) {
+        case 1:
+          ImgStats.TotalImagesWithOneFace++;
+          break;
+        case 2:
+          ImgStats.TotalImagesWithTwoFace++;
+          break;
+        case 3:
+          ImgStats.TotalImagesWithThreeFace++;
+          break;
+        case 4:
+          ImgStats.TotalImagesWithFourFace++;
+          break;
+        case 5:
+          ImgStats.TotalImagesWithFiveFace++;
+          break;
+      }
+    }
+    else {
+      path += "/6_plus/";
+      ImgStats.TotalImagesWithSixOrMoreFace++;
+    }
+    // Enable only when required. Hogs Disk space.
+    //SaveImage(img, path);
   }
   return;
 }
@@ -192,4 +225,33 @@ void DlibHandler::Retrain(std::string &shapePredictFile, std::string &faceRecRsN
   dlib::deserialize(faceRecRsNetFile) >> AnetType;
   CreateIdPersonMap(personIdFile);
   CreateFaceDescriptorIdMap(faceDescriptorFile);
+}
+
+std::string DlibHandler::GetEpcohTime()
+{
+  using namespace  std::chrono;
+  milliseconds ms = duration_cast< milliseconds >
+    (system_clock::now().time_since_epoch());
+  return std::to_string(ms.count());
+}
+
+void DlibHandler::SaveImage(const cv::Mat &im, const std::string &path)
+{
+  auto localTime(GetEpcohTime());
+  std::string imgStorePath(path);
+  std::string imgName(localTime);
+  imgStorePath += imgName + ".jpg";
+  cv::imwrite(imgStorePath, im);
+}
+
+void DlibHandler::PrintStats()
+{
+  std::cout << " Total Images = " << ImgStats.TotalImages << "\n";
+  std::cout << " Total Face Rec Images = " << ImgStats.TotalFaceRecognizedImages << "\n";
+  std::cout << " Total 1 Face in image = " << ImgStats.TotalImagesWithOneFace << "\n";
+  std::cout << " Total 2 Faces in image = " << ImgStats.TotalImagesWithTwoFace << "\n";
+  std::cout << " Total 3 Faces in image = " << ImgStats.TotalImagesWithThreeFace << "\n";
+  std::cout << " Total 4 Faces in image = " << ImgStats.TotalImagesWithFourFace << "\n";
+  std::cout << " Total 5 Faces in image = " << ImgStats.TotalImagesWithFiveFace << "\n";
+  std::cout << " Total 6 or more Faces in image = " << ImgStats.TotalImagesWithSixOrMoreFace << "\n";
 }
