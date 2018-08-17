@@ -73,7 +73,7 @@ bool CaptureVideo::GetImage(cv::Mat &im)
 
 bool CaptureVideo::ShowImage(const std::string &windowName, const cv::Mat &img)
 {
-  cv::namedWindow(windowName.c_str(), CV_WINDOW_NORMAL);
+  //cv::namedWindow(windowName.c_str(), CV_WINDOW_NORMAL);
   cv::imshow(windowName.c_str(), img);
   //std::cout << "Show img\n";
   int k = cv::waitKey(30);

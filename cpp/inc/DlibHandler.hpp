@@ -43,10 +43,9 @@ class DlibHandler : public NotCopyable
 {
   private:
     cv::Mat RgbImage;
-    cv::Mat BgrImage;
+    //cv::Mat BgrImage;
     uint16_t TotalFacesInImage;
     DrawingUtils Shape;
-    std::string CurrentFaceLabel;
     dlib::frontal_face_detector FaceDetector;
     dlib::shape_predictor LandMarkDetector;
     anet_type AnetType;
@@ -55,6 +54,8 @@ class DlibHandler : public NotCopyable
     std::vector<dlib::full_object_detection>  LandMarks;
     //std::vector<dlib::matrix<rgb_pixel>> FaceChips;
     std::vector<dlib::matrix<float,0,1>> FaceDescriptionQuerys;
+    std::vector<int> TaggedFaceVector;
+    std::vector<std::string> CurrentFaceLabelVec;
     std::map<int,std::string> IdPersonMap;
     std::map<std::string,int> FaceDescriptorIdMap;
 
@@ -62,15 +63,15 @@ class DlibHandler : public NotCopyable
     void ProcessImage();
     void FaceDetection();
     void FaceLandMarkDetector();
-    void DrawShapes(cv::Mat &);
-    void CreateFaceDescriptorIdMap(std::string &file);
-    void CreateIdPersonMap(std::string &file);
-    void FindMatchingFace(dlib::matrix<float,0,1> &fDesqry);
+    void DrawShapes(const cv::Mat &);
+    void CreateFaceDescriptorIdMap(const std::string &file);
+    void CreateIdPersonMap(const std::string &file);
+    int FindMatchingFace(dlib::matrix<float,0,1> &fDesqry);
   public:
     explicit DlibHandler(std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personFile, std::string &faceDescFile);
     ~DlibHandler();
-    void ProcessData(cv::Mat &);
+    void ProcessData(const cv::Mat &);
     void Retrain(std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personIdFile,
         std::string &faceDescriptorFile);

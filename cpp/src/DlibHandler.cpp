@@ -24,6 +24,7 @@
 
 
 #include <iostream>
+#include <limits>
 
 #include "DlibHandler.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
@@ -33,9 +34,9 @@ DlibHandler::DlibHandler(std::string &shapePredictFile, std::string &faceRecRsNe
     std::string &personIdFile, std::string &faceDescriptorFile):
   TotalFacesInImage(0),
   Shape(),
-  CurrentFaceLabel("Unknown"),
   FaceDetector(dlib::get_frontal_face_detector())
 {
+  CurrentFaceLabelVec.clear();
   Retrain(shapePredictFile, faceRecRsNetFile, personIdFile, faceDescriptorFile);
 }
 
@@ -59,41 +60,52 @@ void DlibHandler::FaceDetection()
 
 void DlibHandler::FaceLandMarkDetector()
 {
+  CurrentFaceLabelVec.clear();
   for(auto &v:FaceRectangles) {
     dlib::full_object_detection landMark = LandMarkDetector(DlibImageMat, v);
     LandMarks.push_back(landMark);
     dlib::matrix<dlib::rgb_pixel> faceChip;
     dlib::extract_image_chip(DlibImageMat, dlib::get_face_chip_details(landMark,150,0.25), faceChip);
+
     //FaceChips.push_back(faceChip);
     dlib::matrix<float,0,1> faceDescritionQry = AnetType(faceChip);
-    FindMatchingFace(faceDescritionQry);
-  }
-}
+    auto match = FindMatchingFace(faceDescritionQry);
 
-void DlibHandler::FindMatchingFace(dlib::matrix<float,0,1> &fDesqry)
-{
-  //CurrentFaceLabelVec.clear();
-  for(auto i = 0; i < FaceDescriptionQuerys.size(); ++i) {
-    auto distance = dlib::length(FaceDescriptionQuerys[i] - fDesqry);
-    if (distance < 0.6) {
-      auto itr = IdPersonMap.find(i);
-      if ( itr != IdPersonMap.end()) {
-        //CurrentFaceLabelVec.push_back(itr->second);
-        CurrentFaceLabel = itr->second;
-      }
+    auto itr = IdPersonMap.find(match);
+    if ( itr != IdPersonMap.end()) {
+      //CurrentFaceLabelVec.push_back(itr->second);
+      std::cout << itr->second << "\n";
+      CurrentFaceLabelVec.push_back(itr->second);
+    }
+    else {
+      CurrentFaceLabelVec.push_back("Unknown");
     }
   }
 }
 
-void DlibHandler::DrawShapes(cv::Mat &img)
+int DlibHandler::FindMatchingFace(dlib::matrix<float,0,1> &fDesqry)
 {
-  Shape.BoundinBox(img, FaceRectangles, CurrentFaceLabel);
+  auto match(std::numeric_limits<int>::max());
+  for(auto i = 0; i < FaceDescriptionQuerys.size(); ++i) {
+    auto distance = dlib::length(FaceDescriptionQuerys[i] - fDesqry);
+    //std::cout << "distance  = " << distance << "\n";
+    if (distance < 0.5) {
+      match = std::min(match, TaggedFaceVector[i]);
+      //std::cout << "Valid distance  = " << distance << " match = " << match << "\n";
+    }
+  }
+  return match;
+}
+
+void DlibHandler::DrawShapes(const cv::Mat &img)
+{
+  Shape.BoundinBox(img, FaceRectangles, CurrentFaceLabelVec);
   Shape.Circle(img, FaceRectangles);
 }
 
-void DlibHandler::ProcessData(cv::Mat &img)
+void DlibHandler::ProcessData(const cv::Mat &img)
 {
-  BgrImage = img.clone();
+  //BgrImage = img.clone();
   RgbImage = img.clone();
   ProcessImage();
   FaceDetection();
@@ -104,43 +116,72 @@ void DlibHandler::ProcessData(cv::Mat &img)
   return;
 }
 
-void DlibHandler::CreateIdPersonMap(std::string &file)
+void DlibHandler::CreateIdPersonMap(const std::string &file)
 {
   std::ifstream ifs(file);
   std::string line("");
 
+  IdPersonMap.clear();
   while (std::getline(ifs, line)) {
     try {
       std::istringstream iss(line);
       auto const pos = line.find_last_of(';');
       auto id = line.substr(pos+1);
       auto name = line.substr(0,pos);
-      std::cout << "id = " << id.c_str() << " name = " << name.c_str() << "\n";
+      //std::cout << "id = " << id.c_str() << " name = " << name.c_str() << "\n";
       IdPersonMap.insert(std::pair<int,std::string>(std::stoi(id), name));
     }
     catch (const std::exception& e) {
       std::cerr << e.what() << "\n";
+      break;
     }
   }
 }
 
-void DlibHandler::CreateFaceDescriptorIdMap(std::string &file)
+void DlibHandler::CreateFaceDescriptorIdMap(const std::string &file)
 {
   std::ifstream ifs(file);
   std::string line("");
 
+  FaceDescriptorIdMap.clear();
+  TaggedFaceVector.clear();
   while (std::getline(ifs, line)) {
     try {
       std::istringstream iss(line);
       auto const pos = line.find_first_of(';');
       std::string id = line.substr(0,pos);
       auto faceDescriptor = line.substr(pos+1);
-      std::cout << "id = " << id.c_str() << " fd = " << faceDescriptor.c_str() << "\n";
+      //std::cout << "id = " << id.c_str() << " fd = " << faceDescriptor.c_str() << "\n";
       FaceDescriptorIdMap.insert(std::pair<std::string, int>(faceDescriptor, std::stoi(id)));
     }
     catch (const std::exception& e) {
       std::cerr << e.what() << "\n";
+      break;
     }
+  }
+
+  // Form a valid FaceDescriptionQuery from string.
+  try {
+    FaceDescriptionQuerys.clear();
+    std::string valueStr;
+    for(auto &itr: FaceDescriptorIdMap) {
+      std::string str(itr.first);
+      std::stringstream ss(str);
+      std::vector<float> floatVec;
+      TaggedFaceVector.push_back(itr.second);
+      while (getline(ss, valueStr, ';')) {
+        if (!valueStr.empty()) {
+          floatVec.push_back(std::atof(valueStr.c_str()));
+        }
+      }
+      dlib::matrix<float, 0, 1> faceDes = dlib::mat(floatVec);
+      FaceDescriptionQuerys.push_back(std::move(faceDes));
+    }
+    //std::cout << "FaceDescriptionQuerys.size() = " << FaceDescriptionQuerys.size() << "\n";
+  }
+  catch (const std::exception& e) {
+    std::cerr << e.what() << "\n";
+    return;
   }
 }
 
