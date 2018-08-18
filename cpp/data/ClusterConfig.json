@@ -1,0 +1,6 @@
+{
+  "ModelFile": "/home/santhosh/course/final_project/cpp/data/shape_predictor_68_face_landmarks.dat",
+  "RsNetFile":"/home/santhosh/course/final_project/cpp/data/dlib_face_recognition_resnet_model_v1.dat",
+  "StoragePath": "/home/santhosh/course/final_project/cpp/data/test_cluster",
+  "ImageListFileName":"/home/santhosh/course/final_project/cpp/output/1/out.txt"
+}

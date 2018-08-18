@@ -59,6 +59,22 @@ void DlibHandler::FaceDetection()
   FaceRectangles = FaceDetector(DlibImageMat);
   TotalFacesInImage = FaceRectangles.size();
   //std::cout << "Total faces = " << TotalFacesInImage << "\n";
+  for(auto &v: FaceRectangles) {
+    //std::cout << "Area = " << v.area() << "\n";
+    // Anything >20000 is a closeup shot.
+    if (v.area() >= 20000)  {
+      ImgStats.TotalZoomShots++;
+      // Store the zoomed image.
+
+      cv::Rect roi(cv::Point2i(v.left(), v.top()), cv::Point2i(v.right() + 1, v.bottom() + 1));
+      cv::Mat cropImg = RgbImage(roi).clone();
+      std::string strPath("/home/santhosh/course/final_project/cpp/output/");
+      strPath = strPath + "my_" +std::to_string(v.area()) + ".jpg";
+      //cv::imshow("cropped",cropImg);
+      hconcat(cropImg, ConCatImg);
+      cv::imwrite(strPath, cropImg);
+    }
+  }
 }
 
 void DlibHandler::FaceLandMarkDetector()
@@ -115,7 +131,6 @@ void DlibHandler::ProcessData(const cv::Mat &img)
   ImgStats.TotalImages++;
   if (TotalFacesInImage > 0) {
     FaceLandMarkDetector();
-    DrawShapes(img);
     std::string path("/home/santhosh/course/final_project/cpp/output");
     // Get the images captured stats.
     ImgStats.TotalFaceRecognizedImages++;
@@ -145,6 +160,7 @@ void DlibHandler::ProcessData(const cv::Mat &img)
     }
     // Enable only when required. Hogs Disk space.
     //SaveImage(img, path);
+    DrawShapes(img);
   }
   return;
 }
@@ -240,13 +256,14 @@ void DlibHandler::SaveImage(const cv::Mat &im, const std::string &path)
   auto localTime(GetEpcohTime());
   std::string imgStorePath(path);
   std::string imgName(localTime);
-  imgStorePath += imgName + ".jpg";
+  imgStorePath += imgName + "_" + std::to_string(TotalFacesInImage) + ".jpg";
   cv::imwrite(imgStorePath, im);
 }
 
 void DlibHandler::PrintStats()
 {
   std::cout << " Total Images = " << ImgStats.TotalImages << "\n";
+  std::cout << " Total zoom/closeup shots = " << ImgStats.TotalZoomShots << "\n";
   std::cout << " Total Face Rec Images = " << ImgStats.TotalFaceRecognizedImages << "\n";
   std::cout << " Total 1 Face in image = " << ImgStats.TotalImagesWithOneFace << "\n";
   std::cout << " Total 2 Faces in image = " << ImgStats.TotalImagesWithTwoFace << "\n";

@@ -43,6 +43,7 @@ class DlibHandler : public NotCopyable
 {
   private:
     cv::Mat RgbImage;
+    cv::Mat ConCatImg;
     //cv::Mat BgrImage;
     uint16_t TotalFacesInImage;
     DrawingUtils Shape;
@@ -61,6 +62,7 @@ class DlibHandler : public NotCopyable
 
     struct ImageStats {
       ImageStats(): TotalImages(0),
+      TotalZoomShots(0),
       TotalFaceRecognizedImages(0),
       TotalImagesWithOneFace(0),
       TotalImagesWithTwoFace(0),
@@ -72,6 +74,7 @@ class DlibHandler : public NotCopyable
         //Empty
       }
       uint64_t TotalImages;
+      uint64_t TotalZoomShots;
       uint64_t TotalFaceRecognizedImages;
       uint64_t TotalImagesWithOneFace;
       uint64_t TotalImagesWithTwoFace;

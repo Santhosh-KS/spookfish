@@ -22,6 +22,7 @@ SET(bin_src src/main.cpp
             src/Stats.cpp
             src/CaptureVideo.cpp
             src/DlibHandler.cpp
+            src/FaceCluster.cpp
             src/DrawingUtils.cpp)
 
 # binary name
