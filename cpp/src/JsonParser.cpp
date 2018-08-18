@@ -59,10 +59,12 @@ std::string JsonParser::Value(const std::string &key)
     std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
   }
   std::string retVal(Jdoc[key.c_str()].GetString());
-  struct stat buffer;
-  if ((stat(retVal.c_str(), &buffer) != 0)) {
-    std::cerr << "ERROR: File \"" << retVal.c_str() << "\" Not found\n";
-    std::cerr << "ERROR: please change the path values accordingly in \"" << JsonFile.c_str() << "\"\n";
+  if (key.compare("SkipFrame") != 0 && key.compare("StorageEnabled") != 0) {
+    struct stat buffer;
+    if ((stat(retVal.c_str(), &buffer) != 0)) {
+      std::cerr << "ERROR: File \"" << retVal.c_str() << "\" Not found\n";
+      std::cerr << "ERROR: please change the path values accordingly in \"" << JsonFile.c_str() << "\"\n";
+    }
   }
   return retVal;
 }

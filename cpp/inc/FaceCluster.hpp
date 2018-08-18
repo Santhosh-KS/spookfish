@@ -48,6 +48,7 @@ class FaceCluster : public NotCopyable
     std::string ImageListFileName;
     std::string ModelFile;
     std::string RsNetFile;
+    std::string StorageEnabled;
     dlib::frontal_face_detector Detector;
     dlib::shape_predictor ShapePredictor;
     anet_type AnetType;
@@ -61,7 +62,7 @@ class FaceCluster : public NotCopyable
   public:
     FaceCluster(const std::string &config);
     ~FaceCluster();
-    bool Run(bool store);
+    bool Run();
 };
 
 #endif // FACE_CLUSTER_HPP

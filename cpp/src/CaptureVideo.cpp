@@ -29,14 +29,19 @@
 #include "DlibHandler.hpp"
 
 
-CaptureVideo::CaptureVideo(std::string file, uint16_t skipFrame = 10):
-  VideoFile(file),
-  SkipFrame(skipFrame),
-  VidCapture(new cv::VideoCapture(file))
+CaptureVideo::CaptureVideo(const std::string &configFile):
+  Parser(new JsonParser(configFile)),
+  ShapePredictFile(Parser->Value("PredictorFile")),
+  FaceRecRsNetFile(Parser->Value("FaceRecModelFile")),
+  LabelFile(Parser->Value("LabelFile")),
+  FaceDescriptorFile(Parser->Value("DescriptorFile")),
+  VideoFile(Parser->Value("TestVideoFile")),
+  SkipFrame(std::stoi(Parser->Value("SkipFrame"))),
+  VidCapture(new cv::VideoCapture(VideoFile))
 {
   if (!VidCapture->isOpened()) {
     VidCapture.release();
-    throw std::runtime_error("File Not Found : " + file);
+    throw std::runtime_error("File Not Found : " + VideoFile);
   }
   /*
      try {
@@ -89,11 +94,7 @@ bool CaptureVideo::Run()
 {
   int count(0);
   std::string windowName("Video Playback");
-  std::string shapePredictFile("/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat");
-  std::string faceRecRsNetFile("/home/santhosh/course/final_project/cpp/data/dlib_face_recognition_resnet_model_v1.dat");
-  std::string lableFile("/home/santhosh/course/final_project/cpp/data/label_name.txt");
-  std::string faceDescriptorFile("/home/santhosh/course/final_project/cpp/data/descriptors.csv");
-  DlibHandler handler(shapePredictFile, faceRecRsNetFile, lableFile, faceDescriptorFile);
+  DlibHandler handler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
   while(true) {
     try {
       count++;

@@ -34,24 +34,17 @@
 
 int main(int argc, char** argv)
 {
-  auto jsonFile("../data/bkup_DataPaths.json");
-  JsonParser parser(jsonFile);
-  auto videoFile(parser.Value("TestVideoFile"));
-  //auto videoFile("/home/santhosh/course/final_project/cpp/data/got_1.mp4");
-  uint16_t skipRate(10);
   try {
-    CaptureVideo vidCapture(videoFile, skipRate);
-    //std::cout << "Out of run\n";
-    /*auto model("/home/santhosh/course/final_project/cpp/data/shape_predictor_68_face_landmarks.dat");
-    auto rsNet("/home/santhosh/course/final_project/cpp/data/dlib_face_recognition_resnet_model_v1.dat");
-    auto storagePath("/home/santhosh/course/final_project/cpp/data/test_cluster");
-    const std::string imageListFileName("/home/santhosh/course/final_project/cpp/output/1/out.txt");*/
-    auto config("../data/ClusterConfig.json");
-    //FaceCluster cluster(model, rsNet, storagePath);
-    FaceCluster cluster(config);
+    //auto dataPathConfig("../data/bkup_DataPaths.json");
+    auto dataPathConfig("../data/DataPaths.json");
+    CaptureVideo vidCapture(dataPathConfig);
+    //auto clusterConfig("../data/bkup_ClusterConfig.json");
+    auto clusterConfig("../data/ClusterConfig.json");
+    FaceCluster cluster(clusterConfig);
+    vidCapture.Run();
 
-    //vidCapture.Run();
-    cluster.Run(true);
+    // Enable clustering only when required.
+    //cluster.Run();
   }
   catch(const std::exception& e ) {
     std::cerr << e.what() << "\n";

@@ -32,6 +32,7 @@ FaceCluster::FaceCluster(const std::string &configFile):
   StoragePath(Parser->Value("StoragePath")),
   ModelFile(Parser->Value("ModelFile")),
   RsNetFile(Parser->Value("RsNetFile")),
+  StorageEnabled(Parser->Value("StorageEnabled")),
   Detector(dlib::get_frontal_face_detector())
 {
   try {
@@ -50,11 +51,11 @@ FaceCluster::~FaceCluster()
   // Empty.
 }
 
-bool FaceCluster::Run(bool store=false)
+bool FaceCluster::Run()
 {
   if (GetAllFaces()) {
     TFaceCluster cluster = IdentifyAllFaces();
-    if (store) {
+    if (StorageEnabled.compare("true") == 0) {
       if (cluster.size() > 0) {
         Save(cluster);
         return true;

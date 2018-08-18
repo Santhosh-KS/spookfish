@@ -27,22 +27,30 @@
 
 #include <string>
 #include <memory>
+
 #include "NotCopyable.hpp"
+#include "JsonParser.hpp"
 
 #include <opencv2/highgui.hpp>
 
 class CaptureVideo: public NotCopyable
 {
- private:
-   std::string VideoFile;
-   uint16_t SkipFrame;
+  private:
+    std::unique_ptr<JsonParser> Parser;
+    std::string VideoFile;
+    std::string ShapePredictFile;
+    std::string FaceRecRsNetFile;
+    std::string LabelFile;
+    std::string FaceDescriptorFile;
+
+   uint64_t SkipFrame;
    std::unique_ptr<cv::VideoCapture>  VidCapture;
 
    CaptureVideo() = delete;
    bool GetImage(cv::Mat &im);
    bool ShowImage(const std::string &windowName, const cv::Mat &img);
  public:
-   explicit CaptureVideo(std::string file, uint16_t skipFrame);
+   explicit CaptureVideo(const std::string &file);
    ~CaptureVideo();
    bool Run();
 };
