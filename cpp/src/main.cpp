@@ -30,16 +30,14 @@
 #include "JsonParser.hpp"
 
 
-#define SKIP_FRAMES 10
-
 int main(int argc, char** argv)
 {
   try {
-    //auto dataPathConfig("../data/bkup_DataPaths.json");
-    auto dataPathConfig("../data/DataPaths.json");
+    //auto clusterConfig("../data/ClusterConfig.json");
+    //auto dataPathConfig("../data/DataPaths.json");
+    auto dataPathConfig("../data/bkup_DataPaths.json");
+    auto clusterConfig("../data/bkup_ClusterConfig.json");
     CaptureVideo vidCapture(dataPathConfig);
-    //auto clusterConfig("../data/bkup_ClusterConfig.json");
-    auto clusterConfig("../data/ClusterConfig.json");
     FaceCluster cluster(clusterConfig);
     vidCapture.Run();
 
@@ -49,6 +47,5 @@ int main(int argc, char** argv)
   catch(const std::exception& e ) {
     std::cerr << e.what() << "\n";
   }
-  //std::cout << "Before main exit\n";
   return 0;
 }

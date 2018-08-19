@@ -50,7 +50,7 @@ DlibHandler ::~DlibHandler()
 
 void DlibHandler::ProcessImage()
 {
-  //cv::cvtColor(BgrImage, RgbImage, cv::COLOR_BGR2RGB);
+  cv::cvtColor(BgrImage, RgbImage, cv::COLOR_BGR2RGB);
   DlibImageMat = dlib::mat(dlib::cv_image<dlib::rgb_pixel>(RgbImage));
 }
 
@@ -59,22 +59,6 @@ void DlibHandler::FaceDetection()
   FaceRectangles = FaceDetector(DlibImageMat);
   TotalFacesInImage = FaceRectangles.size();
   //std::cout << "Total faces = " << TotalFacesInImage << "\n";
-  for(auto &v: FaceRectangles) {
-    //std::cout << "Area = " << v.area() << "\n";
-    // Anything >20000 is a closeup shot.
-    if (v.area() >= 20000)  {
-      ImgStats.TotalZoomShots++;
-      // Store the zoomed image.
-
-      cv::Rect roi(cv::Point2i(v.left(), v.top()), cv::Point2i(v.right() + 1, v.bottom() + 1));
-      cv::Mat cropImg = RgbImage(roi).clone();
-      std::string strPath("/home/santhosh/course/final_project/cpp/output/");
-      strPath = strPath + "my_" +std::to_string(v.area()) + ".jpg";
-      //cv::imshow("cropped",cropImg);
-      hconcat(cropImg, ConCatImg);
-      cv::imwrite(strPath, cropImg);
-    }
-  }
 }
 
 void DlibHandler::FaceLandMarkDetector()
@@ -85,8 +69,20 @@ void DlibHandler::FaceLandMarkDetector()
     LandMarks.push_back(landMark);
     dlib::matrix<dlib::rgb_pixel> faceChip;
     dlib::extract_image_chip(DlibImageMat, dlib::get_face_chip_details(landMark,150,0.25), faceChip);
-
+    if (v.area() >= 20000)  {
+      ImgStats.TotalZoomShots++;
+    }
+#if 0
+    // Store the zoomed image.
+    if (v.area() >= 40000) {
+      // TODO: Only when emotion recoginition is done, then it is useful to store the zoomed image.
+      std::string strPath("/home/santhosh/course/final_project/cpp/output/zoom_img/");
+      strPath = strPath + GetEpcohTime() + ".jpg";
+      dlib::save_jpeg(faceChip, strPath.c_str());
+    }
+#endif
     //FaceChips.push_back(faceChip);
+
     dlib::matrix<float,0,1> faceDescritionQry = AnetType(faceChip);
     auto match = FindMatchingFace(faceDescritionQry);
 
@@ -124,7 +120,7 @@ void DlibHandler::DrawShapes(const cv::Mat &img)
 
 void DlibHandler::ProcessData(const cv::Mat &img)
 {
-  //BgrImage = img.clone();
+  BgrImage = img.clone();
   RgbImage = img.clone();
   ProcessImage();
   FaceDetection();

@@ -43,8 +43,7 @@ class DlibHandler : public NotCopyable
 {
   private:
     cv::Mat RgbImage;
-    cv::Mat ConCatImg;
-    //cv::Mat BgrImage;
+    cv::Mat BgrImage;
     uint16_t TotalFacesInImage;
     DrawingUtils Shape;
     dlib::frontal_face_detector FaceDetector;
