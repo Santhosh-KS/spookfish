@@ -24,7 +24,7 @@
 
 #include "SpookfishWt.hpp"
 
-WApplication *createApplication(const WEnvironment& env)
+Wt::WApplication *createApplication(const Wt::WEnvironment& env)
 {
   /*
    * You could read information from the environment to decide whether
@@ -46,6 +46,6 @@ int main(int argc, char **argv)
    * support. The function should return a newly instantiated application
    * object.
    */
-  return WRun(argc, argv, &createApplication);
+  return Wt::WRun(argc, argv, &createApplication);
 }
 

@@ -22,6 +22,7 @@
    SOFTWARE.
 */
 
+#include <Wt/WMessageBox>
 #include "SpookfishWt.hpp"
 
 // Private Methods.
@@ -35,7 +36,9 @@ void SpookfishApplication::SetupVideoPlayer()
 {
   std::string mp4Video = "https://www.webtoolkit.eu/videos/sintel_trailer.mp4";
   VideoPlayer->addSource(Wt::WLink(mp4Video));
-  VideoPlayer->resize(640, 400);
+  VideoPlayer->resize(670, 400);
+  //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("col-md-6"));
+  //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("input-group"));
 
   std::string str("<p>Video playing</p>");
   VideoPlayer->playbackStarted().connect(boost::bind(&SpookfishApplication::SetVideoPlaybackStatus, this, str));
@@ -65,8 +68,8 @@ void SpookfishApplication::SetupTheme()
   setTheme(Theme.get());
 
   useStyleSheet(Wt::WLink("styleSheet.css"));
-  //useStyleSheet(Wt::WLink("resources/main.css"));
-  useStyleSheet(Wt::WLink("resources/themes/bootstrap/3/bootstrap.min.css"));
+  useStyleSheet(Wt::WLink("resources/main.css"));
+  //useStyleSheet(Wt::WLink("resources/themes/bootstrap/3/bootstrap.min.css"));
 
 }
 
@@ -77,8 +80,6 @@ void SpookfishApplication::SetupHeader()
   HeaderDivTextDiv->setId("h3");
   HeaderDivTextDiv->addWidget(HeaderText.get());
   HeaderDiv->addWidget(HeaderDivTextDiv.get());
-  MainLeftDiv->setId("main_left");
-  MainRightDiv->setId("main_right");
 }
 
 void SpookfishApplication::SetupSearchVideoBar()
@@ -106,6 +107,9 @@ void SpookfishApplication::SetupSearchVideoBar()
 
   MainLeftDiv->addWidget(SearchDiv.get());
 
+  MainLeftDiv->setId("main_left");
+  MainRightDiv->setId("main_right");
+
   // Setup signal and slot when user press enter after entering the URL.
   SearchLineEdit->enterPressed().connect
         (boost::bind(&SpookfishApplication::OnPlayButtonPressed, this));
@@ -122,13 +126,22 @@ void SpookfishApplication::SetupFooter()
 
 void SpookfishApplication::OnPlayButtonPressed()
 {
-  VideoPlayerDiv->show();
+  auto url(SearchLineEdit->text().toUTF8());
+  // little sanity check on the URL.
+  if (url.find("https://www.youtube.com") != std::string::npos
+      || url.find("http://www.youtube.com") != std::string::npos)  {
+    VideoPlayerDiv->show();
+  }
+  else {
+    VideoPlayerDiv->hide();
+    Wt::WMessageBox::show("Information", "Please give me youtube URL.", Wt::Ok);
+  }
 }
 
 
 // Public methods
 
-SpookfishApplication::SpookfishApplication(const WEnvironment& env)
+SpookfishApplication::SpookfishApplication(const Wt::WEnvironment& env)
   : WApplication(env),
   Theme(std::make_unique<Wt::WBootstrapTheme>()),
   BodyDiv(std::make_unique<Wt::WContainerWidget>(root())),
@@ -139,7 +152,7 @@ SpookfishApplication::SpookfishApplication(const WEnvironment& env)
   MainRightDiv(std::make_unique<Wt::WContainerWidget>()),
   SearchDiv(std::make_unique<Wt::WContainerWidget>()),
   SearchDivLineEditDiv(std::make_unique<Wt::WContainerWidget>()),
-  SearchLineEdit(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Give me Youtube URL"))),
+  SearchLineEdit(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Give me Youtube video URL"))),
   SearchDivPlayButtonDiv(std::make_unique<Wt::WContainerWidget>()),
   PlayButton(std::make_unique<Wt::WPushButton>(Wt::WString::fromUTF8("Play"))),
   VideoPlayerDiv(std::make_unique<Wt::WContainerWidget>()),

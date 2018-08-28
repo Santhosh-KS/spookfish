@@ -36,9 +36,8 @@
 #include <Wt/WPushButton>
 #include <memory>
 
-using namespace Wt;
 
-class SpookfishApplication : public WApplication
+class SpookfishApplication : public Wt::WApplication
 {
 private:
   std::unique_ptr<Wt::WBootstrapTheme> Theme;
@@ -85,7 +84,7 @@ private:
   void SetupFooter();
   void OnPlayButtonPressed();
 public:
-  SpookfishApplication(const WEnvironment& env);
+  SpookfishApplication(const Wt::WEnvironment& env);
   ~SpookfishApplication();
 };
 

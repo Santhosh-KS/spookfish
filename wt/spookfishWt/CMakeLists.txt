@@ -8,6 +8,7 @@ LINK_DIRECTORIES(/usr/lib/Wt/)
 
 ADD_EXECUTABLE(SpookfishWt main.cpp SpookfishWt.cpp)
 TARGET_COMPILE_FEATURES(SpookfishWt PUBLIC  cxx_lambda_init_captures)
+ADD_COMPILE_OPTIONS(-Wall -Wextra -Wpedantic -Werror)
 
 TARGET_LINK_LIBRARIES(SpookfishWt
   debug wtd      optimized wt

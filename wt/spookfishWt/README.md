@@ -7,7 +7,7 @@ based tool to create Web application. This WebApp is built as part of the projec
 
 How to run
 ----------
-./Spookfish.sh    
+./SpookfishWt.sh
 
 now open the browser http://0.0.0.0:8080 widget should be visible and playable.
 
