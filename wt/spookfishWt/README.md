@@ -1,21 +1,13 @@
-Hello-world example
+Spookfish WebApp
 -------------------
 
-This example is a minimal Wt application. This example is covered as
-part of the [Wt tutorial](https://www.webtoolkit.eu/widgets/media/).
+This WebApp is built using Wt[https://www.webtoolkit.eu] a C++
+based tool to create Web application. This WebApp is built as part of the project Spookfish a video Analysis tool.
+
 
 How to run
 ----------
-cd build     
-cmake ..     
-make   
-./VideoWt.sh
+./Spookfish.sh    
 
 now open the browser http://0.0.0.0:8080 widget should be visible and playable.
 
-
-What it illustrates
--------------------
-
-Basic concepts of Wt: the application concept, the use of widgets,
-user input, and event handling.
