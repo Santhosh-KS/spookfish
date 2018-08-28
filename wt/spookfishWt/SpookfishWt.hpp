@@ -8,6 +8,7 @@
 #include <Wt/WText>
 #include <Wt/WLink>
 #include <Wt/WLineEdit>
+#include <Wt/WVideo>
 #include <Wt/WPushButton>
 #include <memory>
 
@@ -34,16 +35,34 @@ private:
   std::unique_ptr<Wt::WContainerWidget> SearchDivPlayButtonDiv;
   std::unique_ptr<Wt::WPushButton> PlayButton;
 
+
+  // Video Widget stuff.
+  std::unique_ptr<Wt::WContainerWidget> VideoPlayerDiv;
+  std::unique_ptr<Wt::WContainerWidget> VideoPlayerDivVideoWidgetDiv;
+  std::unique_ptr<Wt::WVideo> VideoPlayer;
+  std::unique_ptr<Wt::WContainerWidget> VideoPlayerDivStatusDiv;
+  std::unique_ptr<Wt::WText> VideoPlaybackStatus;
+
   // Analysed image other stats stuff  widgets
-  // are groped under this div.
+  // are grouped under this div.
   std::unique_ptr<Wt::WContainerWidget> MainRightDiv;
 
-  SpookfishApplication() = delete;
+  // Footer stuff.
+  std::unique_ptr<Wt::WContainerWidget> FooterDiv;
+  std::unique_ptr<Wt::WContainerWidget> FooterDivTextDiv;
+  std::unique_ptr<Wt::WText> FooterText;
 
+  SpookfishApplication() = delete;
+  void SetupTheme();
+  void SetupHeader();
+  void SetupSearchVideoBar();
+  void SetupVideoPlayer();
+  void SetVideoPlaybackStatus(const std::string str);
+  void SetupFooter();
+  void OnPlayButtonPressed();
 public:
   SpookfishApplication(const WEnvironment& env);
   ~SpookfishApplication();
-
 };
 
 #endif // SPOOKFISH_WT_HPP

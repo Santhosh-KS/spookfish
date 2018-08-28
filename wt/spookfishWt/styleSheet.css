@@ -58,6 +58,7 @@ body {
 	margin-right: 560px;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	clear:left; /*Applies on folat elements only.*/
 }
 
 #main_right {
@@ -114,7 +115,6 @@ body {
 	text-align: center;
 	padding: 15px;
 	font-size: 90%;
-
 }
 
 #footer ul {
