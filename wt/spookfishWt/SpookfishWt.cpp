@@ -24,6 +24,8 @@
 
 #include <Wt/WMessageBox>
 #include "SpookfishWt.hpp"
+#include <cstdlib>
+#include <fstream>
 
 // Private Methods.
 
@@ -34,8 +36,8 @@ void SpookfishApplication::SetVideoPlaybackStatus(const std::string str)
 
 void SpookfishApplication::SetupVideoPlayer()
 {
-  std::string mp4Video = "https://www.webtoolkit.eu/videos/sintel_trailer.mp4";
-  VideoPlayer->addSource(Wt::WLink(mp4Video));
+//  std::string mp4Video = "https://www.webtoolkit.eu/videos/sintel_trailer.mp4";
+//  VideoPlayer->addSource(Wt::WLink(mp4Video));
   VideoPlayer->resize(670, 400);
   //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("col-md-6"));
   //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("input-group"));
@@ -130,7 +132,20 @@ void SpookfishApplication::OnPlayButtonPressed()
   // little sanity check on the URL.
   if (url.find("https://www.youtube.com") != std::string::npos
       || url.find("http://www.youtube.com") != std::string::npos)  {
-    VideoPlayerDiv->show();
+    std::string cmd("python youtube.py -u ");
+    std::string file("/tmp/out.txt");
+    std::string redirect(" > " + file );
+    system((cmd + url + redirect).c_str());
+    std::ifstream infile(file);
+    std::string line;
+    while (std::getline(infile, line)) {
+      if (!line.empty()) {
+        VideoPlayer->clearSources();
+        VideoPlayer->addSource(Wt::WLink(line));
+        VideoPlayerDiv->show();
+        break;
+      }
+    }
   }
   else {
     VideoPlayerDiv->hide();
