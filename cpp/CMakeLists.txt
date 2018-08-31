@@ -19,6 +19,7 @@ SET(rapid_json /opt/rapidjson/include)
 SET(bin_src_ui
   ui/src/main.cpp
   ui/src/SpookfishWt.cpp
+  ui/src/LinkApp.cpp
   src/JsonParser.cpp
   src/JsonWriter.cpp 
   src/Stats.cpp
@@ -51,7 +52,7 @@ TARGET_LINK_LIBRARIES(${bin_name} ${OpenCV_LIBS} dlib::dlib
   debug wthttpd  optimized wthttp)
 
 LINK_DIRECTORIES(/usr/lib/Wt/)
-TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ui/inc ${rapid_json})
+TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ui/inc  ${rapid_json})
 
 TARGET_COMPILE_FEATURES(${bin_name} PUBLIC  cxx_lambda_init_captures)
 

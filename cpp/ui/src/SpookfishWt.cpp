@@ -69,8 +69,8 @@ void SpookfishApplication::SetupTheme()
   Theme->setVersion(Wt::WBootstrapTheme::Version3);
   setTheme(Theme.get());
 
-  useStyleSheet(Wt::WLink("css/styleSheet.css"));
-  useStyleSheet(Wt::WLink("resources/main.css"));
+  useStyleSheet(Wt::WLink("css/styleSheet.css")); // TODO: Configurable.
+  useStyleSheet(Wt::WLink("resources/main.css")); // TODO: Configurable.
   //useStyleSheet(Wt::WLink("resources/themes/bootstrap/3/bootstrap.min.css"));
 
 }
@@ -134,7 +134,7 @@ void SpookfishApplication::OnPlayButtonPressed()
 
   if (url.find("https://www.youtube.com") != std::string::npos
       || url.find("http://www.youtube.com") != std::string::npos)  {
-    std::string cmd("python ./ui/scripts/youtube.py -u ");
+    std::string cmd("python ./ui/scripts/youtube.py -u "); // TODO: Change the path.
     std::string file("/tmp/playablevidlink.txt");
     std::string redirect(" > " + file );
     system((cmd + url + redirect).c_str());
@@ -142,12 +142,15 @@ void SpookfishApplication::OnPlayButtonPressed()
     std::string line;
     while (std::getline(infile, line)) {
       if (!line.empty()) {
+        VideoPlayerDiv->show();
         VideoPlayer->clearSources();
         VideoPlayer->addSource(Wt::WLink(line));
-        VideoPlayerDiv->show();
         break;
       }
     }
+    //BackendLink->Run(line);
+    LinkApp link("");
+    link.Run(line);
   }
   else {
     VideoPlayerDiv->hide();
@@ -166,6 +169,7 @@ void SpookfishApplication::SetupProgressBar()
 
 SpookfishApplication::SpookfishApplication(const Wt::WEnvironment& env)
   : WApplication(env),
+  //BackendLink(std::make_unique<LinkApp>("")),
   Theme(std::make_unique<Wt::WBootstrapTheme>()),
   BodyDiv(std::make_unique<Wt::WContainerWidget>(root())),
   HeaderDiv(std::make_unique<Wt::WContainerWidget>()),

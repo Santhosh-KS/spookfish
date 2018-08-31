@@ -53,6 +53,7 @@ class CaptureVideo: public NotCopyable
    explicit CaptureVideo(const std::string &file);
    ~CaptureVideo();
    bool Run();
+   bool Run(std::string &newVidLink);
 };
 
 #endif // CAPTURE_VIDEO_HPP

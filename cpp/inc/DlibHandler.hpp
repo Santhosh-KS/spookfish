@@ -97,7 +97,7 @@ class DlibHandler : public NotCopyable
     std::string GetEpcohTime();
     void PrintStats();
   public:
-    explicit DlibHandler(std::string &shapePredictFile,
+    DlibHandler(std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personFile, std::string &faceDescFile);
     ~DlibHandler();
     void ProcessData(const cv::Mat &);

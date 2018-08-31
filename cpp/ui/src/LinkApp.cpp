@@ -26,27 +26,30 @@
 #include <iostream>
 #include "LinkApp.hpp"
 
-LinkApp::LinkApp(std::string str)
+LinkApp::LinkApp(std::string /*str*/):
+  DataPathConfig("./data/bkup_DataPaths.json"),
+  ClusterConfig("./data/bkup_ClusterConfig.json"),
+  VideoCapture(std::make_unique<CaptureVideo>(DataPathConfig)),
+  Cluster(std::make_unique<FaceCluster>(ClusterConfig))
 {
-  try {
-    //auto clusterConfig("../data/ClusterConfig.json");
-    //auto dataPathConfig("../data/DataPaths.json");
-    auto dataPathConfig("../data/bkup_DataPaths.json");
-    auto clusterConfig("../data/bkup_ClusterConfig.json");
-    CaptureVideo vidCapture(dataPathConfig);
-    FaceCluster cluster(clusterConfig);
-    vidCapture.Run();
-
-    // Enable clustering only when required.
-    cluster.Run();
-  }
-  catch(const std::exception& e ) {
-    std::cerr << e.what() << "\n";
-  }
-  return 0;
+  // Empty
 }
 
 LinkApp::~LinkApp()
 {
   // Empty
+}
+
+int LinkApp::Run(std::string &link)
+{
+  try {
+    VideoCapture->Run(link);
+    // Enable clustering only when required.
+    // TODO: Make it configurable.
+    //Cluster->Run();
+  }
+  catch(const std::exception& e ) {
+    std::cerr << e.what() << "\n";
+  }
+  return 0;
 }

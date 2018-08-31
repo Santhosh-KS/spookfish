@@ -30,14 +30,14 @@
 
 
 CaptureVideo::CaptureVideo(const std::string &configFile):
-  Parser(new JsonParser(configFile)),
+  Parser(std::make_unique<JsonParser>(configFile)),
   ShapePredictFile(Parser->Value("PredictorFile")),
   FaceRecRsNetFile(Parser->Value("FaceRecModelFile")),
   LabelFile(Parser->Value("LabelFile")),
   FaceDescriptorFile(Parser->Value("DescriptorFile")),
   VideoFile(Parser->Value("TestVideoFile")),
   SkipFrame(std::stoi(Parser->Value("SkipFrame"))),
-  VidCapture(new cv::VideoCapture(VideoFile))
+  VidCapture(std::make_unique<cv::VideoCapture>(VideoFile))
 {
   if (!VidCapture->isOpened()) {
     VidCapture.release();
@@ -94,7 +94,7 @@ bool CaptureVideo::Run()
 {
   int count(0);
   std::string windowName("Video Playback");
-  DlibHandler handler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
+  DlibHandler dlibHandler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
   while(true) {
     try {
       count++;
@@ -106,11 +106,45 @@ bool CaptureVideo::Run()
       //std::cout << "Got Img count = " << count << "\n";
       if (count % SkipFrame == 0) {
         // std::cout << "Show img count xskipFrame\n";
-        handler.ProcessData(im);
+        dlibHandler.ProcessData(im);
         if (!ShowImage(windowName, im)) {
           //std::cout << "Escape key recognized\n";
           return true;
         }
+      }
+    }
+    catch (const std::exception& e) {
+      std::cerr << e.what() << "\n";
+      return false;
+    }
+  }
+  return true;
+}
+
+bool CaptureVideo::Run(std::string &newVidLink)
+{
+  int count(0);
+  //VidCapture.reset(std::make_unique<cv::VideoCapture>(newVidLink));
+  VidCapture.reset(new cv::VideoCapture(newVidLink));
+  // TODO: Reset the DlibHandler to recognize new faces identified.
+  std::string windowName("Video Playback"); // Remove after initial testing.
+  DlibHandler dlibHandler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
+  while(true) {
+    try {
+      count++;
+      cv::Mat im;
+      if (!GetImage(im)) {
+        //std::cout << "img is empty\n";
+        return false;
+      }
+      //std::cout << "Got Img count = " << count << "\n";
+      if (count % SkipFrame == 0) {
+        // std::cout << "Show img count xskipFrame\n";
+        dlibHandler.ProcessData(im);
+        if (!ShowImage(windowName, im)) {
+          //std::cout << "Escape key recognized\n";
+          return true;
+        } // Remove after intial testing.
       }
     }
     catch (const std::exception& e) {

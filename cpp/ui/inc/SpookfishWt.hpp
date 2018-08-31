@@ -36,10 +36,12 @@
 #include <Wt/WPushButton>
 #include <memory>
 
+#include "LinkApp.hpp"
 
 class SpookfishApplication : public Wt::WApplication
 {
 private:
+  std::unique_ptr<LinkApp> BackendLink;
   std::unique_ptr<Wt::WBootstrapTheme> Theme;
 
   std::unique_ptr<Wt::WContainerWidget> BodyDiv;
