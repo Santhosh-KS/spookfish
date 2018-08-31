@@ -38,7 +38,7 @@ void SpookfishApplication::SetupVideoPlayer()
 {
 //  std::string mp4Video = "https://www.webtoolkit.eu/videos/sintel_trailer.mp4";
 //  VideoPlayer->addSource(Wt::WLink(mp4Video));
-  VideoPlayer->resize(670, 400);
+  VideoPlayer->resize(680, 400);
   //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("col-md-6"));
   //VideoPlayerDiv->setStyleClass(Wt::WString::fromUTF8("input-group"));
 
