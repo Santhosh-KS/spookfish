@@ -59,6 +59,7 @@ before_install:
 install:
   - sudo apt-get install python-pip  
   - sudo pip install numpy scipy
+  - sudo apt-get install witty witty-dbg witty-dev witty-doc 
 
 script:
   - mkdir -p /opt
