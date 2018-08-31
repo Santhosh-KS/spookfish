@@ -26,8 +26,16 @@
 #include "SpookfishWt.hpp"
 #include <cstdlib>
 #include <fstream>
+#include <thread>
 
 // Private Methods.
+
+
+void SpookfishApplication::VideoAnalyzer(std::string str)
+{
+  LinkApp link("");
+  link.Run(str);
+}
 
 void SpookfishApplication::SetVideoPlaybackStatus(const std::string str)
 {
@@ -145,12 +153,21 @@ void SpookfishApplication::OnPlayButtonPressed()
         VideoPlayerDiv->show();
         VideoPlayer->clearSources();
         VideoPlayer->addSource(Wt::WLink(line));
+        // TODO WARNING:  Creating a thread is not the best way to handle this situation.
+        // It is not an optimal solution. If multiple users starts accessing the website;
+        // then there will be atleast 1 thread per user/session which will bloat up the
+        // system resources and results in very bad end user experiance. Hence this design
+        // is not a scalable solution to deploy it as is in the field.
+        // This is just a work around to get it running for the demo.
+        // Ideally we should span the Video Analyser as a separate Process on a
+        // powerful machine and have a pub-sub model to get the work done.
+        // Introducing the above mechanism is time consuming and invloves more effort.
+        // Hence settling for this approach. This is enough for the demo purpose.
+        std::thread analyzerThread(&SpookfishApplication::VideoAnalyzer, this, line);
+        analyzerThread.detach();
         break;
       }
     }
-    //BackendLink->Run(line);
-    LinkApp link("");
-    link.Run(line);
   }
   else {
     VideoPlayerDiv->hide();
@@ -158,6 +175,7 @@ void SpookfishApplication::OnPlayButtonPressed()
   }
   //VideoPlayerDiv->show();
 }
+
 /*
 void SpookfishApplication::SetupProgressBar()
 {
@@ -165,11 +183,11 @@ void SpookfishApplication::SetupProgressBar()
   ProgressBarDiv->addWidget("ProgressBar", ProgressBar.get());
 }
 */
+
 // Public methods
 
 SpookfishApplication::SpookfishApplication(const Wt::WEnvironment& env)
   : WApplication(env),
-  //BackendLink(std::make_unique<LinkApp>("")),
   Theme(std::make_unique<Wt::WBootstrapTheme>()),
   BodyDiv(std::make_unique<Wt::WContainerWidget>(root())),
   HeaderDiv(std::make_unique<Wt::WContainerWidget>()),

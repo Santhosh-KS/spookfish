@@ -85,6 +85,7 @@ private:
   void SetVideoPlaybackStatus(const std::string str);
   void SetupFooter();
   void OnPlayButtonPressed();
+  void VideoAnalyzer(std::string str);
 public:
   SpookfishApplication(const Wt::WEnvironment& env);
   ~SpookfishApplication();
