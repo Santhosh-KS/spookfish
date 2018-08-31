@@ -1,0 +1,192 @@
+/*
+   MIT License
+
+   Copyright (c) 2018 santhoshachar08@gmail.com
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+*/
+
+body {
+	background-color: #9c9f84;
+	margin: 0px;
+	font-family: Verdana, Georgia, serif;
+	font-size: 14px; /* small, medium*/
+	
+}
+
+#header {
+	background-color: #5c755e;
+	margin: 10px;
+	height: 90px;
+}
+
+#navbar ul {
+	list-style-type: none;
+	padding: 5px;
+	background-color: #000;
+	margin: 10px;
+	height: 20px;
+	text-align: center;
+}
+
+#navbar ul li {
+	display: inline;
+}
+
+#navbar ul li a {
+	text-decoration: none;
+	font-family: Arial;
+	padding: .2em 1em;
+	color: #fff;
+	background-color: #000
+}
+
+#navbar ul li a:hover {
+	background-color: #fff;
+	color: #000;
+}
+
+.main {
+	background-color: #e5e4d7;
+//	margin: 10px;
+	padding: 20px;
+	font-size: 110%;
+	margin-left: 10px;
+	margin-right: 320px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#main_left {
+	background-color: #e5e4d7;
+	margin: 10px;
+	padding: 20px;
+	font-size: 110%;
+	margin-left: 10px;
+	margin-right: 560px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	clear:left; /*Applies on folat elements only.*/
+}
+
+#main_right {
+	background-color: #e5e4d7;
+	padding: 20px;
+	margin-right:10px;
+	margin-left:0px;
+	margin-top:0px;
+	margin-bottom: 10px;
+	font-size: 110%;
+	float: right;
+	width:540px;
+	clear:right; /*Applies on folat elements only.*/
+}
+
+
+ 
+.sideright {
+	background-color: #e5e4d7;
+	padding: 20px;
+	margin-right: 10px;
+	margin-left:10px;
+	margin-top:0px;
+	margin-bottom: 10px;
+	font-size: 105%;
+	float: right;
+	width:260px;
+	clear:right; /*Applies on folat elements only.*/
+}
+
+.imagesidebar {
+
+	margin-right: 10px;
+	margin-left:10px;
+	margin-top:0px;
+	margin-bottom: 10px;
+	float: right;
+	width:300px;
+	clear:right; /*Applies on folat elements only.*/
+	opacity: 1.0;
+	transition: opacity 0.5s ease-in-out;  //
+}
+
+.imagesidebar:hover {
+	opacity: 0.5;
+}
+
+#footer {
+	background-color: #5c755e;
+	margin: 10px;
+	height: 30px;
+	clear: both; /*Important to keep it as both to protect over writing by sidebars from left to right.*/
+	color: #efefd0;
+	text-align: center;
+	padding: 15px;
+	font-size: 90%;
+}
+
+#footer ul {
+	list-style-type: none;
+	padding: 5px;
+	margin: 10px;
+	height: 20px;
+	text-align: center;
+}
+
+#footer ul li {
+	display: inline;
+}
+
+#footer ul li a {
+	text-decoration: none;
+	font-family: Arial;
+	padding: .2em 1em;
+	color: #efe5d0;
+	background-color: #5c755e;
+}
+
+#footer ul li a:hover {
+	background-color: #fff;
+	color: #000;
+}
+
+
+#navbar ul, #header, #footer, #main_left, #main_right, .sideright, .imagesidebar {
+	border-radius: 5px;
+}
+
+h1 {
+	font-size: 120%;
+	color: #ce282e;
+}
+
+#h3 {
+	margin: 0;
+	font-size: 250%;
+	text-align: center;
+	color: #e5e4d7;
+	font-family: "Century Gothic", Arial, serif;
+	/*Below code is the magic which aligns the header text aligned
+	neatly in the center*/
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
