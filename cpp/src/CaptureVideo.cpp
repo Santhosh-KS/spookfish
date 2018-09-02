@@ -58,7 +58,6 @@ CaptureVideo::CaptureVideo(const std::string &configFile):
 
 CaptureVideo::~CaptureVideo()
 {
-  cv::destroyAllWindows();
   //std::cout << "Done destryoing windows\n";
 }
 
@@ -84,12 +83,12 @@ bool CaptureVideo::ShowImage(const std::string &windowName, const cv::Mat &img)
   int k = cv::waitKey(30);
   // Quit when Esc is pressed
   if (k == 27) {
-    //std::cout << "ShowImage escape\n";
+    std::cout << "ShowImage escape\n";
     return false;
   }
   return true;
 }
-
+#if 0
 bool CaptureVideo::Run()
 {
   int count(0);
@@ -109,6 +108,7 @@ bool CaptureVideo::Run()
         dlibHandler.ProcessData(im);
         if (!ShowImage(windowName, im)) {
           //std::cout << "Escape key recognized\n";
+          cv::destroyAllWindows();
           return true;
         }
       }
@@ -120,31 +120,35 @@ bool CaptureVideo::Run()
   }
   return true;
 }
+#endif
 
 bool CaptureVideo::Run(std::string &newVidLink)
 {
   int count(0);
-  //VidCapture.reset(std::make_unique<cv::VideoCapture>(newVidLink));
-  VidCapture.reset(new cv::VideoCapture(newVidLink));
+  auto ptr = std::make_unique<cv::VideoCapture>(newVidLink);
+  VidCapture.reset(ptr.get());
   // TODO: Reset the DlibHandler to recognize new faces identified.
-  std::string windowName("Video Playback"); // Remove after initial testing.
+  //std::string windowName(newVidLink); // Remove after initial testing.
+  std::cout << "Video Link = " << newVidLink.c_str() << "\n";
   DlibHandler dlibHandler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
   while(true) {
     try {
       count++;
       cv::Mat im;
       if (!GetImage(im)) {
-        //std::cout << "img is empty\n";
+        std::cerr << "img is empty\n";
         return false;
       }
       //std::cout << "Got Img count = " << count << "\n";
       if (count % SkipFrame == 0) {
-        // std::cout << "Show img count xskipFrame\n";
         dlibHandler.ProcessData(im);
-        if (!ShowImage(windowName, im)) {
+         //std::cout << "Show img count skipFrame\n";
+        /*if (!ShowImage(windowName, im)) {
           //std::cout << "Escape key recognized\n";
+          cv::destroyAllWindows();
           return true;
         } // Remove after intial testing.
+        */
       }
     }
     catch (const std::exception& e) {

@@ -155,6 +155,7 @@ void DlibHandler::ProcessData(const cv::Mat &img)
       ImgStats.TotalImagesWithSixOrMoreFace++;
     }
     // Enable only when required. Hogs Disk space.
+    // TODO: Make it configurable.
     //SaveImage(img, path);
     DrawShapes(img);
   }

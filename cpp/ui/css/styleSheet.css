@@ -1,192 +1,272 @@
 /*
-   MIT License
+MIT License
 
-   Copyright (c) 2018 santhoshachar08@gmail.com
+Copyright (c) 2018 santhoshachar08@gmail.com
 
-   Permission is hereby granted, free of charge, to any person obtaining a copy
-   of this software and associated documentation files (the "Software"), to deal
-   in the Software without restriction, including without limitation the rights
-   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-   copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-   The above copyright notice and this permission notice shall be included in all
-   copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-   SOFTWARE.
-*/
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
 
 body {
-	background-color: #9c9f84;
-	margin: 0px;
-	font-family: Verdana, Georgia, serif;
-	font-size: 14px; /* small, medium*/
-	
+  background-color: #9c9f84;
+  //background-color: #000;
+  margin: 0px;
+  font-family: Verdana, Georgia, serif;
+  font-size: 14px; /* small, medium*/
+
 }
 
 #header {
-	background-color: #5c755e;
-	margin: 10px;
-	height: 90px;
+  background-color: #5c755e;
+  //background-color: #c2c2c2;
+  margin: 15px;
+  height: 90px;
 }
 
+.col {
+  //background-color: #000;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+/*
+.row {
+  background-color: #000;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 7px;
+  border-radius: 5px;
+}
+*/
+#video {
+  //width: 300px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+
+
 #navbar ul {
-	list-style-type: none;
-	padding: 5px;
-	background-color: #000;
-	margin: 10px;
-	height: 20px;
-	text-align: center;
+  list-style-type: none;
+  padding: 5px;
+  background-color: #000;
+  margin: 10px;
+  height: 20px;
+  text-align: center;
 }
 
 #navbar ul li {
-	display: inline;
+  display: inline;
 }
 
 #navbar ul li a {
-	text-decoration: none;
-	font-family: Arial;
-	padding: .2em 1em;
-	color: #fff;
-	background-color: #000
+  text-decoration: none;
+  font-family: Arial;
+  padding: .2em 1em;
+  color: #fff;
+  background-color: #000
 }
 
 #navbar ul li a:hover {
-	background-color: #fff;
-	color: #000;
+  background-color: #fff;
+  color: #000;
 }
 
 .main {
-	background-color: #e5e4d7;
-//	margin: 10px;
-	padding: 20px;
-	font-size: 110%;
-	margin-left: 10px;
-	margin-right: 320px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+  background-color: #e5e4d7;
+  //	margin: 10px;
+  padding: 20px;
+  font-size: 110%;
+  margin-left: 10px;
+  margin-right: 320px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
+#searchBar {
+  background-color: #000;
+  margin: 10px;
+  height: 50px;
+}
+#searchContainerDiv {
+  margin: 10px;
+}
+
+
 #main_left {
-	background-color: #e5e4d7;
-	margin: 10px;
-	padding: 20px;
-	font-size: 110%;
-	margin-left: 10px;
-	margin-right: 560px;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	clear:left; /*Applies on folat elements only.*/
+  //background-color: #e5e4d7;
+  background-color: #000;
+  margin: 10px;
+  padding: 20px;
+  font-size: 110%;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  //	clear:left; /*Applies on folat elements only.*/
+}
+
+#customProgressBar {
+  margin: 10px;
+  border-radius: 5px;
+  height: 40px;
 }
 
 #main_right {
-	background-color: #e5e4d7;
-	padding: 20px;
-	margin-right:10px;
-	margin-left:0px;
-	margin-top:0px;
-	margin-bottom: 10px;
-	font-size: 110%;
-	float: right;
-	width:540px;
-	clear:right; /*Applies on folat elements only.*/
+  background-color: #e5e4d7;
+  padding: 20px;
+  margin-right:10px;
+  margin-left:0px;
+  margin-top:0px;
+  margin-bottom: 10px;
+  font-size: 110%;
+  //	float: right;
+  width:540px;
+  //	clear:right; /*Applies on folat elements only.*/
 }
 
-
- 
-.sideright {
-	background-color: #e5e4d7;
-	padding: 20px;
-	margin-right: 10px;
-	margin-left:10px;
-	margin-top:0px;
-	margin-bottom: 10px;
-	font-size: 105%;
-	float: right;
-	width:260px;
-	clear:right; /*Applies on folat elements only.*/
+#gallary {
+  background-color: #000;
+  margin: 10px;
+  //padding: 5px;
 }
 
-.imagesidebar {
-
-	margin-right: 10px;
-	margin-left:10px;
-	margin-top:0px;
-	margin-bottom: 10px;
-	float: right;
-	width:300px;
-	clear:right; /*Applies on folat elements only.*/
-	opacity: 1.0;
-	transition: opacity 0.5s ease-in-out;  //
+#gallaryNavBar {
+  background-color: #000;
+  margin: 10px;
+  //padding: 5px;
+  //height: 50px;
 }
 
-.imagesidebar:hover {
-	opacity: 0.5;
+#customProgressBar {
+  margin: 10px;
+  border-radius: 5px;
 }
+/*
+.progress-bar {
+  role: progressbar;
+  aria-valuenow:45;
+  aria-valuemin:0;
+  aria-valuemax:100;
+  style-width: 45%;
+}*/
 
 #footer {
-	background-color: #5c755e;
-	margin: 10px;
-	height: 30px;
-	clear: both; /*Important to keep it as both to protect over writing by sidebars from left to right.*/
-	color: #efefd0;
-	text-align: center;
-	padding: 15px;
-	font-size: 90%;
+  background-color: #5c755e;
+  margin: 10px;
+  height: 30px;
+  //clear: both; /*Important to keep it as both to protect over writing by sidebars from left to right.*/
+  color: #efefd0;
+  text-align: center;
+  padding: 15px;
+  font-size: 90%;
 }
 
 #footer ul {
-	list-style-type: none;
-	padding: 5px;
-	margin: 10px;
-	height: 20px;
-	text-align: center;
+  list-style-type: none;
+  padding: 5px;
+  margin: 10px;
+  height: 20px;
+  text-align: center;
 }
 
 #footer ul li {
-	display: inline;
+  display: inline;
 }
 
 #footer ul li a {
-	text-decoration: none;
-	font-family: Arial;
-	padding: .2em 1em;
-	color: #efe5d0;
-	background-color: #5c755e;
+  text-decoration: none;
+  font-family: Arial;
+  padding: .2em 1em;
+  color: #efe5d0;
+  background-color: #5c755e;
 }
 
 #footer ul li a:hover {
-	background-color: #fff;
-	color: #000;
+  background-color: #fff;
+  color: #000;
 }
 
 
-#navbar ul, #header, #footer, #main_left, #main_right, .sideright, .imagesidebar {
-	border-radius: 5px;
+#navbar ul, #searchBar, #header, #footer, #gallaryNavBar, #gallary {
+  border-radius: 5px;
 }
 
 h1 {
-	font-size: 120%;
-	color: #ce282e;
+  font-size: 120%;
+  color: #ce282e;
 }
 
 #h3 {
-	margin: 0;
-	font-size: 250%;
-	text-align: center;
-	color: #e5e4d7;
-	font-family: "Century Gothic", Arial, serif;
-	/*Below code is the magic which aligns the header text aligned
-	neatly in the center*/
-	position: relative;
-	top: 50%;
-	-webkit-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	transform: translateY(-50%);
+  margin: 0;
+  font-size: 250%;
+  text-align: center;
+  color: #e5e4d7;
+  font-family: "Century Gothic", Arial, serif;
+  /*Below code is the magic which aligns the header text aligned
+  neatly in the center*/
+position: relative;
+top: 50%;
+-webkit-transform: translateY(-50%);
+-ms-transform: translateY(-50%);
+transform: translateY(-50%);
+}
+.videoStatus
+{
+  text-align:center;
+  font-weight: bold;
+  color:#00ff00;
+}
+
+.thumbnail
+{
+  text-align:center;
+  font-weight: bold;
+  color:#ff0000;
+  opacity: 1.0;
+}
+
+.thumbnail a:hover {
+  background-color: #fff;
+  color: #00ff00;
+  opacity: 0.7;
+}
+
+/*
+#videoSize {
+width: 300px;
+}*/
+
+#caption {
+  background-color: #000;
+  opacity: 1.0;
+  color: #ff0000
+}
+
+#caption a:hover {
+  background-color: #fff;
+  color: #00ff00;
+  opacity: 0.5;
 }
