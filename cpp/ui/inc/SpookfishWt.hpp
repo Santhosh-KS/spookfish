@@ -25,18 +25,21 @@
    SOFTWARE.
 */
 
-#include <Wt/WContainerWidget>
 #include <Wt/WApplication>
 #include <Wt/WBootstrapTheme>
-
-#include <Wt/WText>
+#include <Wt/WContainerWidget>
+#include <Wt/WImage>
 #include <Wt/WLink>
 #include <Wt/WLineEdit>
-#include <Wt/WVideo>
 #include <Wt/WPushButton>
+#include <Wt/WText>
+#include <Wt/WVideo>
+
 #include <memory>
+#include <vector>
 
 #include "LinkApp.hpp"
+#include "ImageResource.hpp"
 
 class SpookfishApplication : public Wt::WApplication
 {
@@ -71,11 +74,19 @@ private:
   // Analysed image other stats stuff  widgets
   // are grouped under this div.
   std::unique_ptr<Wt::WContainerWidget> MainRightDiv;
+  std::unique_ptr<Wt::WContainerWidget> ParentImageDiv;
+  std::unique_ptr<Wt::WContainerWidget> ImageDiv;
+  std::unique_ptr<Wt::WContainerWidget> ImageThumbnailDiv;
+  std::unique_ptr<Wt::WImage> Image;
+  std::unique_ptr<ImageResource> SingleImgResource;
+  std::unique_ptr<ImageResource> SecondImgResource;
 
   // Footer stuff.
   std::unique_ptr<Wt::WContainerWidget> FooterDiv;
   std::unique_ptr<Wt::WContainerWidget> FooterDivTextDiv;
   std::unique_ptr<Wt::WText> FooterText;
+
+  std::vector<std::unique_ptr<ImageResource>> ImgResource;
 
   SpookfishApplication() = delete;
   void SetupTheme();
@@ -86,6 +97,8 @@ private:
   void SetupFooter();
   void OnPlayButtonPressed();
   void VideoAnalyzer(std::string str);
+  void SetupImageDiv();
+  std::unique_ptr<Wt::WContainerWidget> SetupImage(std::string &imgPath);
 public:
   SpookfishApplication(const Wt::WEnvironment& env);
   ~SpookfishApplication();

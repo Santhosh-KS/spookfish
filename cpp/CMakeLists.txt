@@ -20,6 +20,7 @@ SET(bin_src_ui
   ui/src/main.cpp
   ui/src/SpookfishWt.cpp
   ui/src/LinkApp.cpp
+  ui/src/ImageResource.cpp
   src/JsonParser.cpp
   src/JsonWriter.cpp 
   src/Stats.cpp
