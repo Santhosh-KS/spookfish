@@ -1,18 +1,12 @@
 Project(WtUiProject)
 
-INCLUDE_DIRECTORIES(/usr/include/Wt/)
-LINK_DIRECTORIES(/usr/lib/ /usr/lib/Wt)
+SET(bin_src ui/src/NewUi.cpp ui/src/main.cpp)
+SET(bin_name NewUiWt)
 
-#ADD_DEFINITIONS(-DHPDF_DLL)
+ADD_EXECUTABLE(${bin_name} ${bin_src}) 
+TARGET_COMPILE_FEATURES(${bin_name} PUBLIC  cxx_lambda_init_captures)
+TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC ui/inc /usr/include/Wt)
 
-ADD_EXECUTABLE(NewUiWt ui/src/NewUi.cpp ui/src/main.cpp)
-TARGET_COMPILE_FEATURES(NewUiWt PUBLIC  cxx_lambda_init_captures)
-TARGET_INCLUDE_DIRECTORIES(NewUiWt PUBLIC ui/inc /usr/include/Wt)
-
-TARGET_LINK_LIBRARIES(NewUiWt
+TARGET_LINK_LIBRARIES(${bin_name}
   debug wtd      optimized wt
-  debug wthttpd  optimized wthttp
-  #  debug lhpdfd optimized lhpdf # only required for if you write pdfs
-)
-
-
+  debug wthttpd  optimized wthttp)
