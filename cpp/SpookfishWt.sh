@@ -28,4 +28,4 @@ cd ./build
 #make clean
 make
 cd ..
-./build/videoAnalyser --docroot ./ui --http-address 0.0.0.0 --http-port 8080
+./build/NewUiWt --docroot ./ui --http-address 0.0.0.0 --http-port 8080

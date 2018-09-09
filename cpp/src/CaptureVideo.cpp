@@ -88,7 +88,7 @@ bool CaptureVideo::ShowImage(const std::string &windowName, const cv::Mat &img)
   }
   return true;
 }
-#if 0
+#if 1
 bool CaptureVideo::Run()
 {
   int count(0);

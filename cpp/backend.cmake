@@ -1,6 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.2)
-
-PROJECT(SpookFish)
+PROJECT(BackendProject)
 
 #####################################################################
 #                    Project dependencies                           #
@@ -15,7 +13,6 @@ SET(rapid_json /opt/rapidjson/include)
 #                                                                   #
 #####################################################################
 
-# all source files
 SET(bin_src src/main.cpp
             src/JsonParser.cpp
             src/JsonWriter.cpp 
@@ -34,7 +31,7 @@ INCLUDE(${dlib_path})
 ADD_EXECUTABLE(${bin_name} ${bin_src})
 TARGET_LINK_LIBRARIES(${bin_name} ${OpenCV_LIBS} dlib::dlib)
 
-TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ${rapid_json})
+TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ui/inc  ${rapid_json})
 
 TARGET_COMPILE_FEATURES(${bin_name} PUBLIC  cxx_lambda_init_captures)
 

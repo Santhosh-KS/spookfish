@@ -1,3 +1,0 @@
-/home/santhosh/course/socket_test/server/new/ser_code/build/CMakeFiles/rebuild_cache.dir
-/home/santhosh/course/socket_test/server/new/ser_code/build/CMakeFiles/edit_cache.dir
-/home/santhosh/course/socket_test/server/new/ser_code/build/CMakeFiles/Server.dir

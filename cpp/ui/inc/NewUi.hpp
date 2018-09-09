@@ -54,7 +54,6 @@ private:
   void SetupTheme();
   void SetupHeader();
   void SetupMainBody();
-  //void SetupVideoSearchBar();
   void SetupVideoSearchBar(Wt::WContainerWidget *mainLeft);
   void SetupVideoPlayer(Wt::WContainerWidget *mainLeft);
   void SetupImageGallary(Wt::WContainerWidget *mainRight);
@@ -63,6 +62,7 @@ private:
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
+  void VideoAnalyzer(std::string str);
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

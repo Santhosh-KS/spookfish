@@ -33,6 +33,14 @@
 #include <Wt/WAnchor.h>
 
 #include "NewUi.hpp"
+//#include "LinkApp.hpp"
+
+
+void NewUiApplication::VideoAnalyzer(std::string str)
+{
+ // LinkApp link("");
+ // link.Run(str);
+}
 
 void NewUiApplication::SetupTheme()
 {
@@ -66,7 +74,8 @@ void NewUiApplication::SetupVideoSearchBar(Wt::WContainerWidget *mainLeft)
   Wt::WContainerWidget *SearchDiv = ColumnMiddleDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   SearchDiv->setStyleClass("input-group");
   Wt::WContainerWidget *SearchDivLineEditDiv = SearchDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-  SearchLineEdit = SearchDivLineEditDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Give me Youtube URL")));
+  //SearchLineEdit = SearchDivLineEditDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Give me Youtube URL")));
+  SearchLineEdit = SearchDivLineEditDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("https://www.youtube.com/watch?v=giYeaKsXnsI")));
   SearchLineEdit->setStyleClass("form-control");
   SearchLineEdit->setFocus();
   Wt::WContainerWidget *ButtonDiv = SearchDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
