@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/santhosh/course/socket_test/server/new/ser_code/TcpServer.cpp
+iostream
+-
+strings.h
+-
+TcpServer.hpp
+/home/santhosh/course/socket_test/server/new/ser_code/TcpServer.hpp
+
+/home/santhosh/course/socket_test/server/new/ser_code/TcpServer.hpp
+unistd.h
+-
+sys/types.h
+-
+sys/socket.h
+-
+netinet/in.h
+-
+arpa/inet.h
+-
+
+/home/santhosh/course/socket_test/server/new/ser_code/main.cpp
+iostream
+-
+string
+-
+TcpServer.hpp
+/home/santhosh/course/socket_test/server/new/ser_code/TcpServer.hpp
+
