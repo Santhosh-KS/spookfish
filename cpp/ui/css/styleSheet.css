@@ -270,3 +270,8 @@ width: 300px;
   color: #00ff00;
   opacity: 0.5;
 }
+
+.caption {
+  color: red;
+  text-align: center; 
+}
