@@ -1,4 +1,4 @@
-PROJECT(BackendProject)
+PROJECT(VideoAnalyserProject)
 
 #####################################################################
 #                    Project dependencies                           #
@@ -14,13 +14,13 @@ SET(rapid_json /opt/rapidjson/include)
 #####################################################################
 
 SET(bin_src src/main.cpp
-            src/JsonParser.cpp
             src/JsonWriter.cpp 
             src/Stats.cpp
             src/CaptureVideo.cpp
             src/DlibHandler.cpp
             src/FaceCluster.cpp
-            src/DrawingUtils.cpp)
+            src/DrawingUtils.cpp
+            common/src/JsonParser.cpp)
 
 # binary name
 SET(bin_name videoAnalyser)
@@ -31,7 +31,7 @@ INCLUDE(${dlib_path})
 ADD_EXECUTABLE(${bin_name} ${bin_src})
 TARGET_LINK_LIBRARIES(${bin_name} ${OpenCV_LIBS} dlib::dlib)
 
-TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ui/inc  ${rapid_json})
+TARGET_INCLUDE_DIRECTORIES(${bin_name} PUBLIC inc ui/inc common/inc  ${rapid_json})
 
 TARGET_COMPILE_FEATURES(${bin_name} PUBLIC  cxx_lambda_init_captures)
 

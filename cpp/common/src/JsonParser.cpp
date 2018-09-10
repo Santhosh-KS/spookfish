@@ -93,3 +93,13 @@ bool JsonParser::SetUInt64(const std::string &key,uint64_t count)
   Jdoc[key.c_str()].SetUint64(count);
   return true;
 }
+
+std::string JsonParser::GetStrigifiedJson()
+{
+  //printf("\nModified JSON with reformatting:\n");
+  rapidjson::StringBuffer sb;
+  rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+  Jdoc.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
+  //std::cout << "stringify : " << sb.GetString() << "\n";
+  return sb.GetString();
+}

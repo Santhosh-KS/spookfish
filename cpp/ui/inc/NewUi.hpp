@@ -62,7 +62,7 @@ private:
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
-  void VideoAnalyzer(std::string str);
+  bool SendVideoAnalysisRequest(std::string &playUrl);
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

@@ -29,6 +29,7 @@
 
 #include "NotCopyable.hpp"
 #include "rapidjson/document.h"
+#include "rapidjson/prettywriter.h"
 
 class JsonParser: public NotCopyable
 {
@@ -53,6 +54,8 @@ public:
   inline uint64_t GetUInt64(const std::string &key) { return Jdoc[key.c_str()].GetUint64(); }
   bool SetString(const std::string &key, const std::string &newVal);
   bool SetUInt64(const std::string &key, uint64_t);
+
+  std::string GetStrigifiedJson();
 };
 
 #endif // JSON_PARSER_HPP

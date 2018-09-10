@@ -33,14 +33,9 @@
 #include <Wt/WAnchor.h>
 
 #include "NewUi.hpp"
-//#include "LinkApp.hpp"
+#include "TcpClient.hpp"
+#include "JsonParser.hpp"
 
-
-void NewUiApplication::VideoAnalyzer(std::string str)
-{
- // LinkApp link("");
- // link.Run(str);
-}
 
 void NewUiApplication::SetupTheme()
 {
@@ -248,6 +243,7 @@ void NewUiApplication::OnPlayButtonPressed()
 {
   auto url(SearchLineEdit->text().toUTF8());
   // little sanity check on the URL.
+  //std::string jsonRequst("{\"URL\":\"youtube.com\"}");
   std::cout << "OnPlayButtonPressed\n";
   if (url.find("https://www.youtube.com") != std::string::npos
       || url.find("http://www.youtube.com") != std::string::npos)  {
@@ -279,6 +275,7 @@ void NewUiApplication::OnPlayButtonPressed()
         // Hence settling for this approach. This is enough for the demo purpose.
         //std::thread analyzerThread(&NewUiApplication::VideoAnalyzer, this, line);
         //analyzerThread.detach();
+        SendVideoAnalysisRequest(line);
         break;
       }
     }
@@ -291,6 +288,45 @@ void NewUiApplication::OnPlayButtonPressed()
   MainVideoContainer->show();
   MainNavToolDiv->show();
   MainImageGallaryDiv->show();
+}
+
+
+bool NewUiApplication::SendVideoAnalysisRequest(std::string &plyUriVal)
+{
+  std::string serverIp("localhost");
+  int port(1234);
+  std::string jsonFile("./ui/data/Request_format.json");
+  JsonParser parser(jsonFile);
+
+  std::string youTubeUrlKey("Youtube_URL");
+  std::string sessIdKey("Session_Id");
+  std::string plyUriKey("Rtp_Stream_URL");
+
+  std::string youTubeUrlVal(SearchLineEdit->text().toUTF8());
+  // Each client connection will have an unique sessionID.
+  // same can be used if the user gives multiple youtube links
+  // to analyse. And controll the rest of the video processing.
+  std::string sessIdVal(sessionId());
+
+  parser.SetString(sessIdKey, sessIdVal);
+  parser.SetString(plyUriKey , plyUriVal);
+  parser.SetString(youTubeUrlKey, youTubeUrlVal);
+
+  std::string jsonRequst(parser.GetStrigifiedJson());
+  //std::cout << " Stringified obj: " << parser.GetStrigifiedJson().c_str();
+  TcpClient client(serverIp, port);
+  std::string result(client.Connect(jsonRequst));
+
+  if (result.compare("200 OK") == 0) {
+    std::cout << "Success: " << result.c_str() << "\n";
+  }
+  else if (result.compare("300 OK") == 0) {
+    std::cout << "Analysis running: " << result.c_str() << "\n";
+  }
+  else {
+    std::cout << "Failed: " << result.c_str() << "\n";
+  }
+  return true;
 }
 
 void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
