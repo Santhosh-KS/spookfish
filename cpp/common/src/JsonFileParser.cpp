@@ -20,7 +20,7 @@
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
+   */
 
 
 #include <assert.h>
@@ -28,9 +28,9 @@
 #include <fstream>
 #include <sstream>
 #include <sys/stat.h>
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
 
-JsonParser::JsonParser(const std::string &file) :
+JsonFileParser::JsonFileParser(const std::string &file) :
   JsonFile(file)
 {
   struct stat buffer;
@@ -48,12 +48,12 @@ JsonParser::JsonParser(const std::string &file) :
   }
 }
 
-JsonParser::~JsonParser()
+JsonFileParser::~JsonFileParser()
 {
   // Empty
 }
 
-std::string JsonParser::Value(const std::string &key)
+std::string JsonFileParser::Value(const std::string &key)
 {
   if (!HasMember(key)) {
     std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
@@ -69,12 +69,12 @@ std::string JsonParser::Value(const std::string &key)
   return retVal;
 }
 
-std::string JsonParser::GetString(const std::string &key)
+std::string JsonFileParser::GetString(const std::string &key)
 {
   return Value(key);
 }
 
-bool JsonParser::SetString(const std::string &key, const std::string &newVal)
+bool JsonFileParser::SetString(const std::string &key, const std::string &newVal)
 {
   if (!HasMember(key)) {
     std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
@@ -84,7 +84,7 @@ bool JsonParser::SetString(const std::string &key, const std::string &newVal)
   return true;
 }
 
-bool JsonParser::SetUInt64(const std::string &key,uint64_t count)
+bool JsonFileParser::SetUInt64(const std::string &key,uint64_t count)
 {
   if (!HasMember(key)) {
     std::cerr << "ERROR: key \"" << key.c_str() << "\" not found in file " << JsonFile.c_str()<<"\n";
@@ -94,7 +94,7 @@ bool JsonParser::SetUInt64(const std::string &key,uint64_t count)
   return true;
 }
 
-std::string JsonParser::GetStrigifiedJson()
+std::string JsonFileParser::GetStrigifiedJson()
 {
   //printf("\nModified JSON with reformatting:\n");
   rapidjson::StringBuffer sb;

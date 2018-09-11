@@ -27,7 +27,7 @@
 #include "FaceCluster.hpp"
 
 FaceCluster::FaceCluster(const std::string &configFile):
-  Parser(new JsonParser(configFile)),
+  Parser(new JsonFileParser(configFile)),
   ImageListFileName(Parser->Value("ImageListFileName")),
   StoragePath(Parser->Value("StoragePath")),
   ModelFile(Parser->Value("ModelFile")),

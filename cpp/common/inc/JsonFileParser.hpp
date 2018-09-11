@@ -31,14 +31,14 @@
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
 
-class JsonParser: public NotCopyable
+class JsonFileParser: public NotCopyable
 {
 private:
   const std::string JsonFile;
   rapidjson::Document Jdoc;
 public:
-  explicit JsonParser(const std::string &file);
-  ~JsonParser();
+  explicit JsonFileParser(const std::string &file);
+  ~JsonFileParser();
   inline bool IsObject(){ return Jdoc.IsObject(); }
   inline bool HasMember(const std::string &str) { return Jdoc.HasMember(str.c_str()); }
   inline bool IsString(const std::string &str) { return Jdoc[str.c_str()].IsString(); }

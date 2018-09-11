@@ -27,11 +27,60 @@
 
 #include "CaptureVideo.hpp"
 #include "FaceCluster.hpp"
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
+#include "TcpServer.hpp"
 
+bool ProcessRequest(std::string &str)
+{
+  rapidjson::Document dom;
+  dom.Parse(str.c_str());
+  if (dom.IsObject()) {
+    std::string sessId(dom["Session_Id"].GetString());
+    std::string youtubeUrl(dom["Youtube_URL"].GetString());
+    std::string rtpRul(dom["Rtp_Stream_URL"].GetString());
+    std::string epoch(dom["Epoch_Time"].GetString());
 
+    std::cout << "Session ID: " << sessId.c_str() << "\n";
+    std::cout << "YoutubeUrl: " << youtubeUrl.c_str() << "\n";
+    std::cout << "RtpUrl: " << rtpRul.c_str() << "\n";
+    std::cout << "Epoch: " << epoch.c_str() << "\n";
+  }
+  else {
+    std::cout << "Not a valid Json\n";
+  }
+
+}
+#if 0
+bool ProcessRequest(std::string &str)
+{
+  bool rawJson(true);
+  try {
+    JsonFileParser parser(str, rawJson);
+    std::cout << "Session ID: " << parser.Value("Session_Id").c_str() << "\n";
+    std::cout << "YoutubeUrl: " << parser.Value("Youtube_URL").c_str() << "\n";
+    std::cout << "RtpUrl: " << parser.Value("Rtp_Stream_URL").c_str() << "\n";
+    std::cout << "Epoch: " << parser.Value("Epoch_Time").c_str() << "\n";
+  }
+  catch(...) {
+    return false;
+  }
+  return true;
+}
+#endif
 int main(int argc, char** argv)
 {
+  int port(1234);
+  TcpServer server(port);
+  std::cout << "Server Listening on port: " << port << "\n";
+  while (true) {
+    server.Accept();
+    std::string jsonRequest = server.Read();
+    ProcessRequest(jsonRequest);
+    std::string replay("300 OK");
+    server.Send(replay);
+  }
+  server.Close();
+#if 0
   try {
     //auto clusterConfig("../data/ClusterConfig.json");
     //auto dataPathConfig("../data/DataPaths.json");
@@ -47,5 +96,6 @@ int main(int argc, char** argv)
   catch(const std::exception& e ) {
     std::cerr << e.what() << "\n";
   }
+#endif
   return 0;
 }

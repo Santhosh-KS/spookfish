@@ -66,9 +66,9 @@ bool Stats::Sync(std::string &file, uint64_t count)
 bool Stats::CheckParser(std::string &file)
 {
   if (Parser.get() == nullptr) {
-    Parser = std::make_unique<JsonParser>(file);
+    Parser = std::make_unique<JsonFileParser>(file);
     if (Parser.get() == nullptr) {
-      std::cerr << "Failed to create JsonParser object\n";
+      std::cerr << "Failed to create JsonFileParser object\n";
       return false;
     }
   }

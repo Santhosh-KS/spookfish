@@ -29,7 +29,7 @@
 #include <string>
 #include <memory>
 #include "NotCopyable.hpp"
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
 
 class Stats: public NotCopyable
 {
@@ -42,7 +42,7 @@ class Stats: public NotCopyable
     uint64_t EndTimeEpoch;
     uint64_t TotalImagesCaptured;
     std::vector<std::string> ImageListVec;
-    std::unique_ptr<JsonParser> Parser;
+    std::unique_ptr<JsonFileParser> Parser;
     Stats();
   public:
     Stats(const std::string &vidFile, const std::string &);

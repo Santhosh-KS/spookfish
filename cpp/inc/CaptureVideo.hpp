@@ -29,14 +29,14 @@
 #include <memory>
 
 #include "NotCopyable.hpp"
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
 
 #include <opencv2/highgui.hpp>
 
 class CaptureVideo: public NotCopyable
 {
   private:
-    std::unique_ptr<JsonParser> Parser;
+    std::unique_ptr<JsonFileParser> Parser;
     std::string VideoFile;
     std::string ShapePredictFile;
     std::string FaceRecRsNetFile;

@@ -34,7 +34,7 @@
 
 #include "NewUi.hpp"
 #include "TcpClient.hpp"
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
 
 
 void NewUiApplication::SetupTheme()
@@ -296,7 +296,7 @@ bool NewUiApplication::SendVideoAnalysisRequest(std::string &plyUriVal)
   std::string serverIp("localhost");
   int port(1234);
   std::string jsonFile("./ui/data/Request_format.json");
-  JsonParser parser(jsonFile);
+  JsonFileParser parser(jsonFile);
 
   std::string youTubeUrlKey("Youtube_URL");
   std::string sessIdKey("Session_Id");

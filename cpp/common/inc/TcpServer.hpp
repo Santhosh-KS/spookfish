@@ -1,6 +1,3 @@
-#ifndef JSON_WRITER_HPP
-#define JSON_WRITER_HPP
-
 /*
    MIT License
 
@@ -25,21 +22,35 @@
    SOFTWARE.
 */
 
-#include<string>
 
-#include "NotCopyable.hpp"
-#include "JsonFileParser.hpp"
 
-class JsonWriter: public NotCopyable
-{
+#ifndef TCP_SERVER_HPP
+#define TCP_SERVER_HPP
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+class TcpServer {
   private:
-    const std::string JsonFile;
-    //JsonFileParser Parser;
-    JsonWriter();
+    int ServerPort;
+    int SocketFd;
+    int ConnectionSockFd;
+    struct sockaddr_in ServerAddress;
+    struct sockaddr_in ClientAddress;
+    socklen_t ClientLen;
+    char Buffer[2048];
+    TcpServer() = delete;
   public:
-    JsonWriter(const std::string &);
-    ~JsonWriter();
-    inline std::string File() {return JsonFile; };
+    TcpServer(int port);
+    ~TcpServer();
+    // void Run();
+    void Accept();
+    std::string Read();
+    void Send(std::string &str);
+    void Close();
 };
 
-#endif // JSON_WRITER_HPP
+#endif // TCP_SERVER_HPP

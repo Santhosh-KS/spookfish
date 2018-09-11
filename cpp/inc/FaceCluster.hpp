@@ -38,12 +38,12 @@
 
 #include "NotCopyable.hpp"
 #include "RsNetDlib.hpp"
-#include "JsonParser.hpp"
+#include "JsonFileParser.hpp"
 
 class FaceCluster : public NotCopyable
 {
   private:
-    std::unique_ptr<JsonParser> Parser;
+    std::unique_ptr<JsonFileParser> Parser;
     std::string StoragePath;
     std::string ImageListFileName;
     std::string ModelFile;

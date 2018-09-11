@@ -30,7 +30,7 @@
 
 
 CaptureVideo::CaptureVideo(const std::string &configFile):
-  Parser(std::make_unique<JsonParser>(configFile)),
+  Parser(std::make_unique<JsonFileParser>(configFile)),
   ShapePredictFile(Parser->Value("PredictorFile")),
   FaceRecRsNetFile(Parser->Value("FaceRecModelFile")),
   LabelFile(Parser->Value("LabelFile")),

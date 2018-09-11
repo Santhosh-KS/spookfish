@@ -3,7 +3,7 @@ Project(WtUiProject)
 SET(bin_src ui/src/NewUi.cpp
             ui/src/main.cpp
             common/src/TcpClient.cpp
-            common/src/JsonParser.cpp)
+            common/src/JsonFileParser.cpp)
 
 SET(bin_name NewUiWt)
 SET(rapid_json /opt/rapidjson/include)

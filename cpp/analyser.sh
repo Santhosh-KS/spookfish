@@ -24,9 +24,9 @@
 
 
 cd ./build
-#cmake ..
+cmake ..
 #make clean
 make
 cd ..
-./build/NewUiWt --docroot ./ui --http-address 0.0.0.0 --http-port 8080
-#./build/videoAnalyser
+#./build/NewUiWt --docroot ./ui --http-address 0.0.0.0 --http-port 8080
+./build/videoAnalyser

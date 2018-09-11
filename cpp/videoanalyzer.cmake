@@ -20,7 +20,8 @@ SET(bin_src src/main.cpp
             src/DlibHandler.cpp
             src/FaceCluster.cpp
             src/DrawingUtils.cpp
-            common/src/JsonParser.cpp)
+            common/src/JsonFileParser.cpp
+            common/src/TcpServer.cpp)
 
 # binary name
 SET(bin_name videoAnalyser)
