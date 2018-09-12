@@ -20,50 +20,28 @@
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
+   */
 
 
 #include <iostream>
 
 #include "CaptureVideo.hpp"
 #include "FaceCluster.hpp"
-#include "JsonFileParser.hpp"
+#include "RequestHandler.hpp"
 #include "TcpServer.hpp"
-
-bool ProcessRequest(std::string &str)
-{
-  rapidjson::Document dom;
-  dom.Parse(str.c_str());
-  if (dom.IsObject()) {
-    std::string sessId(dom["Session_Id"].GetString());
-    std::string youtubeUrl(dom["Youtube_URL"].GetString());
-    std::string rtpRul(dom["Rtp_Stream_URL"].GetString());
-    std::string epoch(dom["Epoch_Time"].GetString());
-
-    std::cout << "Session ID: " << sessId.c_str() << "\n";
-    std::cout << "YoutubeUrl: " << youtubeUrl.c_str() << "\n";
-    std::cout << "RtpUrl: " << rtpRul.c_str() << "\n";
-    std::cout << "Epoch: " << epoch.c_str() << "\n";
-  }
-  else {
-    std::cout << "Not a valid Json\n";
-  }
-
-}
 #if 0
 bool ProcessRequest(std::string &str)
 {
-  bool rawJson(true);
-  try {
-    JsonFileParser parser(str, rawJson);
-    std::cout << "Session ID: " << parser.Value("Session_Id").c_str() << "\n";
-    std::cout << "YoutubeUrl: " << parser.Value("Youtube_URL").c_str() << "\n";
-    std::cout << "RtpUrl: " << parser.Value("Rtp_Stream_URL").c_str() << "\n";
-    std::cout << "Epoch: " << parser.Value("Epoch_Time").c_str() << "\n";
-  }
-  catch(...) {
-    return false;
-  }
+  JsonStringParser parser(str);
+  std::string sessId(parser.GetString("Session_Id"));
+  std::string youtubeUrl(parser.GetString("Youtube_URL"));
+  std::string rtpUrl(parser.GetString("Rtp_Stream_URL"));
+  std::string epoch(parser.GetString("Epoch_Time"));
+
+  std::cout << "Session ID: " << sessId.c_str() << "\n";
+  std::cout << "YoutubeUrl: " << youtubeUrl.c_str() << "\n";
+  std::cout << "RtpUrl: " << rtpUrl.c_str() << "\n";
+  std::cout << "Epoch: " << epoch.c_str() << "\n";
   return true;
 }
 #endif
@@ -72,10 +50,11 @@ int main(int argc, char** argv)
   int port(1234);
   TcpServer server(port);
   std::cout << "Server Listening on port: " << port << "\n";
+    RequestHandler handler;
   while (true) {
     server.Accept();
     std::string jsonRequest = server.Read();
-    ProcessRequest(jsonRequest);
+    handler.ProcessRequest(jsonRequest);
     std::string replay("300 OK");
     server.Send(replay);
   }

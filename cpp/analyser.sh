@@ -24,7 +24,7 @@
 
 
 cd ./build
-cmake ..
+#cmake ..
 #make clean
 make
 cd ..
