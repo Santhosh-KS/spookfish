@@ -1,4 +1,30 @@
+/*
+   MIT License
+
+   Copyright (c) 2018 santhoshachar08@gmail.com
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+*/
+
+
 #include "RequestHandler.hpp"
+#include "LinkApp.hpp"
 #include <iostream>
 
 RequestHandler::RequestHandler(std::string str) :
@@ -18,7 +44,9 @@ RequestHandler::RequestHandler(): RequestHandler(std::string("{}"))
 
 RequestHandler::~RequestHandler()
 {
-  // Empty;
+  for(auto &t: ThreadVec) {
+    t.join();
+  }
 }
 
 std::string RequestHandler::ProcessRequest(std::string &str)
@@ -45,13 +73,26 @@ std::string RequestHandler::ProcessRequest(std::string &str)
   }
   else {
     std::vector<std::string> vec;
+    std::string rtpUrl(Parser->GetString(RtpUrl));
+    // Order in which we push here is important.
+    // Do not mess up.
     vec.push_back(Parser->GetString(Epoch));
     vec.push_back(Parser->GetString(YoutubeUrl));
-    vec.push_back(Parser->GetString(RtpUrl));
-    //SessionMap.insert(std::make_pair<std::string, std::vector<std::string>>(Parser->GetString(SessionId), vec));
+    vec.push_back(rtpUrl);
     SessionMap[Parser->GetString(SessionId)] = vec;
     status.clear();
     status = "200 OK";
+    std::thread analyzerThread(&RequestHandler::VideoAnalyzer, this, rtpUrl);
+    //analyzerThread.detach();
+    ThreadVec.push_back(std::move(analyzerThread));
     return status;
   }
+}
+
+void RequestHandler::VideoAnalyzer(std::string str)
+{
+  auto link = std::make_shared<LinkApp>("") ;
+  link->Run(str);
+  LinkVec.push_back(link);
+  //LinkVec.push_back(std::make_unique<LinkApp>(""));
 }

@@ -157,7 +157,7 @@ void DlibHandler::ProcessData(const cv::Mat &img)
     // Enable only when required. Hogs Disk space.
     // TODO: Make it configurable.
     //SaveImage(img, path);
-    DrawShapes(img);
+    //DrawShapes(img);
   }
   return;
 }
@@ -174,7 +174,7 @@ void DlibHandler::CreateIdPersonMap(const std::string &file)
       auto const pos = line.find_last_of(';');
       auto id = line.substr(pos+1);
       auto name = line.substr(0,pos);
-      //std::cout << "id = " << id.c_str() << " name = " << name.c_str() << "\n";
+      std::cout << "id = " << id.c_str() << " name = " << name.c_str() << "\n";
       IdPersonMap.insert(std::pair<int,std::string>(std::stoi(id), name));
     }
     catch (const std::exception& e) {

@@ -34,8 +34,6 @@
 #include "NotCopyable.hpp"
 #include "CaptureVideo.hpp"
 #include "FaceCluster.hpp"
-#include "JsonParser.hpp"
-
 
 class LinkApp: public NotCopyable
 {

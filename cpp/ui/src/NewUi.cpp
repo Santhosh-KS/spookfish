@@ -167,14 +167,14 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight)
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   rowDiv->setStyleClass("row");
   std::vector<std::string> testVec;
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  testVec.push_back("images/30/1534569993258_1_30_30_200_200.jpg");
-  std::string link("images/30/1534569993258_1_30_30_200_200.jpg");
+  testVec.push_back("./images/30/1.jpg");
+  testVec.push_back("./images/30/2.jpg");
+  testVec.push_back("./images/30/3.jpg");
+  testVec.push_back("./images/30/4.jpg");
+  testVec.push_back("./images/30/5.jpg");
+  testVec.push_back("./images/30/6.jpg");
+  testVec.push_back("./images/30/7.jpg");
+  std::string link("./images/30/1.jpg");
   for (auto link: testVec) {
     // Wt::WImage *img = thumbnail->addWidget(std::make_unique<Wt::WContainerWidget>(Wt::WLink(link)));
     // img->setStyleClass("img-responsive ");
@@ -185,7 +185,8 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight)
     Wt::WLink anchorLink = Wt::WLink(link);
     anchorLink.setTarget(Wt::LinkTarget::NewWindow);
     Wt::WAnchor *anchor = thumbnailDiv->addWidget(std::make_unique<Wt::WAnchor>(anchorLink));
-    anchor->addNew<Wt::WImage>(Wt::WLink("images/30/1534569993258_1_30_30_200_200.jpg"));
+//anchor->addNew<Wt::WImage>(Wt::WLink("./images/30/1.jpg"));
+    anchor->addNew<Wt::WImage>(Wt::WLink(link.c_str()));
     Wt::WText *caption = thumbnailDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
   }
   MainImageGallaryDiv->hide();

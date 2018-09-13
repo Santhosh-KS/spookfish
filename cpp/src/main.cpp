@@ -20,7 +20,7 @@
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-   */
+*/
 
 
 #include <iostream>
@@ -29,28 +29,14 @@
 #include "FaceCluster.hpp"
 #include "RequestHandler.hpp"
 #include "TcpServer.hpp"
-#if 0
-bool ProcessRequest(std::string &str)
-{
-  JsonStringParser parser(str);
-  std::string sessId(parser.GetString("Session_Id"));
-  std::string youtubeUrl(parser.GetString("Youtube_URL"));
-  std::string rtpUrl(parser.GetString("Rtp_Stream_URL"));
-  std::string epoch(parser.GetString("Epoch_Time"));
 
-  std::cout << "Session ID: " << sessId.c_str() << "\n";
-  std::cout << "YoutubeUrl: " << youtubeUrl.c_str() << "\n";
-  std::cout << "RtpUrl: " << rtpUrl.c_str() << "\n";
-  std::cout << "Epoch: " << epoch.c_str() << "\n";
-  return true;
-}
-#endif
+
 int main(int argc, char** argv)
 {
   int port(1234);
   TcpServer server(port);
   std::cout << "Server Listening on port: " << port << "\n";
-    RequestHandler handler;
+  RequestHandler handler;
   while (true) {
     server.Accept();
     std::string jsonRequest = server.Read();
@@ -63,8 +49,8 @@ int main(int argc, char** argv)
   try {
     //auto clusterConfig("../data/ClusterConfig.json");
     //auto dataPathConfig("../data/DataPaths.json");
-    auto dataPathConfig("../data/bkup_DataPaths.json");
-    auto clusterConfig("../data/bkup_ClusterConfig.json");
+    auto dataPathConfig("./data/bkup_DataPaths.json");
+    auto clusterConfig("./data/bkup_ClusterConfig.json");
     CaptureVideo vidCapture(dataPathConfig);
     FaceCluster cluster(clusterConfig);
     vidCapture.Run();
