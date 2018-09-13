@@ -54,8 +54,8 @@ int main(int argc, char** argv)
   while (true) {
     server.Accept();
     std::string jsonRequest = server.Read();
-    handler.ProcessRequest(jsonRequest);
-    std::string replay("300 OK");
+    std::string replay(handler.ProcessRequest(jsonRequest));
+    //std::string replay("300 OK");
     server.Send(replay);
   }
   server.Close();
