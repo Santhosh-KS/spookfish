@@ -56,13 +56,18 @@ private:
   void SetupMainBody();
   void SetupVideoSearchBar(Wt::WContainerWidget *mainLeft);
   void SetupVideoPlayer(Wt::WContainerWidget *mainLeft);
-  void SetupImageGallary(Wt::WContainerWidget *mainRight);
+  //void SetupImageGallary(Wt::WContainerWidget *mainRight);
+  void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec);
   void SetupFooter();
   void OnPlayButtonPressed();
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
   bool SendVideoAnalysisRequest(std::string &playUrl);
+  //void CreateServer();
+  void CreateServer(Wt::WContainerWidget *ptr);
+  void SetupRefreshTimer();
+  void TimeOutReached();
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

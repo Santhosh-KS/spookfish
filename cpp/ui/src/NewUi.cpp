@@ -27,15 +27,31 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <thread>
 #include <signal.h>
 
 #include <Wt/WMessageBox.h>
 #include <Wt/WAnchor.h>
+#include <Wt/WTimer.h>
 
 #include "NewUi.hpp"
 #include "TcpClient.hpp"
+#include "TcpServer.hpp"
 #include "JsonFileParser.hpp"
 
+void NewUiApplication::SetupRefreshTimer()
+{
+  auto timer = root()->addChild(std::make_unique<Wt::WTimer>());
+  timer->setInterval(std::chrono::seconds(10));
+  timer->timeout().connect(this, &NewUiApplication::TimeOutReached);
+  timer->start();
+}
+
+void NewUiApplication::TimeOutReached()
+{
+  std::cout << "Timeout occured refreshing\n";
+  root()->refresh();
+}
 
 void NewUiApplication::SetupTheme()
 {
@@ -160,24 +176,27 @@ void NewUiApplication::SetupVideoPlayer(Wt::WContainerWidget *mainLeft)
   MainVideoContainer->hide();
 }
 
-void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight)
+//void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight)
+void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec)
 {
   Wt::WContainerWidget *gallaryDiv = mainRight->addWidget(std::make_unique<Wt::WContainerWidget>());
   gallaryDiv->setStyleClass("container-fluid");
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   rowDiv->setStyleClass("row");
-  std::vector<std::string> testVec;
+  std::cout << "SetupImageGallary is called\n";
+/*  std::vector<std::string> testVec;
   testVec.push_back("./images/30/1.jpg");
   testVec.push_back("./images/30/2.jpg");
   testVec.push_back("./images/30/3.jpg");
   testVec.push_back("./images/30/4.jpg");
   testVec.push_back("./images/30/5.jpg");
   testVec.push_back("./images/30/6.jpg");
-  testVec.push_back("./images/30/7.jpg");
+  testVec.push_back("./images/30/7.jpg");*/
   std::string link("./images/30/1.jpg");
   for (auto link: testVec) {
     // Wt::WImage *img = thumbnail->addWidget(std::make_unique<Wt::WContainerWidget>(Wt::WLink(link)));
     // img->setStyleClass("img-responsive ");
+    std::cout << "Crating image: " << link.c_str() << "\n";
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col-md-2 col-xs-4");
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -239,6 +258,25 @@ void NewUiApplication::SetupProgressBar(Wt::WContainerWidget *div)
   colDiv3->setStyleClass("col-md-3  col-xs-1 ");
 }
 
+void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
+{
+  int port(5678);
+  TcpServer server(port);
+  std::cout << "Server Listening on port: " << port << "\n";
+  while (true) {
+    server.Accept();
+    std::string jsonRequest = server.Read();
+    //std::string replay(handler.ProcessRequest(jsonRequest));
+    std::string replay("300 OK");
+    // TODO: map the show() to the session Id.
+    //MainImageGallaryDiv->show();
+    ptr->show();
+    std::cout << " Beyond SHOW\n";
+    server.Send(replay);
+  }
+  server.Close();
+}
+
 // Event and button click handlers.
 void NewUiApplication::OnPlayButtonPressed()
 {
@@ -264,18 +302,6 @@ void NewUiApplication::OnPlayButtonPressed()
         VideoPlayer->show();
         VideoPlayer->clearSources();
         VideoPlayer->addSource(Wt::WLink(line));
-        // TODO WARNING:  Creating a thread is not the best way to handle this situation.
-        // It is not an optimal solution. If multiple users starts accessing the website;
-        // then there will be atleast 1 thread per user/session which will bloat up the
-        // system resources and results in very bad end user experiance. Hence this design
-        // is not a scalable solution to deploy it as is in the field.
-        // This is just a work around to get it running for the demo.
-        // Ideally we should span the Video Analyser as a separate Process on a
-        // powerful machine and have a pub-sub model to get the work done.
-        // Introducing the above mechanism is time consuming and invloves more effort.
-        // Hence settling for this approach. This is enough for the demo purpose.
-        //std::thread analyzerThread(&NewUiApplication::VideoAnalyzer, this, line);
-        //analyzerThread.detach();
         SendVideoAnalysisRequest(line);
         break;
       }
@@ -334,6 +360,20 @@ void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
 {
   VideoPlaybackStatus->setText(str.c_str());
   VideoPlaybackStatus->setStyleClass("videoStatus");
+  std::cout << "Before Session ID is : " << sessionId() << "\n";
+  std::vector<std::string> testVec;
+  testVec.push_back("./images/30/1.jpg");
+  testVec.push_back("./images/30/2.jpg");
+  testVec.push_back("./images/30/3.jpg");
+  testVec.push_back("./images/30/4.jpg");
+  //MainImageGallaryDiv.release();
+  root()->removeWidget(MainImageGallaryDiv);
+  MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  MainImageGallaryDiv->setId("gallary");
+  SetupImageGallary(MainImageGallaryDiv, testVec);
+  MainImageGallaryDiv->show();
+  root()->refresh();
+  std::cout << "After Session ID is : " << sessionId() << "\n";
 }
 
 
@@ -344,6 +384,7 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   setTitle("Spookfish UI");                            // application title
   SetupTheme();
   SetupHeader();
+  SetupRefreshTimer();
   //Wt::WContainerWidget *MainRightDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
   //MainRightDiv->setId("main_right");
   //SetupImageGallary(MainRightDiv);
@@ -363,9 +404,14 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
   MainImageGallaryDiv->setId("gallary");
   //MainImageGallaryDiv->setStyleClass("alert alert-success");
-  SetupImageGallary(MainImageGallaryDiv);
+  std::vector<std::string> testVec;
+  testVec.push_back("./images/30/1.jpg");
+  SetupImageGallary(MainImageGallaryDiv, testVec);
 
   SetupFooter();
+
+  //std::thread responseThread(&NewUiApplication::CreateServer, this, MainImageGallaryDiv);
+  //responseThread.detach();
 /*
   root()->addWidget(std::make_unique<Wt::WText>("Your name, please ? ")); // show some text
 

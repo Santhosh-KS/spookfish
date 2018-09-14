@@ -58,7 +58,7 @@ CaptureVideo::CaptureVideo(const std::string &configFile):
 
 CaptureVideo::~CaptureVideo()
 {
-  //std::cout << "Done destryoing windows\n";
+  //std::cout << "Done destroying windows\n";
 }
 
 bool CaptureVideo::GetImage(cv::Mat &im)
