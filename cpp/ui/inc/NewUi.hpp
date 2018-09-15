@@ -49,6 +49,7 @@ private:
   Wt::WContainerWidget *MainVideoContainer;
   Wt::WContainerWidget *MainImageGallaryDiv;
   Wt::WContainerWidget *MainNavToolDiv;
+  Wt::WContainerWidget *FooterDiv;
 
   Wt::WContainerWidget *ThumbnailDiv;
   void SetupTheme();

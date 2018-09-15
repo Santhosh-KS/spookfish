@@ -28,6 +28,7 @@
 #include <string>
 #include <vector>
 #include <thread>
+#include <algorithm>
 
 
 // system() cmd related.
@@ -93,6 +94,7 @@ std::vector<std::string> NewUiApplication::GetImageFiles()
     }
   }
   closedir(dirp);
+  std::sort(vec.begin(),vec.end(), std::greater<std::string>());
   return vec;
 }
 
@@ -105,6 +107,8 @@ void NewUiApplication::TimeOutReached()
   std::vector<std::string> imgVec(GetImageFiles());
   SetupImageGallary(MainImageGallaryDiv, imgVec);
   MainImageGallaryDiv->show();
+  root()->removeWidget(FooterDiv);
+  SetupFooter();
   root()->refresh();
 }
 
@@ -262,7 +266,7 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, std::v
 
 void NewUiApplication::SetupFooter()
 {
-  Wt::WContainerWidget *FooterDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  FooterDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
   FooterDiv->setId("footer");
   Wt::WContainerWidget *FooterDivTextDiv = FooterDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   Wt::WText *Text = FooterDivTextDiv->addWidget(std::make_unique<Wt::WText>(Wt::WString::fromUTF8("© Spookfish. All Rights Reserved.")));
