@@ -42,6 +42,8 @@
 class DlibHandler : public NotCopyable
 {
   private:
+    std::string SessionId;
+    std::string ImgStoragePath;
     cv::Mat RgbImage;
     cv::Mat BgrImage;
     uint16_t TotalFacesInImage;
@@ -88,16 +90,16 @@ class DlibHandler : public NotCopyable
     DlibHandler() = delete;
     void ProcessImage();
     void FaceDetection();
-    void FaceLandMarkDetector();
+    void FaceLandMarkDetector(std::string &timeStamp);
     void DrawShapes(const cv::Mat &);
     void CreateFaceDescriptorIdMap(const std::string &file);
     void CreateIdPersonMap(const std::string &file);
-    void SaveImage(const cv::Mat &im, const std::string &path);
+    void SaveImage(const cv::Mat &im, const std::string &path, std::string &timeStamp);
     int FindMatchingFace(dlib::matrix<float,0,1> &fDesqry);
     std::string GetEpcohTime();
     void PrintStats();
   public:
-    DlibHandler(std::string &shapePredictFile,
+    DlibHandler(std::string sessId, std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personFile, std::string &faceDescFile);
     ~DlibHandler();
     void ProcessData(const cv::Mat &);

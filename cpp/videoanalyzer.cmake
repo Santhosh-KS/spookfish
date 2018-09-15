@@ -5,7 +5,6 @@ PROJECT(VideoAnalyserProject)
 #####################################################################
 
 FIND_PACKAGE( OpenCV REQUIRED )
-
 SET(dlib_path /opt/dlib/dlib/cmake)
 SET(rapid_json /opt/rapidjson/include)
 

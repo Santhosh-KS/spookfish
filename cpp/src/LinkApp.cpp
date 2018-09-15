@@ -40,10 +40,10 @@ LinkApp::~LinkApp()
   // Empty
 }
 
-int LinkApp::Run(std::string &link)
+int LinkApp::Run(std::string &link, std::string sessId)
 {
   try {
-    VideoCapture->Run(link);
+    VideoCapture->Run(link, sessId);
     std::cout << "DOne with Run in LinkApp\n";
     // Enable clustering only when required.
     // TODO: Make it configurable.

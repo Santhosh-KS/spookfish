@@ -51,6 +51,6 @@ public:
   RequestHandler(std::string str);
   ~RequestHandler();
   std::string ProcessRequest(std::string &str);
-  void VideoAnalyzer(std::string str);
+  void VideoAnalyzer(std::string str, std::string sessId);
 };
 #endif // REQUEST_HANDLER_HPP

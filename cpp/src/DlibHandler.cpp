@@ -20,27 +20,50 @@
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
-*/
+   */
 
 
 #include <iostream>
 #include <limits>
 #include <ctime>
 #include <chrono>
-
+#include <stdlib.h>
+#include <signal.h>
 
 #include "DlibHandler.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
 
-//DlibHandler::DlibHandler(cv::Mat imgBgr):
-DlibHandler::DlibHandler(std::string &shapePredictFile, std::string &faceRecRsNetFile,
+DlibHandler::DlibHandler(std::string sessId, std::string &shapePredictFile, std::string &faceRecRsNetFile,
     std::string &personIdFile, std::string &faceDescriptorFile):
+  SessionId(sessId),
+  ImgStoragePath("/tmp/images/" + SessionId),
   TotalFacesInImage(0),
   Shape(),
   FaceDetector(dlib::get_frontal_face_detector())
 {
   CurrentFaceLabelVec.clear();
   Retrain(shapePredictFile, faceRecRsNetFile, personIdFile, faceDescriptorFile);
+  for(int i = 1; i < 6; i++) {
+    std::string cmd("mkdir -p " + ImgStoragePath + "/" + std::to_string(i));
+    std::cout << "Creating New DIR : " << cmd.c_str() << "\n";
+    int ret = system(cmd.c_str());
+    if (WIFSIGNALED(ret)
+        && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+      std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+    }
+  }
+  std::string cmd("mkdir -p " + ImgStoragePath + "/6_plus/");
+  int ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+  cmd = "mkdir -p " + ImgStoragePath + "/zoom_shot";
+  ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
 }
 
 DlibHandler ::~DlibHandler()
@@ -61,7 +84,7 @@ void DlibHandler::FaceDetection()
   //std::cout << "Total faces = " << TotalFacesInImage << "\n";
 }
 
-void DlibHandler::FaceLandMarkDetector()
+void DlibHandler::FaceLandMarkDetector(std::string &timeStamp)
 {
   CurrentFaceLabelVec.clear();
   for(auto &v:FaceRectangles) {
@@ -72,12 +95,13 @@ void DlibHandler::FaceLandMarkDetector()
     if (v.area() >= 20000)  {
       ImgStats.TotalZoomShots++;
     }
-#if 0
+#if 1
     // Store the zoomed image.
     if (v.area() >= 40000) {
       // TODO: Only when emotion recoginition is done, then it is useful to store the zoomed image.
-      std::string strPath("/home/santhosh/course/final_project/cpp/output/zoom_img/");
-      strPath = strPath + GetEpcohTime() + ".jpg";
+      std::string strPath(ImgStoragePath +"/zoom_shot/");
+      strPath = strPath + timeStamp + ".jpg";
+      std::cout << "Saving image in path : " << strPath.c_str() << "\n";
       dlib::save_jpeg(faceChip, strPath.c_str());
     }
 #endif
@@ -88,7 +112,6 @@ void DlibHandler::FaceLandMarkDetector()
 
     auto itr = IdPersonMap.find(match);
     if ( itr != IdPersonMap.end()) {
-      //CurrentFaceLabelVec.push_back(itr->second);
       std::cout << itr->second << "\n";
       CurrentFaceLabelVec.push_back(itr->second);
     }
@@ -126,8 +149,9 @@ void DlibHandler::ProcessData(const cv::Mat &img)
   FaceDetection();
   ImgStats.TotalImages++;
   if (TotalFacesInImage > 0) {
-    FaceLandMarkDetector();
-    std::string path("/home/santhosh/course/final_project/cpp/output");
+    std::string timeStamp(GetEpcohTime());
+    FaceLandMarkDetector(timeStamp);
+    std::string path = ImgStoragePath;
     // Get the images captured stats.
     ImgStats.TotalFaceRecognizedImages++;
     if (TotalFacesInImage < 6) {
@@ -156,7 +180,7 @@ void DlibHandler::ProcessData(const cv::Mat &img)
     }
     // Enable only when required. Hogs Disk space.
     // TODO: Make it configurable.
-    //SaveImage(img, path);
+    SaveImage(img, path, timeStamp);
     //DrawShapes(img);
   }
   return;
@@ -248,12 +272,14 @@ std::string DlibHandler::GetEpcohTime()
   return std::to_string(ms.count());
 }
 
-void DlibHandler::SaveImage(const cv::Mat &im, const std::string &path)
+void DlibHandler::SaveImage(const cv::Mat &im, const std::string &path, std::string &timeStamp)
 {
-  auto localTime(GetEpcohTime());
+  //auto localTime(GetEpcohTime());
   std::string imgStorePath(path);
-  std::string imgName(localTime);
-  imgStorePath += imgName + "_" + std::to_string(TotalFacesInImage) + ".jpg";
+  std::string imgName(timeStamp);
+  //imgStorePath += imgName + "_" + std::to_string(TotalFacesInImage) + ".jpg";
+  imgStorePath += imgName + ".jpg";
+  std::cout << "Saving Image in : " << imgStorePath.c_str() << "\n";
   cv::imwrite(imgStorePath, im);
 }
 

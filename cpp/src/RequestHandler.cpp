@@ -74,6 +74,7 @@ std::string RequestHandler::ProcessRequest(std::string &str)
   else {
     std::vector<std::string> vec;
     std::string rtpUrl(Parser->GetString(RtpUrl));
+    std::string sessId(Parser->GetString(SessionId));
     // Order in which we push here is important.
     // Do not mess up.
     vec.push_back(Parser->GetString(Epoch));
@@ -82,17 +83,17 @@ std::string RequestHandler::ProcessRequest(std::string &str)
     SessionMap[Parser->GetString(SessionId)] = vec;
     status.clear();
     status = "200 OK";
-    std::thread analyzerThread(&RequestHandler::VideoAnalyzer, this, rtpUrl);
+    std::thread analyzerThread(&RequestHandler::VideoAnalyzer, this, rtpUrl, sessId);
     //analyzerThread.detach();
     ThreadVec.push_back(std::move(analyzerThread));
     return status;
   }
 }
 
-void RequestHandler::VideoAnalyzer(std::string str)
+void RequestHandler::VideoAnalyzer(std::string str, std::string sessId)
 {
   auto link = std::make_shared<LinkApp>("") ;
-  link->Run(str);
+  link->Run(str, sessId);
   LinkVec.push_back(link);
   //LinkVec.push_back(std::make_unique<LinkApp>(""));
 }

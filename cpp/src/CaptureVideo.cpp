@@ -93,7 +93,7 @@ bool CaptureVideo::Run()
 {
   int count(0);
   std::string windowName("Video Playback");
-  DlibHandler dlibHandler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
+  DlibHandler dlibHandler("dummy_sessId", ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
   while(true) {
     try {
       count++;
@@ -122,7 +122,7 @@ bool CaptureVideo::Run()
 }
 #endif
 
-bool CaptureVideo::Run(std::string &newVidLink)
+bool CaptureVideo::Run(std::string &newVidLink, std::string sessId="1234")
 {
   int count(0);
   auto ptr = std::make_unique<cv::VideoCapture>(newVidLink);
@@ -130,7 +130,7 @@ bool CaptureVideo::Run(std::string &newVidLink)
   // TODO: Reset the DlibHandler to recognize new faces identified.
   //std::string windowName(newVidLink); // Remove after initial testing.
   std::cout << "Video Link = " << newVidLink.c_str() << "\n";
-  DlibHandler dlibHandler(ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
+  DlibHandler dlibHandler(sessId, ShapePredictFile, FaceRecRsNetFile, LabelFile, FaceDescriptorFile);
   while(true) {
     try {
       count++;

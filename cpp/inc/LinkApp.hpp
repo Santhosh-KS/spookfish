@@ -45,7 +45,7 @@ private:
 public:
   LinkApp(std::string);
   ~LinkApp();
-  int Run(std::string &link);
+  int Run(std::string &link, std::string sessId);
 };
 
 #endif // LINK_APP_HPP

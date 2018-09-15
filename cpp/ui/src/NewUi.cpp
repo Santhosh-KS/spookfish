@@ -28,6 +28,10 @@
 #include <string>
 #include <vector>
 #include <thread>
+
+
+// system() cmd related.
+#include <stdlib.h>
 #include <signal.h>
 
 #include <Wt/WMessageBox.h>
@@ -39,17 +43,68 @@
 #include "TcpServer.hpp"
 #include "JsonFileParser.hpp"
 
+// GetImageFiles related includes.
+#include <sys/types.h>
+#include <dirent.h>
+
+
 void NewUiApplication::SetupRefreshTimer()
 {
   auto timer = root()->addChild(std::make_unique<Wt::WTimer>());
   timer->setInterval(std::chrono::seconds(10));
   timer->timeout().connect(this, &NewUiApplication::TimeOutReached);
   timer->start();
+
+  // TODO: This mechanism is a work around for the Demo purpose.
+  // Need to remove in the deployment scenario.
+  std::string zoomPath("/tmp/images/" + sessionId() + "/zoom_shot");
+  std::string cmd("mkdir -p " + zoomPath);
+  //std::cout << "Creating New DIR : " << cmd.c_str() << "\n";
+  int ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+  std::string onePath("/tmp/images/" + sessionId() + "/1");
+  cmd = "mkdir -p " + onePath;
+  ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+}
+
+std::vector<std::string> NewUiApplication::GetImageFiles()
+{
+  std::string path("/tmp/images/" + sessionId() + "/zoom_shot");
+  std::cout << "Path : " << path.c_str() << "\n";
+  DIR* dirp = opendir(path.c_str());
+  if (dirp == nullptr) {
+    std::cout << "ABORT: opendir is NULL\n";
+  }
+  struct dirent *dp;
+  std::vector<std::string> vec;
+  while ((dp = readdir(dirp)) != NULL) {
+    std::string file(dp->d_name);
+    std::size_t pos = file.find(".jpg");
+    //std::cout << "pos = " << pos << " for file : " << file.c_str() << "\n";
+    if (pos < file.length() ) {
+      vec.push_back(dp->d_name);
+    }
+  }
+  closedir(dirp);
+  return vec;
 }
 
 void NewUiApplication::TimeOutReached()
 {
-  std::cout << "Timeout occured refreshing\n";
+  //std::cout << "Timeout occured refreshing\n";
+  root()->removeWidget(MainImageGallaryDiv);
+  MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  MainImageGallaryDiv->setId("gallary");
+  std::vector<std::string> imgVec(GetImageFiles());
+  SetupImageGallary(MainImageGallaryDiv, imgVec);
+  MainImageGallaryDiv->show();
   root()->refresh();
 }
 
@@ -176,39 +231,33 @@ void NewUiApplication::SetupVideoPlayer(Wt::WContainerWidget *mainLeft)
   MainVideoContainer->hide();
 }
 
-//void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight)
 void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec)
 {
   Wt::WContainerWidget *gallaryDiv = mainRight->addWidget(std::make_unique<Wt::WContainerWidget>());
   gallaryDiv->setStyleClass("container-fluid");
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   rowDiv->setStyleClass("row");
-  std::cout << "SetupImageGallary is called\n";
-/*  std::vector<std::string> testVec;
-  testVec.push_back("./images/30/1.jpg");
-  testVec.push_back("./images/30/2.jpg");
-  testVec.push_back("./images/30/3.jpg");
-  testVec.push_back("./images/30/4.jpg");
-  testVec.push_back("./images/30/5.jpg");
-  testVec.push_back("./images/30/6.jpg");
-  testVec.push_back("./images/30/7.jpg");*/
-  std::string link("./images/30/1.jpg");
+  //std::cout << "SetupImageGallary is called\n";
   for (auto link: testVec) {
-    // Wt::WImage *img = thumbnail->addWidget(std::make_unique<Wt::WContainerWidget>(Wt::WLink(link)));
-    // img->setStyleClass("img-responsive ");
-    std::cout << "Crating image: " << link.c_str() << "\n";
+    //std::cout << "Creating image: " << link.c_str() << "\n";
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-    columnDiv->setStyleClass("col-md-2 col-xs-4");
+    columnDiv->setStyleClass("col col-md-2 col-xs-4");
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     thumbnailDiv->setStyleClass("thumbnail");
-    Wt::WLink anchorLink = Wt::WLink(link);
+    std::string imgAnchorLink("./images/" + sessionId() + "/1/" + link);
+    //std::cout << "Anchor link : " << imgAnchorLink.c_str() << "\n";
+    Wt::WLink anchorLink = Wt::WLink(imgAnchorLink.c_str());
     anchorLink.setTarget(Wt::LinkTarget::NewWindow);
     Wt::WAnchor *anchor = thumbnailDiv->addWidget(std::make_unique<Wt::WAnchor>(anchorLink));
-//anchor->addNew<Wt::WImage>(Wt::WLink("./images/30/1.jpg"));
-    anchor->addNew<Wt::WImage>(Wt::WLink(link.c_str()));
-    Wt::WText *caption = thumbnailDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
+    //anchor->addNew<Wt::WImage>(Wt::WLink("./images/30/1.jpg"));
+    std::string imgLink("./images/" + sessionId() + "/zoom_shot/" + link);
+    //std::cout << "zoom img link : " << imgLink.c_str() << "\n";
+    anchor->addNew<Wt::WImage>(Wt::WLink(imgLink.c_str()));
+    Wt::WContainerWidget *captionDiv = thumbnailDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+    Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
+    captionDiv->setId("caption");
   }
-  MainImageGallaryDiv->hide();
+  MainImageGallaryDiv->show();
 }
 
 void NewUiApplication::SetupFooter()
@@ -258,6 +307,7 @@ void NewUiApplication::SetupProgressBar(Wt::WContainerWidget *div)
   colDiv3->setStyleClass("col-md-3  col-xs-1 ");
 }
 
+#if 0
 void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
 {
   int port(5678);
@@ -276,6 +326,7 @@ void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
   }
   server.Close();
 }
+#endif
 
 // Event and button click handlers.
 void NewUiApplication::OnPlayButtonPressed()
@@ -311,12 +362,9 @@ void NewUiApplication::OnPlayButtonPressed()
     VideoPlayer->hide();
     Wt::WMessageBox::show("Information", "Please give me youtube URL.", Wt::StandardButton::Ok);
   }
-  //VideoPlayer->show();
   MainVideoContainer->show();
   MainNavToolDiv->show();
-  MainImageGallaryDiv->show();
 }
-
 
 bool NewUiApplication::SendVideoAnalysisRequest(std::string &plyUriVal)
 {
@@ -360,20 +408,6 @@ void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
 {
   VideoPlaybackStatus->setText(str.c_str());
   VideoPlaybackStatus->setStyleClass("videoStatus");
-  std::cout << "Before Session ID is : " << sessionId() << "\n";
-  std::vector<std::string> testVec;
-  testVec.push_back("./images/30/1.jpg");
-  testVec.push_back("./images/30/2.jpg");
-  testVec.push_back("./images/30/3.jpg");
-  testVec.push_back("./images/30/4.jpg");
-  //MainImageGallaryDiv.release();
-  root()->removeWidget(MainImageGallaryDiv);
-  MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
-  MainImageGallaryDiv->setId("gallary");
-  SetupImageGallary(MainImageGallaryDiv, testVec);
-  MainImageGallaryDiv->show();
-  root()->refresh();
-  std::cout << "After Session ID is : " << sessionId() << "\n";
 }
 
 
@@ -404,25 +438,14 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
   MainImageGallaryDiv->setId("gallary");
   //MainImageGallaryDiv->setStyleClass("alert alert-success");
-  std::vector<std::string> testVec;
-  testVec.push_back("./images/30/1.jpg");
-  SetupImageGallary(MainImageGallaryDiv, testVec);
+  //std::vector<std::string> testVec;
+  //testVec.push_back("./images/30/8.jpg");
+  //SetupImageGallary(MainImageGallaryDiv, testVec);
 
   SetupFooter();
 
   //std::thread responseThread(&NewUiApplication::CreateServer, this, MainImageGallaryDiv);
   //responseThread.detach();
-/*
-  root()->addWidget(std::make_unique<Wt::WText>("Your name, please ? ")); // show some text
-
-  nameEdit_ = root()->addWidget(std::make_unique<Wt::WLineEdit>()); // allow text input
-  nameEdit_->setFocus();                              // give focus
-
-  auto button = root()->addWidget(std::make_unique<Wt::WPushButton>("Greet me."));
-                                                      // create a button
-  button->setMargin(5, Wt::Side::Left);                   // add 5 pixels margin
-
-  root()->addWidget(std::make_unique<Wt::WBreak>());    // insert a line breaki*/
 }
 
 

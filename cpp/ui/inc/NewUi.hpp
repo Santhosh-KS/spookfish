@@ -68,6 +68,7 @@ private:
   void CreateServer(Wt::WContainerWidget *ptr);
   void SetupRefreshTimer();
   void TimeOutReached();
+  std::vector<std::string> GetImageFiles();
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

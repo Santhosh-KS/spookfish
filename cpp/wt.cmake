@@ -11,7 +11,6 @@ SET(rapid_json /opt/rapidjson/include)
 SET(wt_inc /usr/include/Wt)
 
 FIND_PACKAGE(Threads REQUIRED)
-
 ADD_EXECUTABLE(${bin_name} ${bin_src}) 
 TARGET_LINK_LIBRARIES(${bin_name} pthread) 
 TARGET_COMPILE_FEATURES(${bin_name} PUBLIC  cxx_lambda_init_captures)
