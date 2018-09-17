@@ -47,7 +47,18 @@ int LinkApp::Run(std::string &link, std::string sessId)
     std::cout << "DOne with Run in LinkApp\n";
     // Enable clustering only when required.
     // TODO: Make it configurable.
-    //Cluster->Run();
+    Cluster->Run(sessId);
+  }
+  catch(const std::exception& e ) {
+    std::cerr << e.what() << "\n";
+  }
+  return 0;
+}
+
+int LinkApp::ClusterRun(std::string sessId)
+{
+  try {
+    Cluster->Run(sessId);
   }
   catch(const std::exception& e ) {
     std::cerr << e.what() << "\n";

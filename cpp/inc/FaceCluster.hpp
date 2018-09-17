@@ -56,13 +56,14 @@ class FaceCluster : public NotCopyable
     typedef std::vector<std::vector<dlib::matrix<dlib::rgb_pixel>>> TFaceCluster;
 
     FaceCluster() = delete;
-    void Save(TFaceCluster &cluster);
+    void Save(TFaceCluster &cluster, std::string &path);
     bool GetAllFaces();
     TFaceCluster IdentifyAllFaces();
   public:
     FaceCluster(const std::string &config);
     ~FaceCluster();
     bool Run();
+    bool Run(std::string &sessId);
 };
 
 #endif // FACE_CLUSTER_HPP

@@ -23,11 +23,13 @@
 */
 
 #include <fstream>
+#include <stdlib.h>
+#include <signal.h>
 
 #include "FaceCluster.hpp"
 
 FaceCluster::FaceCluster(const std::string &configFile):
-  Parser(new JsonFileParser(configFile)),
+  Parser(std::make_unique<JsonFileParser>(configFile)),
   ImageListFileName(Parser->Value("ImageListFileName")),
   StoragePath(Parser->Value("StoragePath")),
   ModelFile(Parser->Value("ModelFile")),
@@ -51,13 +53,66 @@ FaceCluster::~FaceCluster()
   // Empty.
 }
 
+bool FaceCluster::Run(std::string &sessId)
+{
+  std::string clusterPath(StoragePath + sessId + "/cluster/");
+  std::string landMarksPath(StoragePath + sessId + "/1/landmarks/");
+  std::string alignedImgPath(StoragePath + sessId + "/1/30/");
+  std::string cmd("mkdir -p " + clusterPath + " " + landMarksPath + " " + alignedImgPath);
+  std::cout << "Executing command : " << cmd.c_str() << "\n";
+  int ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+    && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+  //  align/rotating the images as required to get best results for clustering.
+  //  TODO: do a cpp version of faceAlignment.
+  cmd = "python /opt/spookfish/scripts/faceAlign.py -p " + StoragePath + sessId + "/1/";
+  std::cout << "Executing command : " << cmd.c_str() << "\n";
+  ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+    && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+    return false;
+  }
+  std::cout << "Done executing Alignment script\n";
+  cmd = "ls -d " + StoragePath + sessId + "/1/30/*.jpg >> " + clusterPath + ImageListFileName;
+  ImageListFileName = clusterPath + ImageListFileName;
+  std::cout << "Executing command : " << cmd.c_str() << "\n";
+  ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+    && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+
+  if (GetAllFaces()) {
+    TFaceCluster cluster = IdentifyAllFaces();
+    if (StorageEnabled.compare("true") == 0) {
+      if (cluster.size() > 0) {
+        Save(cluster, clusterPath);
+        return true;
+      }
+      else {
+        std::cout << "ERROR: Images doesn't contain any Faces.\n";
+        return false;
+      }
+    }
+    std::cout << "NOTE: Storage is disabled for the cluster\n";
+    return true;
+  }
+  std::cout << "GetAllFacess returning false\n";
+  return false;
+}
+
+
 bool FaceCluster::Run()
 {
   if (GetAllFaces()) {
     TFaceCluster cluster = IdentifyAllFaces();
     if (StorageEnabled.compare("true") == 0) {
       if (cluster.size() > 0) {
-        Save(cluster);
+        std::string dummyPaht("/tmp");
+        Save(cluster, dummyPaht);
         return true;
       }
       else {
@@ -71,14 +126,14 @@ bool FaceCluster::Run()
   return false;
 }
 
-void FaceCluster::Save(TFaceCluster &cluster)
+void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
 {
   if (StoragePath.compare("/tmp") == 0) {
     std::cerr << "WARNING: Storing in default path : " << StoragePath.c_str() << "\n";
   }
   int i(0);
   for(auto &v: cluster) {
-    std::string file(StoragePath +"/cluster_"+std::to_string(i)+".jpg");
+    std::string file(path +"cluster_"+std::to_string(i)+".jpg");
     std::cout << "DEBUG: Storing cluster : " << file.c_str() << "\n";
     dlib::save_jpeg(dlib::tile_images(v),file.c_str());
     i++;
@@ -117,7 +172,7 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
   std::vector<dlib::sample_pair> edges;
   for (size_t i = 0; i < faceDescriptors.size(); ++i) {
     for (size_t j = i+1; j < faceDescriptors.size(); ++j) {
-      if (length(faceDescriptors[i]-faceDescriptors[j]) < 0.5) {
+      if (length(faceDescriptors[i]-faceDescriptors[j]) < 0.6) {
         edges.push_back(sample_pair(i,j));
       }
     }

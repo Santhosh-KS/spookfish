@@ -50,26 +50,30 @@ private:
   Wt::WContainerWidget *MainImageGallaryDiv;
   Wt::WContainerWidget *MainNavToolDiv;
   Wt::WContainerWidget *FooterDiv;
-
   Wt::WContainerWidget *ThumbnailDiv;
+  Wt::WContainerWidget *ClusterImageGallaryDiv;
+
+  bool IsClusterEnabled;
   void SetupTheme();
   void SetupHeader();
   void SetupMainBody();
   void SetupVideoSearchBar(Wt::WContainerWidget *mainLeft);
   void SetupVideoPlayer(Wt::WContainerWidget *mainLeft);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight);
-  void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec);
+  void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir);
+  //void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec);
   void SetupFooter();
   void OnPlayButtonPressed();
+  void OnClusterButtonPressed();
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
-  bool SendVideoAnalysisRequest(std::string &playUrl);
+  bool SendVideoAnalysisRequest(std::string &action, std::string &playUrl);
   //void CreateServer();
   void CreateServer(Wt::WContainerWidget *ptr);
   void SetupRefreshTimer();
   void TimeOutReached();
-  std::vector<std::string> GetImageFiles();
+  std::vector<std::string> GetImageFiles(std::string &path);
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

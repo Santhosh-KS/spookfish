@@ -2,5 +2,6 @@
   "Session_Id": "1234",
   "Youtube_URL":"http://youtube.com",
   "Rtp_Stream_URL": "https://somelengthyURL",
-  "Epoch_Time" : "1234567"
+  "Epoch_Time" : "1234567",
+  "Action" : "Play"
 }

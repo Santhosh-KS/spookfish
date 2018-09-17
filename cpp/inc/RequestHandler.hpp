@@ -42,6 +42,7 @@ private:
   std::string YoutubeUrl;
   std::string RtpUrl;
   std::string Epoch;
+  std::string Action;
   typedef std::map<std::string, std::vector<std::string>> TSessionMap;
   TSessionMap SessionMap;
   std::vector<std::thread> ThreadVec;
@@ -52,5 +53,6 @@ public:
   ~RequestHandler();
   std::string ProcessRequest(std::string &str);
   void VideoAnalyzer(std::string str, std::string sessId);
+  void Clusterize(std::string sessId);
 };
 #endif // REQUEST_HANDLER_HPP

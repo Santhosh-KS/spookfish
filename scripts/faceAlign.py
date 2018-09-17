@@ -32,7 +32,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 import sys, math 
+import os
+import glob
+from argparse import ArgumentParser
+from landmark.facialLandmarkDetector import LandMarkDetector
+
+
 #from PIL.Image import core as Image 
+
 from PIL import Image 
 def Distance(p1,p2):
   dx = p2[0] - p1[0]
@@ -87,43 +94,83 @@ import re
 def ProcessImage(imageFile): 
   print(imageFile)
   image =  Image.open(imageFile)
+  pos = imageFile.rfind("/");
+  path = imageFile[:pos]
+  fileName = imageFile[pos+1:]
+  pos = fileName.rfind('.')
+  timeStamp = fileName[:pos]
+  print('PATH = {} File Name = {} timeStamp = {}'.format(path, fileName, timeStamp))
   filePath = re.findall(r'(.*?).jpg', imageFile)
-  landMarkFile = filePath[0]+'.txt'
-  lines = [line.rstrip('\n') for line in open(landMarkFile)]
-  print('1st line: {}'.format(lines[0]))
-  print('2nd line: {}'.format(lines[1]))
-  eyeRight = lines[0].split(' ')
-  eyeLeft = lines[2].split(' ')
-  erx = int(eyeRight[0])
-  ery = int(eyeRight[1])
-  print('erx = {} ery = {}'.format(erx,ery))
-  elx = int(eyeLeft[0])
-  ely = int(eyeLeft[1])
-  print('elx = {} ely = {}'.format(elx,ely))
-  ''' 
-  CropFace(image, eye_left=(elx,ely),
+  #landMarkFile = filePath[0]+'.txt'
+  landMarkFile = path + '/landmarks/' + timeStamp +'.txt'
+  exists = os.path.isfile(landMarkFile)
+  if exists:
+    lines = [line.rstrip('\n') for line in open(landMarkFile)]
+    print('1st line: {}'.format(lines[0]))
+    print('2nd line: {}'.format(lines[1]))
+    eyeRight = lines[0].split(' ')
+    eyeLeft = lines[2].split(' ')
+    erx = int(eyeRight[0])
+    ery = int(eyeRight[1])
+    print('erx = {} ery = {}'.format(erx,ery))
+    elx = int(eyeLeft[0])
+    ely = int(eyeLeft[1])
+    print('elx = {} ely = {}'.format(elx,ely))
+    ''' 
+    CropFace(image, eye_left=(elx,ely),
            eye_right=(erx,ery), offset_pct=(0.1,0.1),
            #dest_sz=(200,200)).save('test_10_10_200_200.jpg')
            dest_sz=(200,200)).save(str(filePath[0])+'_10_10_200_200.jpg')
-  '''
-  CropFace(image, eye_left=(elx,ely),
+    '''
+    '''
+    CropFace(image, eye_left=(elx,ely),
            eye_right=(erx,ery), offset_pct=(0.2,0.2),
            dest_sz=(200,200)).save(str(filePath[0])+'_20_20_200_200.jpg')
-  CropFace(image, eye_left=(elx,ely),
+    '''
+    '''
+    CropFace(image, eye_left=(elx,ely),
            eye_right=(erx,ery), offset_pct=(0.3,0.3),
            dest_sz=(200,200)).save(str(filePath[0])+'_30_30_200_200.jpg')
-  '''
-  CropFace(image, eye_left=(elx,ely),
+    '''
+    CropFace(image, eye_left=(elx,ely),
+           eye_right=(erx,ery), offset_pct=(0.3,0.3),
+           dest_sz=(200,200)).save(path + '/30/' + fileName)
+    '''
+    CropFace(image, eye_left=(elx,ely),
            eye_right=(erx,ery),
            #offset_pct=(0.2,0.2)).save('test_20_20_70_70.jpg')
            offset_pct=(0.2,0.2)).save(str(filePath[0])+'_20_20_70_70.jpg')
-  '''
+    '''
+  else :
+      print('file {} Not found'.format(landMarkFile))
 
-import glob
-from landmark.facialLandmarkDetector import LandMarkDetector
+def GetCommandLineArgs():
+    parser = ArgumentParser()
+    parser.add_argument("-p", "--path", dest="path",
+                    help="Path to the image files.",
+                    metavar="PATH")
+    args = parser.parse_args()
+
+    path =''
+
+    if not args.path:
+      print('Invalid Command aruguments.')
+      print('Usage:') 
+      print('"python path.py -h" for more details')
+      exit()
+    else:
+      path = args.path
+
+
+    return path
+
+#path,filename = GetCommandLineArgs()
 
 if __name__ == "__main__":
-  imgs = glob.glob('/home/santhosh/course/week9/data/images/faces/ema/*.jpg')
+  #imgs = glob.glob('/home/santhosh/course/week9/data/images/faces/ema/*.jpg')
+  path = GetCommandLineArgs()
+  #imgs = glob.glob('/tmp/images/mPgZMaWFzsT60wat/1/*.jpg')
+  imgs = glob.glob(path + '*.jpg')
   predictorPath = '/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat'
   for img in imgs:
     print(img)

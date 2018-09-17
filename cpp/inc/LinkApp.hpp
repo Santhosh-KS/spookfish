@@ -46,6 +46,7 @@ public:
   LinkApp(std::string);
   ~LinkApp();
   int Run(std::string &link, std::string sessId);
+  int ClusterRun(std::string sessId);
 };
 
 #endif // LINK_APP_HPP

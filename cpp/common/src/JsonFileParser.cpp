@@ -103,3 +103,13 @@ std::string JsonFileParser::GetStrigifiedJson()
   //std::cout << "stringify : " << sb.GetString() << "\n";
   return sb.GetString();
 }
+
+void JsonFileParser::SetNull(std::string key)
+{
+  if ( Jdoc.HasMember(key.c_str())) {
+    Jdoc[key.c_str()].SetNull();
+  }
+  else {
+    std::cerr << "Invalid Key " << key.c_str() << "\n";
+  }
+}

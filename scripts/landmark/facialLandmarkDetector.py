@@ -36,14 +36,20 @@ def LandMarkDetector(predictorPath,  imageFilename):
     # Read image
     im= cv2.imread(imageFilename)
     # landmarks will be stored in results/family_i.txt
-    landmarksBasename = re.findall(r'(.*?).jpg',imageFilename) 
+    landmarksBasename = re.findall(r'(.*?).jpg',imageFilename)
+    pos = imageFilename.rfind('/');
+    path = imageFilename[:pos]
+    fileName = imageFilename[pos+1:]
+    pos = fileName.rfind('.')
+    timeStamp = fileName[:pos]
+    print('Landmark Path = {} file Name = {}'.format(path, fileName))
 
     # Detect faces in the image
     faceRects = faceDetector(im, 0)
     print("Number of faces detected: ",len(faceRects))
     
     # Process only the images with 1 face.
-    if len(faceRects) > 1:
+    if len(faceRects) != 1:
         return
    
     # List to store landmarks of all detected faces
@@ -62,7 +68,8 @@ def LandMarkDetector(predictorPath,  imageFilename):
     # Store landmarks for current face
     landmarksAll.append(landmarks)
 
-    landmarksFileName = landmarksBasename[0] +".txt"
+    #landmarksFileName = landmarksBasename[0] +".txt"
+    landmarksFileName = path + '/landmarks/' + timeStamp +".txt" 
     print("Saving landmarks to", landmarksFileName)
     writeLandmarksToFile(landmarks, landmarksFileName)
     return 
