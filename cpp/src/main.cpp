@@ -33,7 +33,7 @@
 
 int main(int argc, char** argv)
 {
-  int port(1234);
+  int port(5678);
   TcpServer server(port);
   std::cout << "Server Listening on port: " << port << "\n";
   RequestHandler handler;

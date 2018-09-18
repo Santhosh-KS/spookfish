@@ -55,6 +55,7 @@ FaceCluster::~FaceCluster()
 
 bool FaceCluster::Run(std::string &sessId)
 {
+//  sessId = "CS5zfGQnEn7147P7";
   std::string clusterPath(StoragePath + sessId + "/cluster/");
   std::string landMarksPath(StoragePath + sessId + "/1/landmarks/");
   std::string alignedImgPath(StoragePath + sessId + "/1/30/");
@@ -136,6 +137,15 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
     std::string file(path +"cluster_"+std::to_string(i)+".jpg");
     std::cout << "DEBUG: Storing cluster : " << file.c_str() << "\n";
     dlib::save_jpeg(dlib::tile_images(v),file.c_str());
+
+    dlib::array2d<rgb_pixel> loadedImg;
+    dlib::load_image(loadedImg, file.c_str());
+    dlib::array2d<rgb_pixel> sizeImg(200, 200);
+    dlib::resize_image(loadedImg, sizeImg);
+    //dlib::resize_image(loadedImg, sizeImg, dlib::interpolate_billinear());
+    std::string newFile(path +"cluster_"+ "_resize_" + std::to_string(i)+".jpg");
+    dlib::save_jpeg(loadedImg,newFile.c_str());
+    //dlib::save_jpeg(loadedImg,file.c_str());
     i++;
   }
 }
@@ -154,8 +164,12 @@ bool FaceCluster::GetAllFaces()
       dlib::matrix<dlib::rgb_pixel> face_chip;
       dlib::extract_image_chip(img, dlib::get_face_chip_details(shape,150,0.25), face_chip);
       FaceVector.push_back(std::move(face_chip));
+      ImageFiles.push_back(line);
     }
   }
+/*  for(auto &v:ImageFiles) {
+    std::cout << "KSS Img file = " << v << "\n";
+  }*/
   if (FaceVector.size() == 0) {
     std::cerr << "No faces found in images in file: " << ImageListFileName.c_str();
     return false;
@@ -179,14 +193,17 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
   }
   std::vector<unsigned long> labels;
   const auto numClusters = dlib::chinese_whispers(edges, labels);
-  std::cout << "number of people found in the image: "<< numClusters << "\n";
+  std::cout << "number of person found in the images: "<< numClusters << "\n";
   TFaceCluster cluster;
+  int count(0);
   for (size_t cluster_id = 0; cluster_id < numClusters; ++cluster_id) {
     std::vector<dlib::matrix<dlib::rgb_pixel>> temp;
     for (size_t j = 0; j < labels.size(); ++j) {
       if (cluster_id == labels[j]) {
         temp.push_back(FaceVector[j]);
-        //save_jpeg(FaceVector[j], file.c_str());
+        /*std::string file("/tmp/images/sant_"+std::to_string(j)+".jpg");
+        std::cout << "CLUSTER IMG: " << file.c_str() << "\n";
+        save_jpeg(FaceVector[j], file.c_str());*/
       }
     }
     //std::string file("sant_" + to_string(cluster_id)+ ".jpg");
@@ -194,5 +211,26 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
     //std::cout << "DEBUG: Dominance value = " <<  temp.size() << "\n";
     cluster.push_back(temp);
   }
+  for (unsigned long i = 0 ; i < labels.size(); i++) {
+    auto itr = LabelFileNameMap.find(labels[i]);
+    if (itr == LabelFileNameMap.end()) {
+      std::vector<std::string> tmp;
+      tmp.push_back(ImageFiles[i]);
+      LabelFileNameMap[labels[i]] = tmp;
+    }
+    else {
+      itr->second.push_back(ImageFiles[i]);
+    }
+    std::cout << "LabelFileNameMap itr->second.size() = " << itr->second.size() << "\n";
+  }
+#if 0
+  for(auto &mapItr : LabelFileNameMap) {
+    std::cout << "LABLE = " << mapItr.first;
+    for(auto &v : mapItr.second) {
+      std::cout << " FILE = " << v << " ";
+    }
+    std::cout << "\n";
+  }
+#endif
   return cluster;
 }

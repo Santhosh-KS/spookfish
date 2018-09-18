@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 
 #include <dlib/dnn.h>
@@ -53,6 +54,8 @@ class FaceCluster : public NotCopyable
     dlib::shape_predictor ShapePredictor;
     anet_type AnetType;
     std::vector<dlib::matrix<dlib::rgb_pixel>> FaceVector;
+    std::vector<std::string> ImageFiles;
+    std::map<unsigned long, std::vector<std::string>> LabelFileNameMap;
     typedef std::vector<std::vector<dlib::matrix<dlib::rgb_pixel>>> TFaceCluster;
 
     FaceCluster() = delete;

@@ -405,7 +405,7 @@ void NewUiApplication::OnPlayButtonPressed()
 bool NewUiApplication::SendVideoAnalysisRequest(std::string &action, std::string &val)
 {
   std::string serverIp("localhost");
-  int port(1234);
+  int port(5678);
   std::string jsonFile("./ui/data/Request_format.json");
   JsonFileParser parser(jsonFile);
 
