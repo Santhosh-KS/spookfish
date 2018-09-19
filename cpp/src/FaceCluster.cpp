@@ -161,6 +161,11 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
     i++;
   }
   StoreFiles();
+  std::string file = path + "Done.txt";
+  std::cout << "Done. writing to file : " << file.c_str() << "\n";
+  std::ofstream out(file);
+  out << "Done\n";
+  out.close();
 }
 
 bool FaceCluster::StoreFiles()

@@ -276,8 +276,10 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   Wt::WContainerWidget *gallaryDiv = mainRight->addWidget(std::make_unique<Wt::WContainerWidget>());
   gallaryDiv->setStyleClass("container-fluid");
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  int index(0);
   rowDiv->setStyleClass("row");
   for (auto &link: imgAnchorLinkMap) {
+    index++;
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -290,9 +292,14 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
     anchor->addNew<Wt::WImage>(Wt::WLink(imgLink.c_str()));
     Wt::WContainerWidget *captionDiv = thumbnailDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     if (IsClusterEnabled) {
-      Wt::WLineEdit *edit =
+      /*Wt::WLineEdit *edit =
         columnDiv->addWidget(Wt::cpp14::make_unique<Wt::WLineEdit>());
-      edit->setPlaceholderText("Edit me");
+        edit->setPlaceholderText("Edit me");*/
+      Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      Wt::WLineEdit *edit= personDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Edit Me")));
+
+      edit->enterPressed().connect
+        (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, std::string(edit->text().toUTF8())));
     }
     else {
       Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
@@ -368,6 +375,11 @@ void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
   server.Close();
 }
 #endif
+
+void NewUiApplication::OnPersonNameChanged(int index, std::string name)
+{
+  std::cout << "OnPersonNameChanged index = " << index << " Name = " << name.c_str() << "\n";
+}
 
 // Event and button click handlers.
 void NewUiApplication::OnPlayButtonPressed()

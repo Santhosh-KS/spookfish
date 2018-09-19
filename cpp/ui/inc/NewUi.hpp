@@ -53,6 +53,7 @@ private:
   Wt::WContainerWidget *ThumbnailDiv;
   Wt::WContainerWidget *ClusterImageGallaryDiv;
   typedef std::map<std::string, std::string> TImageAnchorLinkMap;
+//  std::string PersonEditedName;
   bool IsClusterEnabled;
   void SetupTheme();
   void SetupHeader();
@@ -68,6 +69,7 @@ private:
   void OnClusterButtonPressed();
   void OnAllImagesButtonPressed();
   void OnSaveButtonPressed();
+  void OnPersonNameChanged(int index, std::string str);
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
