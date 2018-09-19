@@ -138,7 +138,6 @@ void NewUiApplication::TimeOutReached()
     SetupImageGallary(ClusterImageGallaryDiv, imgAncMap);
     MainImageGallaryDiv->hide();
     ClusterImageGallaryDiv->show();
-
   }
   else {
     IsClusterEnabled = false;

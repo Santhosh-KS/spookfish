@@ -140,13 +140,19 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
     dlib::save_jpeg(dlib::tile_images(v),file.c_str());
     auto itr = LabelFileNameMap.find(i);
     if (itr != LabelFileNameMap.end()) {
-     ImageAnchorLinkMap[file] = itr->second[0];
+      if (itr->second.size() == 1) {
+        ImageAnchorLinkMap.erase(file);
+      }
+      else {
+        int val =  itr->second.size();
+        ImageAnchorLinkMap[file] = itr->second[val/2];
+      }
     }
     /*
-    dlib::array2d<rgb_pixel> loadedImg;
-    dlib::load_image(loadedImg, file.c_str());
-    dlib::array2d<rgb_pixel> sizeImg(200, 200);
-    dlib::resize_image(loadedImg, sizeImg);
+       dlib::array2d<rgb_pixel> loadedImg;
+       dlib::load_image(loadedImg, file.c_str());
+       dlib::array2d<rgb_pixel> sizeImg(200, 200);
+       dlib::resize_image(loadedImg, sizeImg);
     //dlib::resize_image(loadedImg, sizeImg, dlib::interpolate_billinear());
     std::string newFile(path +"cluster_"+ "_resize_" + std::to_string(i)+".jpg");
     dlib::save_jpeg(loadedImg,newFile.c_str());
