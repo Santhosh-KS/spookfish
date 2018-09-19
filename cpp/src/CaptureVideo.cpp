@@ -68,7 +68,8 @@ bool CaptureVideo::GetImage(cv::Mat &im)
     //std::cout << "Got GetImage\n";
     if (im.empty()){
       //std::cout << "Got GetImage exception\n";
-      throw std::runtime_error("Frame is empty..");
+      //throw std::runtime_error("Frame is empty..");
+      return false;
     }
     return true;
   }
@@ -100,6 +101,7 @@ bool CaptureVideo::Run()
       cv::Mat im;
       if (!GetImage(im)) {
         //std::cout << "img is empty\n";
+        dlibHandler.StoreFiles();
         return false;
       }
       //std::cout << "Got Img count = " << count << "\n";
@@ -137,6 +139,7 @@ bool CaptureVideo::Run(std::string &newVidLink, std::string sessId="1234")
       cv::Mat im;
       if (!GetImage(im)) {
         std::cerr << "img is empty\n";
+        dlibHandler.StoreFiles();
         return false;
       }
       //std::cout << "Got Img count = " << count << "\n";

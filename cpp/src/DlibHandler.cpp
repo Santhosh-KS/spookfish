@@ -24,6 +24,7 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <limits>
 #include <ctime>
 #include <chrono>
@@ -39,7 +40,8 @@ DlibHandler::DlibHandler(std::string sessId, std::string &shapePredictFile, std:
   ImgStoragePath("/tmp/images/" + SessionId),
   TotalFacesInImage(0),
   Shape(),
-  FaceDetector(dlib::get_frontal_face_detector())
+  FaceDetector(dlib::get_frontal_face_detector()),
+  ZoomImagePath("")
 {
   CurrentFaceLabelVec.clear();
   Retrain(shapePredictFile, faceRecRsNetFile, personIdFile, faceDescriptorFile);
@@ -100,9 +102,14 @@ void DlibHandler::FaceLandMarkDetector(std::string &timeStamp)
     if (v.area() >= 40000) {
       // TODO: Only when emotion recoginition is done, then it is useful to store the zoomed image.
       std::string strPath(ImgStoragePath +"/zoom_shot/");
-      strPath = strPath + timeStamp + ".jpg";
-      std::cout << "Saving image in path : " << strPath.c_str() << "\n";
-      dlib::save_jpeg(faceChip, strPath.c_str());
+      ZoomImagePath = strPath + timeStamp + ".jpg";
+      ImageAnchorLinkMap[ZoomImagePath] = "invalid";
+      //std::cout << "Saving image in path : " << strPath.c_str() << "\n";
+      std::cout << "Saving ZOOM image in path : " << ZoomImagePath.c_str() << "\n";
+       //ZoomImagePath = strPath;
+
+      //dlib::save_jpeg(faceChip, strPath.c_str());
+      dlib::save_jpeg(faceChip, ZoomImagePath.c_str());
     }
 #endif
     //FaceChips.push_back(faceChip);
@@ -280,7 +287,29 @@ void DlibHandler::SaveImage(const cv::Mat &im, const std::string &path, std::str
   //imgStorePath += imgName + "_" + std::to_string(TotalFacesInImage) + ".jpg";
   imgStorePath += imgName + ".jpg";
   std::cout << "Saving Image in : " << imgStorePath.c_str() << "\n";
+  if (TotalFacesInImage == 1) {
+    auto itr = ImageAnchorLinkMap.find(ZoomImagePath);
+    if (itr != ImageAnchorLinkMap.end()) {
+      ImageAnchorLinkMap[ZoomImagePath] = imgStorePath;
+      ZoomImagePath.clear();
+    }
+  }
   cv::imwrite(imgStorePath, im);
+  StoreFiles();
+}
+
+bool DlibHandler::StoreFiles()
+{
+  std::string file(ImgStoragePath + "/zoomImagesAnchor.txt");
+  std::string lines("");
+  for(auto &itr: ImageAnchorLinkMap) {
+    lines += itr.first + "\t" + itr.second + "\n";
+  }
+  std::cout << "StoreFiles() writing to file : " << file.c_str() << "\n";
+  std::ofstream out(file);
+  out << lines;
+  out.close();
+  return true;
 }
 
 void DlibHandler::PrintStats()

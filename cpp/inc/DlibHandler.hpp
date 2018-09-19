@@ -61,6 +61,9 @@ class DlibHandler : public NotCopyable
     std::map<int,std::string> IdPersonMap;
     std::map<std::string,int> FaceDescriptorIdMap;
 
+    std::string ZoomImagePath;
+    typedef std::map<std::string,std::string> TImageAnchorLinkMap;
+    TImageAnchorLinkMap ImageAnchorLinkMap;
     struct ImageStats {
       ImageStats(): TotalImages(0),
       TotalZoomShots(0),
@@ -106,6 +109,7 @@ class DlibHandler : public NotCopyable
     void Retrain(std::string &shapePredictFile,
         std::string &faceRecRsNetFile, std::string &personIdFile,
         std::string &faceDescriptorFile);
+    bool StoreFiles();
 };
 
 #endif // DLIB_HANDLER_HPP

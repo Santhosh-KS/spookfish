@@ -52,7 +52,7 @@ private:
   Wt::WContainerWidget *FooterDiv;
   Wt::WContainerWidget *ThumbnailDiv;
   Wt::WContainerWidget *ClusterImageGallaryDiv;
-
+  typedef std::map<std::string, std::string> TImageAnchorLinkMap;
   bool IsClusterEnabled;
   void SetupTheme();
   void SetupHeader();
@@ -60,7 +60,8 @@ private:
   void SetupVideoSearchBar(Wt::WContainerWidget *mainLeft);
   void SetupVideoPlayer(Wt::WContainerWidget *mainLeft);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight);
-  void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir);
+  void SetupImageGallary(Wt::WContainerWidget *mainRight, TImageAnchorLinkMap &imgAnchorLinkMap);
+  //void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec);
   void SetupFooter();
   void OnPlayButtonPressed();
@@ -73,7 +74,8 @@ private:
   void CreateServer(Wt::WContainerWidget *ptr);
   void SetupRefreshTimer();
   void TimeOutReached();
-  std::vector<std::string> GetImageFiles(std::string &path);
+  //std::vector<std::string> GetImageFiles(std::string &path);
+  TImageAnchorLinkMap GetImageFiles(std::string &inFile);
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

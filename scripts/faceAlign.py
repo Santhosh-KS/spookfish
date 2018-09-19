@@ -99,23 +99,23 @@ def ProcessImage(imageFile):
   fileName = imageFile[pos+1:]
   pos = fileName.rfind('.')
   timeStamp = fileName[:pos]
-  print('PATH = {} File Name = {} timeStamp = {}'.format(path, fileName, timeStamp))
+  #print('PATH = {} File Name = {} timeStamp = {}'.format(path, fileName, timeStamp))
   filePath = re.findall(r'(.*?).jpg', imageFile)
   #landMarkFile = filePath[0]+'.txt'
   landMarkFile = path + '/landmarks/' + timeStamp +'.txt'
   exists = os.path.isfile(landMarkFile)
   if exists:
     lines = [line.rstrip('\n') for line in open(landMarkFile)]
-    print('1st line: {}'.format(lines[0]))
-    print('2nd line: {}'.format(lines[1]))
+    #print('1st line: {}'.format(lines[0]))
+    #print('2nd line: {}'.format(lines[1]))
     eyeRight = lines[0].split(' ')
     eyeLeft = lines[2].split(' ')
     erx = int(eyeRight[0])
     ery = int(eyeRight[1])
-    print('erx = {} ery = {}'.format(erx,ery))
+    #print('erx = {} ery = {}'.format(erx,ery))
     elx = int(eyeLeft[0])
     ely = int(eyeLeft[1])
-    print('elx = {} ely = {}'.format(elx,ely))
+    #print('elx = {} ely = {}'.format(elx,ely))
     ''' 
     CropFace(image, eye_left=(elx,ely),
            eye_right=(erx,ery), offset_pct=(0.1,0.1),
@@ -171,7 +171,7 @@ if __name__ == "__main__":
   path = GetCommandLineArgs()
   #imgs = glob.glob('/tmp/images/mPgZMaWFzsT60wat/1/*.jpg')
   imgs = glob.glob(path + '*.jpg')
-  predictorPath = '/home/santhosh/course/final_project/cpp/data/shape_predictor_5_face_landmarks.dat'
+  predictorPath = '/opt/spookfish/shape_predictor_5_face_landmarks.dat'
   for img in imgs:
     print(img)
     LandMarkDetector(predictorPath, img)

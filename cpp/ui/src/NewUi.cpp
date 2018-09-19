@@ -74,7 +74,7 @@ void NewUiApplication::SetupRefreshTimer()
     std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
   }
 }
-
+# if 0
 std::vector<std::string> NewUiApplication::GetImageFiles(std::string &path)
 {
   std::cout << "Path : " << path.c_str() << "\n";
@@ -96,32 +96,64 @@ std::vector<std::string> NewUiApplication::GetImageFiles(std::string &path)
   std::sort(vec.begin(),vec.end(), std::greater<std::string>());
   return vec;
 }
+#endif
+
+NewUiApplication::TImageAnchorLinkMap NewUiApplication::GetImageFiles(std::string &file)
+{
+  std::cout << "Path : " << file.c_str() << "\n";
+  std::string line("");
+  NewUiApplication::TImageAnchorLinkMap imgAnchorMap;
+  std::ifstream infile(file);
+  while (std::getline(infile, line)) {
+    std::istringstream iss(line);
+    std::vector<std::string> vec((std::istream_iterator<std::string>(iss)),
+      std::istream_iterator<std::string>());
+    std::cout << " vec[0] = " << vec[0] << " vec[1] = " << vec[1] << "\n";
+    if (!vec[0].empty() && !vec[1].empty()) {
+     /* std::string key("." + vec[0].substr(4));
+      std::string val("." + vec[0].substr(4));
+      imgAnchorMap[key] = val;*/
+      imgAnchorMap[vec[0]] = vec[1];
+    }
+  }
+  return imgAnchorMap;
+}
 
 void NewUiApplication::TimeOutReached()
 {
   std::cout << "Timeout occured refreshing\n";
+  std::string imgAnchFile("");
   if (IsClusterEnabled) {
     MainImageGallaryDiv->hide();
     root()->removeWidget(ClusterImageGallaryDiv);
     ClusterImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
     ClusterImageGallaryDiv->setId("gallary");
     std::string imgDir("/cluster/");
-    std::string path("/tmp/images/" + sessionId() + imgDir);
-    std::vector<std::string> imgVec(GetImageFiles(path));
-    SetupImageGallary(ClusterImageGallaryDiv, imgVec, imgDir);
+    //std::string path("/tmp/images/" + sessionId() + );
+    // /tmp/images/N1MpJ1GYxdhsKADE/clusterImagesAnchor.txt
+    imgAnchFile = "/tmp/images/" + sessionId() + "/clusterImagesAnchor.txt";
+    //std::vector<std::string> imgVec(GetImageFiles(imgAnchFile));
+    //SetupImageGallary(ClusterImageGallaryDiv, imgVec, imgDir);
+    NewUiApplication::TImageAnchorLinkMap imgAncMap(GetImageFiles(imgAnchFile));
+    SetupImageGallary(ClusterImageGallaryDiv, imgAncMap);
     MainImageGallaryDiv->hide();
     ClusterImageGallaryDiv->show();
 
   }
   else {
     IsClusterEnabled = false;
+    ClusterImageGallaryDiv->hide();
     root()->removeWidget(MainImageGallaryDiv);
     MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
     MainImageGallaryDiv->setId("gallary");
     std::string imgDir("/zoom_shot/");
-    std::string path("/tmp/images/" + sessionId() + imgDir);
-    std::vector<std::string> imgVec(GetImageFiles(path));
-    SetupImageGallary(MainImageGallaryDiv, imgVec, imgDir);
+    //std::string path("/tmp/images/" + sessionId() + imgDir);
+    //std::vector<std::string> imgVec(GetImageFiles(path));
+    imgAnchFile = "/tmp/images/" + sessionId() + "/zoomImagesAnchor.txt";
+    //std::vector<std::string> imgVec(GetImageFiles(imgAnchFile));
+    //SetupImageGallary(MainImageGallaryDiv, imgVec, imgDir);
+    NewUiApplication::TImageAnchorLinkMap imgAncMap(GetImageFiles(imgAnchFile));
+    SetupImageGallary(MainImageGallaryDiv, imgAncMap);
     MainImageGallaryDiv->show();
   }
   root()->removeWidget(FooterDiv);
@@ -263,29 +295,32 @@ void NewUiApplication::SetupVideoPlayer(Wt::WContainerWidget *mainLeft)
   MainVideoContainer->hide();
 }
 
-void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir="/zoom_shot/")
+//void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir="/zoom_shot/")
+void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiApplication::TImageAnchorLinkMap &imgAnchorLinkMap)
 {
   Wt::WContainerWidget *gallaryDiv = mainRight->addWidget(std::make_unique<Wt::WContainerWidget>());
   gallaryDiv->setStyleClass("container-fluid");
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   rowDiv->setStyleClass("row");
   //std::cout << "SetupImageGallary is called\n";
-  for (auto link: testVec) {
+  for (auto &link: imgAnchorLinkMap) {
     //std::cout << "Creating image: " << link.c_str() << "\n";
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     thumbnailDiv->setStyleClass("thumbnail");
-    std::string imgAnchorLink("./images/" + sessionId() + "/1/"+ link);
+    std::string imgAnchorLink(link.second);
+    /*std::string imgAnchorLink("./images/" + sessionId() + "/1/"+ link);
     if (IsClusterEnabled) {
       imgAnchorLink = "./images/" + sessionId() + imgDir + link;
-    }
+    }*/
     //std::cout << "Anchor link : " << imgAnchorLink.c_str() << "\n";
     Wt::WLink anchorLink = Wt::WLink(imgAnchorLink.c_str());
     anchorLink.setTarget(Wt::LinkTarget::NewWindow);
     Wt::WAnchor *anchor = thumbnailDiv->addWidget(std::make_unique<Wt::WAnchor>(anchorLink));
     //anchor->addNew<Wt::WImage>(Wt::WLink("./images/30/1.jpg"));
-    std::string imgLink("./images/" + sessionId() + imgDir + link);
+    std::string imgLink(link.first);
+    //std::string imgLink("./images/" + sessionId() + imgDir + link);
     //std::cout << "zoom img link : " << imgLink.c_str() << "\n";
     anchor->addNew<Wt::WImage>(Wt::WLink(imgLink.c_str()));
     Wt::WContainerWidget *captionDiv = thumbnailDiv->addWidget(std::make_unique<Wt::WContainerWidget>());

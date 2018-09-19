@@ -50,6 +50,7 @@ class FaceCluster : public NotCopyable
     std::string ModelFile;
     std::string RsNetFile;
     std::string StorageEnabled;
+    std::string SessionId;
     dlib::frontal_face_detector Detector;
     dlib::shape_predictor ShapePredictor;
     anet_type AnetType;
@@ -57,11 +58,13 @@ class FaceCluster : public NotCopyable
     std::vector<std::string> ImageFiles;
     std::map<unsigned long, std::vector<std::string>> LabelFileNameMap;
     typedef std::vector<std::vector<dlib::matrix<dlib::rgb_pixel>>> TFaceCluster;
-
+    typedef std::map<std::string, std::string> TImageAnchorLinkMap;
+    TImageAnchorLinkMap ImageAnchorLinkMap;
     FaceCluster() = delete;
     void Save(TFaceCluster &cluster, std::string &path);
     bool GetAllFaces();
     TFaceCluster IdentifyAllFaces();
+    bool StoreFiles();
   public:
     FaceCluster(const std::string &config);
     ~FaceCluster();

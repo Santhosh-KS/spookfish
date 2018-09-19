@@ -42,7 +42,7 @@ def LandMarkDetector(predictorPath,  imageFilename):
     fileName = imageFilename[pos+1:]
     pos = fileName.rfind('.')
     timeStamp = fileName[:pos]
-    print('Landmark Path = {} file Name = {}'.format(path, fileName))
+    #print('Landmark Path = {} file Name = {}'.format(path, fileName))
 
     # Detect faces in the image
     faceRects = faceDetector(im, 0)
@@ -70,6 +70,6 @@ def LandMarkDetector(predictorPath,  imageFilename):
 
     #landmarksFileName = landmarksBasename[0] +".txt"
     landmarksFileName = path + '/landmarks/' + timeStamp +".txt" 
-    print("Saving landmarks to", landmarksFileName)
+    #print("Saving landmarks to", landmarksFileName)
     writeLandmarksToFile(landmarks, landmarksFileName)
     return 
