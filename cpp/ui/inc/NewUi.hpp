@@ -66,6 +66,8 @@ private:
   void SetupFooter();
   void OnPlayButtonPressed();
   void OnClusterButtonPressed();
+  void OnAllImagesButtonPressed();
+  void OnSaveButtonPressed();
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);

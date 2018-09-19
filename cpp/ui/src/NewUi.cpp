@@ -175,20 +175,20 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
   Wt::WContainerWidget *btnGrp = navToolDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   btnGrp->setStyleClass("btn-group btn-group-justified");
 
-  Wt::WContainerWidget *btnDiv1= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
-  btnDiv1->setStyleClass("btn-group");
-  Wt::WPushButton *btn1 = btnDiv1->addWidget(std::make_unique<Wt::WPushButton>("Primary"));
-  btn1->setStyleClass("btn btn-primary");
+  Wt::WContainerWidget *allImagesBtnDiv= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
+  allImagesBtnDiv->setStyleClass("btn-group");
+  Wt::WPushButton *allImagesBtn = allImagesBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("All-Images"));
+  allImagesBtn->setStyleClass("btn btn-primary");
 
   Wt::WContainerWidget *clusterBtnDiv= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
   clusterBtnDiv->setStyleClass("btn-group");
   Wt::WPushButton *clusterBtn = clusterBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Cluster"));
   clusterBtn->setStyleClass("btn btn-info");
 
-  Wt::WContainerWidget *btnDiv3= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
-  btnDiv3->setStyleClass("btn-group");
-  Wt::WPushButton *btn3 = btnDiv3->addWidget(std::make_unique<Wt::WPushButton>("Success"));
-  btn3->setStyleClass("btn btn-success");
+  Wt::WContainerWidget *saveBtnDiv= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
+  saveBtnDiv->setStyleClass("btn-group");
+  Wt::WPushButton *saveBtn = saveBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Save"));
+  saveBtn->setStyleClass("btn btn-success");
 
   Wt::WContainerWidget *btnDiv4= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
   btnDiv4->setStyleClass("btn-group");
@@ -207,6 +207,22 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
   //MainNavToolDiv->hide();
 
   clusterBtn->clicked().connect(this, &NewUiApplication::OnClusterButtonPressed);
+  allImagesBtn->clicked().connect(this, &NewUiApplication::OnAllImagesButtonPressed);
+  saveBtn->clicked().connect(this, &NewUiApplication::OnSaveButtonPressed);
+}
+
+void NewUiApplication::OnSaveButtonPressed()
+{
+  std::cout << "OnAllImagesButtonPressed\n";
+  IsClusterEnabled = false;
+  // TODO: Save Images in the cloud.
+}
+
+void NewUiApplication::OnAllImagesButtonPressed()
+{
+  std::cout << "OnAllImagesButtonPressed\n";
+  IsClusterEnabled = false;
+  TimeOutReached();
 }
 
 void NewUiApplication::OnClusterButtonPressed()
@@ -216,6 +232,7 @@ void NewUiApplication::OnClusterButtonPressed()
   //SendVideoAnalysisRequest(action, val);
   std::cout << "OnClusterButtonPressed \n";
   IsClusterEnabled = true;
+  TimeOutReached();
 }
 
 void NewUiApplication::SetupVideoPlayer(Wt::WContainerWidget *mainLeft)
@@ -272,7 +289,14 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
     std::string imgLink(link.first);
     anchor->addNew<Wt::WImage>(Wt::WLink(imgLink.c_str()));
     Wt::WContainerWidget *captionDiv = thumbnailDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-    Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
+    if (IsClusterEnabled) {
+      Wt::WLineEdit *edit =
+        columnDiv->addWidget(Wt::cpp14::make_unique<Wt::WLineEdit>());
+      edit->setPlaceholderText("Edit me");
+    }
+    else {
+      Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
+    }
     captionDiv->setId("caption");
   }
 }
