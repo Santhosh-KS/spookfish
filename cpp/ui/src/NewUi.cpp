@@ -30,6 +30,7 @@
 #include <thread>
 #include <algorithm>
 
+#include <sys/stat.h>
 
 // system() cmd related.
 #include <stdlib.h>
@@ -37,7 +38,6 @@
 
 #include <Wt/WMessageBox.h>
 #include <Wt/WAnchor.h>
-#include <Wt/WTimer.h>
 
 #include "NewUi.hpp"
 #include "TcpClient.hpp"
@@ -51,10 +51,10 @@
 
 void NewUiApplication::SetupRefreshTimer()
 {
-  auto timer = root()->addChild(std::make_unique<Wt::WTimer>());
-  timer->setInterval(std::chrono::seconds(10));
-  timer->timeout().connect(this, &NewUiApplication::TimeOutReached);
-  timer->start();
+  Timer = root()->addChild(std::make_unique<Wt::WTimer>());
+  Timer->setInterval(std::chrono::seconds(10));
+  Timer->timeout().connect(this, &NewUiApplication::TimeOutReached);
+  Timer->start();
 
   // TODO: This mechanism is a work around for the Demo purpose.
   // Need to remove in the deployment scenario.
@@ -73,6 +73,19 @@ void NewUiApplication::SetupRefreshTimer()
       && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
     std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
   }
+}
+
+
+bool NewUiApplication::StopTimer(std::string &file)
+{
+  struct stat buffer;
+  bool val(false);
+  if ((stat(file.c_str(), &buffer) == 0)) {
+    std::cout << "Done with video analysis stopping the timer.\n";
+    Timer->stop();
+    val = true;
+  }
+  return val;
 }
 
 NewUiApplication::TImageAnchorLinkMap NewUiApplication::GetImageFiles(std::string &file)
@@ -100,13 +113,14 @@ void NewUiApplication::TimeOutReached()
 {
   std::cout << "Timeout occured refreshing\n";
   std::string imgAnchFile("");
+  std::string basePath("/tmp/images/");
   if (IsClusterEnabled) {
     std::string imgDir("/cluster/");
-    imgAnchFile = "/tmp/images/" + sessionId() + "/clusterImagesAnchor.txt";
+    imgAnchFile = basePath + sessionId() + "/clusterImagesAnchor.txt";
   }
   else {
     std::string imgDir("/zoom_shot/");
-    imgAnchFile = "/tmp/images/" + sessionId() + "/zoomImagesAnchor.txt";
+    imgAnchFile = basePath + sessionId() + "/zoomImagesAnchor.txt";
   }
 
   root()->removeWidget(MainImageGallaryDiv);
@@ -114,11 +128,12 @@ void NewUiApplication::TimeOutReached()
   MainImageGallaryDiv->setId("gallary");
   NewUiApplication::TImageAnchorLinkMap imgAncMap(GetImageFiles(imgAnchFile));
   SetupImageGallary(MainImageGallaryDiv, imgAncMap);
-  MainImageGallaryDiv->show();
 
   root()->removeWidget(FooterDiv);
   SetupFooter();
   root()->refresh();
+  std::string doneFile(basePath + sessionId() + "/cluster/Done.txt");
+  StopTimer(doneFile);
 }
 
 void NewUiApplication::SetupTheme()
@@ -213,9 +228,24 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
 
 void NewUiApplication::OnSaveButtonPressed()
 {
-  std::cout << "OnAllImagesButtonPressed\n";
+  std::cout << "OnSaveButtonPressed\n";
   IsClusterEnabled = false;
-  // TODO: Save Images in the cloud.
+  std::string srcPath("/tmp/images/" + sessionId());
+  // TODO: make it configurable.
+  std::string dstPath("/opt/spookfish/ImageStorage");
+  std::string cmd("sudo cp -r " + srcPath + " " + dstPath);
+  int ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+  ///opt/spookfish/scripts/
+  cmd = "bash /opt/spookfish/scripts/save.sh";
+  ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
 }
 
 void NewUiApplication::OnAllImagesButtonPressed()
@@ -279,7 +309,6 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   int index(0);
   rowDiv->setStyleClass("row");
   for (auto &link: imgAnchorLinkMap) {
-    index++;
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
@@ -295,17 +324,20 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
       /*Wt::WLineEdit *edit =
         columnDiv->addWidget(Wt::cpp14::make_unique<Wt::WLineEdit>());
         edit->setPlaceholderText("Edit me");*/
-      Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+    /*  Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
       Wt::WLineEdit *edit= personDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Edit Me")));
 
       edit->enterPressed().connect
-        (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, std::string(edit->text().toUTF8())));
+        (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, std::string(edit->text().toUTF8())));*/
     }
     else {
       Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
     }
     captionDiv->setId("caption");
+    index++;
   }
+  MainImageGallaryDiv->show();
+  return;
 }
 
 void NewUiApplication::SetupFooter()

@@ -34,6 +34,7 @@
 #include <Wt/WLineEdit.h>
 #include <Wt/WPushButton.h>
 #include <Wt/WText.h>
+#include <Wt/WTimer.h>
 #include <Wt/WVideo.h>
 #include <memory>
 
@@ -45,6 +46,7 @@ private:
   Wt::WPushButton *PlayButton;
   Wt::WVideo *VideoPlayer;
   Wt::WText *VideoPlaybackStatus;
+  Wt::WTimer *Timer;
   Wt::WContainerWidget *MainVideoDiv;
   Wt::WContainerWidget *MainVideoContainer;
   Wt::WContainerWidget *MainImageGallaryDiv;
@@ -74,6 +76,7 @@ private:
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
   bool SendVideoAnalysisRequest(std::string &action, std::string &playUrl);
+  bool StopTimer(std::string &file);
   //void CreateServer();
   void CreateServer(Wt::WContainerWidget *ptr);
   void SetupRefreshTimer();
