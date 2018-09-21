@@ -79,6 +79,7 @@ void NewUiApplication::SetupRefreshTimer()
 bool NewUiApplication::StopTimer(std::string &file)
 {
   struct stat buffer;
+  std::cout << "StopTimer : " << file.c_str() << "\n";
   bool val(false);
   if ((stat(file.c_str(), &buffer) == 0)) {
     std::cout << "Done with video analysis stopping the timer.\n";
@@ -114,25 +115,34 @@ void NewUiApplication::TimeOutReached()
   std::cout << "Timeout occured refreshing\n";
   std::string imgAnchFile("");
   std::string basePath("/tmp/images/");
+  //std::string sessId(sessionId());
+  std::string sessId("xcJHt7IOEdHWyOck");
   if (IsClusterEnabled) {
     std::string imgDir("/cluster/");
-    imgAnchFile = basePath + sessionId() + "/clusterImagesAnchor.txt";
+    imgAnchFile = basePath + sessId + "/clusterImagesAnchor.txt";
   }
   else {
     std::string imgDir("/zoom_shot/");
-    imgAnchFile = basePath + sessionId() + "/zoomImagesAnchor.txt";
+    imgAnchFile = basePath + sessId + "/zoomImagesAnchor.txt";
   }
 
   root()->removeWidget(MainImageGallaryDiv);
   MainImageGallaryDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
   MainImageGallaryDiv->setId("gallary");
   NewUiApplication::TImageAnchorLinkMap imgAncMap(GetImageFiles(imgAnchFile));
+  if (!IsClusterResized && IsClusterEnabled) {
+    IsClusterResized = true;
+    for(int i = 0; i < imgAncMap.size(); i++) {
+      PersonNameVector.push_back("Unknown");
+    }
+  }
   SetupImageGallary(MainImageGallaryDiv, imgAncMap);
 
   root()->removeWidget(FooterDiv);
   SetupFooter();
   root()->refresh();
-  std::string doneFile(basePath + sessionId() + "/cluster/Done.txt");
+  std::string doneFile(basePath + sessId + "/cluster/Done.txt");
+  //std::string doneFile(basePath + sessionId() + "/cluster/Done.txt");
   StopTimer(doneFile);
 }
 
@@ -311,6 +321,12 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   for (auto &link: imgAnchorLinkMap) {
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
+/*
+    Wt::WContainerWidget *idDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+    idDiv->setStyleClass("caption");
+    std::string id(std::to_string(index+1));
+    Wt::WText *idText = idDiv->addWidget(std::make_unique<Wt::WText>(id.c_str()));
+*/
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     thumbnailDiv->setStyleClass("thumbnail");
     std::string imgAnchorLink(link.second);
@@ -324,11 +340,37 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
       /*Wt::WLineEdit *edit =
         columnDiv->addWidget(Wt::cpp14::make_unique<Wt::WLineEdit>());
         edit->setPlaceholderText("Edit me");*/
-    /*  Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      Wt::WLineEdit *edit= personDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Edit Me")));
+        Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+        auto edit = personDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Rename Me")));
+        personDiv->setStyleClass("col col-md-8 col-xs-12");
+        edit->setStyleClass("alert alert-danger");
+        edit->setAttributeValue("role", Wt::WString("alert"));
+        std::string actorName(edit->text().toUTF8());
+        edit->enterPressed().connect
+          (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, actorName));
+        //class="alert alert-success" role="alert"
+        EditVector.push_back(edit);
 
-      edit->enterPressed().connect
-        (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, std::string(edit->text().toUTF8())));*/
+      /*
+      Wt::WContainerWidget *rowDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      rowDiv->setStyleClass("row");
+
+      Wt::WContainerWidget *renameDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      renameDiv->setStyleClass("col-md-12  col-xs-3 col-sm-3");
+
+      Wt::WContainerWidget *editMeDiv = renameDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      editMeDiv->setStyleClass("input-group");
+      Wt::WContainerWidget *renameDivLineEditDiv = editMeDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      auto renameMe = renameDivLineEditDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Rename")));
+      renameMe->setStyleClass("form-control");
+      if (index == 0) {
+        renameMe->setFocus();
+      }
+      Wt::WContainerWidget *buttonDiv = renameDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+      buttonDiv->setStyleClass("input-group-btn");
+      auto editBtn = buttonDiv->addWidget(std::make_unique<Wt::WPushButton>("K"));
+      editBtn->setStyleClass(Wt::WString::fromUTF8("btn btn-success with-label btn-group-xs"));
+      */
     }
     else {
       Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
@@ -410,7 +452,29 @@ void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
 
 void NewUiApplication::OnPersonNameChanged(int index, std::string name)
 {
-  std::cout << "OnPersonNameChanged index = " << index << " Name = " << name.c_str() << "\n";
+  std::string myName(EditVector[index]->text().toUTF8());
+  std::cout << "OnPersonNameChanged index = " << index << "mY Name = " << myName.c_str() <<"\n";
+  PersonNameVector[index] = myName;
+  std::string msg("");
+  for(int i = 0; i < PersonNameVector.size(); i++) {
+    std::cout << "index = " << i << " name = " << PersonNameVector[i].c_str() << "\n";
+    if (PersonNameVector[i].compare("Unknown") == 0) {
+      msg += " " + std::to_string(i+1);
+      EditVector[i]->setStyleClass("alert alert-danger");
+      EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
+    }
+    else if (EditVector[index]->text().toUTF8().compare("Rename Me") != 0) {
+      PersonNameVector[index] = myName;
+      EditVector[i]->setStyleClass("alert alert-success");
+      EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
+    }
+  }
+  if (!msg.empty()) {
+    Wt::WMessageBox::show("Information", "Please Rename remaining Highlighted Person's name with Red background." , Wt::StandardButton::Ok);
+  }
+  else {
+    Wt::WMessageBox::show("Information", "Congragulations! you successfully renamed all the Charecters. You can Create a new model now." , Wt::StandardButton::Ok);
+  }
 }
 
 // Event and button click handlers.
@@ -507,7 +571,8 @@ void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
 
 NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   : WApplication(env),
-  IsClusterEnabled(false)
+  IsClusterEnabled(false),
+  IsClusterResized(false)
 {
   setTitle("Spookfish UI"); // application title
   SetupTheme();
@@ -531,6 +596,8 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   MainImageGallaryDiv->hide();
 
   SetupFooter();
+  std::vector<std::string> tmp;
+  ClusterActorMap[sessionId()] = tmp;
 
   //std::thread responseThread(&NewUiApplication::CreateServer, this, MainImageGallaryDiv);
   //responseThread.detach();

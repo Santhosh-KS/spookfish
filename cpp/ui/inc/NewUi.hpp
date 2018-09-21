@@ -55,8 +55,13 @@ private:
   Wt::WContainerWidget *ThumbnailDiv;
   Wt::WContainerWidget *ClusterImageGallaryDiv;
   typedef std::map<std::string, std::string> TImageAnchorLinkMap;
+  typedef std::map<std::string, std::vector<std::string>> TClusterActorMap;
+  TClusterActorMap ClusterActorMap;
+  std::vector<Wt::WLineEdit*> EditVector;
+  std::vector<std::string> PersonNameVector;
 //  std::string PersonEditedName;
   bool IsClusterEnabled;
+  bool IsClusterResized;
   void SetupTheme();
   void SetupHeader();
   void SetupMainBody();
