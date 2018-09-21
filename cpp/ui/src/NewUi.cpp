@@ -48,6 +48,16 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+int NewUiApplication::ExecuteCommand(std::string &cmd)
+{
+  std::cout << "Executing CMD: " << cmd.c_str() << "\n";
+  int ret = system(cmd.c_str());
+  if (WIFSIGNALED(ret)
+      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
+    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
+  }
+  return ret;
+}
 
 void NewUiApplication::SetupRefreshTimer()
 {
@@ -60,28 +70,27 @@ void NewUiApplication::SetupRefreshTimer()
   // Need to remove in the deployment scenario.
   std::string zoomPath("/tmp/images/" + sessionId() + "/zoom_shot");
   std::string cmd("mkdir -p " + zoomPath);
-  //std::cout << "Creating New DIR : " << cmd.c_str() << "\n";
-  int ret = system(cmd.c_str());
-  if (WIFSIGNALED(ret)
-      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
-    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
-  }
+  ExecuteCommand(cmd);
   std::string onePath("/tmp/images/" + sessionId() + "/1");
   cmd = "mkdir -p " + onePath;
-  ret = system(cmd.c_str());
-  if (WIFSIGNALED(ret)
-      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
-    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
-  }
+  ExecuteCommand(cmd);
 }
 
+bool NewUiApplication::CheckFileExists(std::string &file)
+{
+  struct stat buffer;
+  bool val(false);
+  if ((stat(file.c_str(), &buffer) == 0)) {
+    val = true;
+  }
+  return val;
+}
 
 bool NewUiApplication::StopTimer(std::string &file)
 {
-  struct stat buffer;
-  std::cout << "StopTimer : " << file.c_str() << "\n";
   bool val(false);
-  if ((stat(file.c_str(), &buffer) == 0)) {
+  std::cout << "StopTimer : " << file.c_str() << "\n";
+  if (CheckFileExists(file)) {
     std::cout << "Done with video analysis stopping the timer.\n";
     Timer->stop();
     val = true;
@@ -135,6 +144,7 @@ void NewUiApplication::TimeOutReached()
     for(int i = 0; i < imgAncMap.size(); i++) {
       PersonNameVector.push_back("Unknown");
     }
+    PersonNameVector.resize(imgAncMap.size());
   }
   SetupImageGallary(MainImageGallaryDiv, imgAncMap);
 
@@ -244,18 +254,9 @@ void NewUiApplication::OnSaveButtonPressed()
   // TODO: make it configurable.
   std::string dstPath("/opt/spookfish/ImageStorage");
   std::string cmd("sudo cp -r " + srcPath + " " + dstPath);
-  int ret = system(cmd.c_str());
-  if (WIFSIGNALED(ret)
-      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
-    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
-  }
-  ///opt/spookfish/scripts/
+  ExecuteCommand(cmd);
   cmd = "bash /opt/spookfish/scripts/save.sh";
-  ret = system(cmd.c_str());
-  if (WIFSIGNALED(ret)
-      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
-    std::cerr << "ERROR: Failed to execute command " << cmd.c_str() << "\n";
-  }
+  ExecuteCommand(cmd);
 }
 
 void NewUiApplication::OnAllImagesButtonPressed()
@@ -318,15 +319,31 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   int index(0);
   rowDiv->setStyleClass("row");
+  //std::string sessId(sessionId());
+  std::string sessId("xcJHt7IOEdHWyOck");
+  std::string lableFile("/tmp/images/"+sessId+"/label_name.txt");
+  bool lableExist(CheckFileExists(lableFile));
+  std::vector<std::string> actorNamesVec;
+  std::ifstream infile(lableFile);
+  int lineNum(0);
+  std::string line("");
+  while (std::getline(infile, line)) {
+    if (lineNum > 0) {
+      int pos = line.find_first_of(";");
+      std::string name(line.substr(0,pos));
+      actorNamesVec.push_back(name);
+      std::string clusterImgFile("/tmp/images/" + sessId + "/faces/" + name);
+      if (!CheckFileExists(clusterImgFile)) {
+        std::string cmd("mkdir -p " + clusterImgFile);
+        ExecuteCommand(cmd);
+      }
+    }
+    lineNum++;
+  }
+
   for (auto &link: imgAnchorLinkMap) {
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
-/*
-    Wt::WContainerWidget *idDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-    idDiv->setStyleClass("caption");
-    std::string id(std::to_string(index+1));
-    Wt::WText *idText = idDiv->addWidget(std::make_unique<Wt::WText>(id.c_str()));
-*/
     Wt::WContainerWidget *thumbnailDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     thumbnailDiv->setStyleClass("thumbnail");
     std::string imgAnchorLink(link.second);
@@ -337,40 +354,23 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
     anchor->addNew<Wt::WImage>(Wt::WLink(imgLink.c_str()));
     Wt::WContainerWidget *captionDiv = thumbnailDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     if (IsClusterEnabled) {
-      /*Wt::WLineEdit *edit =
-        columnDiv->addWidget(Wt::cpp14::make_unique<Wt::WLineEdit>());
-        edit->setPlaceholderText("Edit me");*/
         Wt::WContainerWidget *personDiv = columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
         auto edit = personDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Rename Me")));
         personDiv->setStyleClass("col col-md-8 col-xs-12");
-        edit->setStyleClass("alert alert-danger");
         edit->setAttributeValue("role", Wt::WString("alert"));
-        std::string actorName(edit->text().toUTF8());
-        edit->enterPressed().connect
-          (std::bind(&NewUiApplication::OnPersonNameChanged, this, index, actorName));
-        //class="alert alert-success" role="alert"
-        EditVector.push_back(edit);
-
-      /*
-      Wt::WContainerWidget *rowDiv= columnDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      rowDiv->setStyleClass("row");
-
-      Wt::WContainerWidget *renameDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      renameDiv->setStyleClass("col-md-12  col-xs-3 col-sm-3");
-
-      Wt::WContainerWidget *editMeDiv = renameDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      editMeDiv->setStyleClass("input-group");
-      Wt::WContainerWidget *renameDivLineEditDiv = editMeDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      auto renameMe = renameDivLineEditDiv->addWidget(std::make_unique<Wt::WLineEdit>(Wt::WString::fromUTF8("Rename")));
-      renameMe->setStyleClass("form-control");
-      if (index == 0) {
-        renameMe->setFocus();
-      }
-      Wt::WContainerWidget *buttonDiv = renameDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
-      buttonDiv->setStyleClass("input-group-btn");
-      auto editBtn = buttonDiv->addWidget(std::make_unique<Wt::WPushButton>("K"));
-      editBtn->setStyleClass(Wt::WString::fromUTF8("btn btn-success with-label btn-group-xs"));
-      */
+        if (lableExist) {
+          edit->setText(actorNamesVec[index].c_str());
+          edit->setStyleClass("alert alert-success");
+          std::string clusterImgFile("/tmp/images/" + sessId + "/faces/" + actorNamesVec[index] + "/");
+          std::string cmd("cp -r " + imgAnchorLink + "\t" + clusterImgFile);
+          ExecuteCommand(cmd);
+        }
+        else {
+          edit->setStyleClass("alert alert-danger");
+          edit->enterPressed().connect
+            (std::bind(&NewUiApplication::OnPersonNameChanged, this, index));
+          EditVector.push_back(edit);
+        }
     }
     else {
       Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
@@ -450,11 +450,10 @@ void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
 }
 #endif
 
-void NewUiApplication::OnPersonNameChanged(int index, std::string name)
+void NewUiApplication::OnPersonNameChanged(int index)
 {
-  std::string myName(EditVector[index]->text().toUTF8());
-  std::cout << "OnPersonNameChanged index = " << index << "mY Name = " << myName.c_str() <<"\n";
-  PersonNameVector[index] = myName;
+  std::string actorName(EditVector[index]->text().toUTF8());
+  PersonNameVector[index] = actorName;
   std::string msg("");
   for(int i = 0; i < PersonNameVector.size(); i++) {
     std::cout << "index = " << i << " name = " << PersonNameVector[i].c_str() << "\n";
@@ -464,7 +463,7 @@ void NewUiApplication::OnPersonNameChanged(int index, std::string name)
       EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
     }
     else if (EditVector[index]->text().toUTF8().compare("Rename Me") != 0) {
-      PersonNameVector[index] = myName;
+      PersonNameVector[index] = actorName;
       EditVector[i]->setStyleClass("alert alert-success");
       EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
     }
@@ -473,7 +472,19 @@ void NewUiApplication::OnPersonNameChanged(int index, std::string name)
     Wt::WMessageBox::show("Information", "Please Rename remaining Highlighted Person's name with Red background." , Wt::StandardButton::Ok);
   }
   else {
-    Wt::WMessageBox::show("Information", "Congragulations! you successfully renamed all the Charecters. You can Create a new model now." , Wt::StandardButton::Ok);
+    std::string line("Unknown;-1\n");
+    for(int i = 0; i < PersonNameVector.size(); i++) {
+      line += PersonNameVector[i]+ ";" + std::to_string(i) + "\n";
+    }
+    //std::string sessId(sessionId());
+    // TODO: Remove after testing.
+    std::string sessId("xcJHt7IOEdHWyOck");
+    std::string file("/tmp/images/" + sessId + "/label_name.txt");
+    std::ofstream out(file);
+    out << line;
+    out.close();
+    Wt::WMessageBox::show("Information",
+        "Congragulations! you successfully renamed all the Charecters. You can Create a new model now." , Wt::StandardButton::Ok);
   }
 }
 
@@ -489,12 +500,7 @@ void NewUiApplication::OnPlayButtonPressed()
     std::string cmd("python ./ui/scripts/youtube.py -u "); // TODO: Change the path.
     std::string file("/tmp/playablevidlink.txt");
     std::string redirect(" > " + file );
-    int ret = system((cmd + url + redirect).c_str());
-    if (WIFSIGNALED(ret)
-      && (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
-      return;
-    }
-
+    ExecuteCommand(cmd);
     std::ifstream infile(file);
     std::string line;
     while (std::getline(infile, line)) {

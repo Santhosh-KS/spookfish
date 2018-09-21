@@ -76,7 +76,7 @@ private:
   void OnClusterButtonPressed();
   void OnAllImagesButtonPressed();
   void OnSaveButtonPressed();
-  void OnPersonNameChanged(int index, std::string str);
+  void OnPersonNameChanged(int index);
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
@@ -88,6 +88,8 @@ private:
   void TimeOutReached();
   //std::vector<std::string> GetImageFiles(std::string &path);
   TImageAnchorLinkMap GetImageFiles(std::string &inFile);
+  bool CheckFileExists(std::string &file);
+  int ExecuteCommand(std::string &cmd);
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();
