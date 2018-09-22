@@ -5,7 +5,7 @@ cd /tmp
 git clone https://github.com/Santhosh-KS/ImageStorage.git ImageStorage
 cp -r /tmp/images/* /tmp/ImageStorage
 
-cd /opt/spookfish/ImageStorage
+cd /tmp/ImageStorage
 git add *
 git commit -m "Images committed"
 git push origin master

@@ -279,8 +279,8 @@ void NewUiApplication::OnSaveButtonPressed()
   //IsClusterEnabled = false;
   std::string srcPath("/tmp/images/" + sessionId());
   // TODO: make it configurable.
-  std::string dstPath("/opt/spookfish/ImageStorage");
-  std::string cmd("sudo cp -r " + srcPath + " " + dstPath);
+  std::string dstPath("/tmp/ImageStorage");
+  std::string cmd("cp -r " + srcPath + " " + dstPath);
   ExecuteCommand(cmd);
   cmd = "bash /opt/spookfish/scripts/save.sh";
   ExecuteCommand(cmd);
@@ -348,7 +348,7 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   rowDiv->setStyleClass("row");
   std::string sessId(sessionId());
   //std::string sessId("xcJHt7IOEdHWyOck");
-  std::string lableFile("/tmp/images/"+sessId+"/lable_name.txt");
+  std::string lableFile("/tmp/images/"+sessId+"/label_name.txt");
   bool lableExist(CheckFileExists(lableFile));
   std::vector<std::string> actorNamesVec;
   std::vector<std::string> enRollVec;
@@ -528,15 +528,15 @@ void NewUiApplication::OnPersonNameChanged(int index)
     std::cout << "Done Rename to : " << actorName.c_str() << "\n";
   }
 
-  bool allowLableFile(true);
+  bool allowLabelFile(true);
   for(auto &v: PersonNameVector) {
     if ( (v.compare("Unknown") == 0) || (v.compare("Rename Me") == 0)) {
-      allowLableFile = false;
+      allowLabelFile = false;
       break;
     }
   }
 
-  if (allowLableFile && nameChanged) {
+  if (allowLabelFile && nameChanged) {
     std::string line("Unknown;-1\n");
     for(int i = 0; i < PersonNameVector.size(); i++) {
       line += PersonNameVector[i]+ ";" + std::to_string(i) + "\n";
@@ -544,12 +544,13 @@ void NewUiApplication::OnPersonNameChanged(int index)
     // TODO: Remove after testing.
     std::string sessId(sessionId());
     //std::string sessId("xcJHt7IOEdHWyOck");
-    std::string file("/tmp/images/" + sessId + "/lable_name.txt");
+    std::string file("/tmp/images/" + sessId + "/label_name.txt");
     std::cout << "Writing the File: " << file.c_str() << "\n";
     IsClusterEnabled = true;
     std::ofstream out(file);
     out << line;
     out.close();
+    TimeOutReached();
     Wt::WMessageBox::show("Information",
         "Congragulations! you have new faces to Enroll for Face Recognition." , Wt::StandardButton::Ok);
   }

@@ -40,7 +40,7 @@ class CaptureVideo: public NotCopyable
     std::string VideoFile;
     std::string ShapePredictFile;
     std::string FaceRecRsNetFile;
-    std::string LableFile;
+    std::string LabelFile;
     std::string FaceDescriptorFile;
 
    uint64_t SkipFrame;

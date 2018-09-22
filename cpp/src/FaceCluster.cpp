@@ -138,8 +138,8 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
     std::string file(path +"cluster_"+std::to_string(i)+".jpg");
     std::cout << "DEBUG: Storing cluster : " << file.c_str() << "\n";
     dlib::save_jpeg(dlib::tile_images(v),file.c_str());
-    auto itr = LableFileNameMap.find(i);
-    if (itr != LableFileNameMap.end()) {
+    auto itr = LabelFileNameMap.find(i);
+    if (itr != LabelFileNameMap.end()) {
       if (itr->second.size() == 1) {
         ImageAnchorLinkMap.erase(file);
       }
@@ -228,16 +228,16 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
   std::cout << "number of person found in the images: "<< numClusters << "\n";
 
   for (unsigned long i = 0 ; i < labels.size(); i++) {
-    auto itr = LableFileNameMap.find(labels[i]);
-    if (itr == LableFileNameMap.end()) {
+    auto itr = LabelFileNameMap.find(labels[i]);
+    if (itr == LabelFileNameMap.end()) {
       std::vector<std::string> tmp;
       tmp.push_back(ImageFiles[i]);
-      LableFileNameMap[labels[i]] = tmp;
+      LabelFileNameMap[labels[i]] = tmp;
     }
     else {
       itr->second.push_back(ImageFiles[i]);
     }
-    //std::cout << "LableFileNameMap itr->second.size() = " << itr->second.size() << "\n";
+    //std::cout << "LabelFileNameMap itr->second.size() = " << itr->second.size() << "\n";
   }
 
   TFaceCluster cluster;
@@ -258,7 +258,7 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
     cluster.push_back(temp);
   }
 #if 0
-  for(auto &mapItr : LableFileNameMap) {
+  for(auto &mapItr : LabelFileNameMap) {
     std::cout << "LABLE = " << mapItr.first;
     for(auto &v : mapItr.second) {
       std::cout << " FILE = " << v << " ";

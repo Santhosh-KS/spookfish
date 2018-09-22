@@ -70,7 +70,7 @@ int LinkApp::EnrollRun(std::string sessId)
 {
   try {
     std::string imgFile("/tmp/images/" + sessId + "/enroll_images.txt");
-    std::string lableFile("/tmp/images/" + sessId + "/lable_name.txt");
+    std::string lableFile("/tmp/images/" + sessId + "/label_name.txt");
     if (Enroller.get() == nullptr) {
       Enroller  = std::make_unique<Enroll>(imgFile, lableFile);
     }

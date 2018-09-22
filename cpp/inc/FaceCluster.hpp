@@ -56,7 +56,7 @@ class FaceCluster : public NotCopyable
     anet_type AnetType;
     std::vector<dlib::matrix<dlib::rgb_pixel>> FaceVector;
     std::vector<std::string> ImageFiles;
-    std::map<unsigned long, std::vector<std::string>> LableFileNameMap;
+    std::map<unsigned long, std::vector<std::string>> LabelFileNameMap;
     typedef std::vector<std::vector<dlib::matrix<dlib::rgb_pixel>>> TFaceCluster;
     typedef std::map<std::string, std::string> TImageAnchorLinkMap;
     TImageAnchorLinkMap ImageAnchorLinkMap;

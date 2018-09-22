@@ -34,13 +34,13 @@ class Enroll : public NotCopyable
 {
   private:
     std::string &FacesFile;
-    std::string &LableFile;
+    std::string &LabelFile;
     std::string SessionId;
     bool ReadyToEnroll;
     std::vector<std::string> ImageFilesVec;
     std::vector<int> LablesVec;
     bool CheckFileExists(std::string &file);
-    std::vector<std::string> ReadFile(std::string &file);
+    void ReadFile(std::string &file);
     bool IsEnrollAllowed(std::string faceFile, std::string lableFile);
   public:
     Enroll(std::string &facesFile, std::string &lableFile);

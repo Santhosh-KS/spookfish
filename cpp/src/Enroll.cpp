@@ -49,19 +49,18 @@ bool Enroll::CheckFileExists(std::string &file)
   bool val(false);
   if ((stat(file.c_str(), &buffer) == 0)) {
     val = true;
-    std::cout << "File " << file.c_str() << "\n";
+    std::cout << "File " << file.c_str() << " Found\n";
   }
   else {
-    std::cout << "File " << file.c_str() << "Not found..\n";
+    std::cout << "File " << file.c_str() << " Not found..\n";
   }
   return val;
 }
 
-std::vector<std::string> Enroll::ReadFile(std::string &file)
+void Enroll::ReadFile(std::string &file)
 {
   std::ifstream infile(file);
   std::string line;
-  std::vector<std::string> vec;
   int index(0);
   std::cout << "Reading file : " << file.c_str() << " \n";
   while (std::getline(infile, line)) {
@@ -75,28 +74,30 @@ std::vector<std::string> Enroll::ReadFile(std::string &file)
       index++;
     }
   }
-  return vec;
 }
 
 bool Enroll::IsEnrollAllowed(std::string faceFile, std::string lableFile)
 {
   bool retVal(true);
+  ImageFilesVec.clear();
+  LablesVec.clear();
   if (CheckFileExists(faceFile) &&   CheckFileExists(lableFile)) {
-    ImageFilesVec = ReadFile(FacesFile);
+    ReadFile(FacesFile);
     if (ImageFilesVec.empty() || LablesVec.empty()) {
       retVal = false;
     }
   }
+  std::cout << "ImageFilesVec size = " << ImageFilesVec.size() << " LablesVec size = " << LablesVec.size() << "\n";
   return retVal;
 }
 
 Enroll::Enroll(std::string &facesFile, std::string &lableFile):
   FacesFile(facesFile),
-  LableFile(lableFile),
+  LabelFile(lableFile),
   SessionId("12345"),
   ReadyToEnroll(false)
 {
-  IsEnrollAllowed(FacesFile, LableFile);
+  IsEnrollAllowed(FacesFile, LabelFile);
 }
 
 Enroll::~Enroll()
@@ -108,7 +109,7 @@ bool Enroll::Run(std::string &sessId, std::string &faceFile, std::string &lableF
 {
   if (IsEnrollAllowed(faceFile, lableFile)) {
     FacesFile = faceFile;
-    LableFile = lableFile;
+    LabelFile = lableFile;
     SessionId = sessId;
     cv::String predictorPath;
     cv::String faceRecognitionModelPath;
@@ -145,8 +146,8 @@ bool Enroll::Run(std::string &sessId, std::string &faceFile, std::string &lableF
     }
     std::cout << "number of face descriptors " << faceDescriptors.size() << "\n";
     std::cout << "number of face labels " << faceLabels.size() << "\n";
-    int pos = LableFile.find_last_of("/");
-    const std::string descriptorsPath = LableFile.substr(0,pos) + "/descriptors.csv";
+    int pos = LabelFile.find_last_of("/");
+    const std::string descriptorsPath = LabelFile.substr(0,pos) + "/descriptors.csv";
     std::ofstream ofs;
     ofs.open(descriptorsPath);
     for (int m = 0; m < faceDescriptors.size(); m++) {
@@ -164,6 +165,11 @@ bool Enroll::Run(std::string &sessId, std::string &faceFile, std::string &lableF
         }
       }
     }
+    ofs.close();
+    std::cout << "SUCCESS: Done with Enrollment\n";
+    const std::string doneFile = LabelFile.substr(0,pos) + "/Done.txt";
+    ofs.open(doneFile);
+    ofs << "Done";
     ofs.close();
   }
   else {
