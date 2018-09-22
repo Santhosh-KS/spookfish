@@ -69,12 +69,12 @@ int LinkApp::ClusterRun(std::string sessId)
 int LinkApp::EnrollRun(std::string sessId)
 {
   try {
+    std::string imgFile("/tmp/images/" + sessId + "/enroll_images.txt");
+    std::string lableFile("/tmp/images/" + sessId + "/lable_name.txt");
     if (Enroller.get() == nullptr) {
-      std::string imgFile("/tmp/images/" + sessId + "/enroll_images.txt");
-      std::string lableFile("/tmp/images/" + sessId + "/lable_name.txt");
       Enroller  = std::make_unique<Enroll>(imgFile, lableFile);
     }
-    Enroller->Run(sessId);
+    Enroller->Run(sessId, imgFile, lableFile);
   }
   catch(const std::exception& e ) {
     std::cerr << e.what() << "\n";

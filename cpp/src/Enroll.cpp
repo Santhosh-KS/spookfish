@@ -63,11 +63,13 @@ std::vector<std::string> Enroll::ReadFile(std::string &file)
   std::string line;
   std::vector<std::string> vec;
   int index(0);
+  std::cout << "Reading file : " << file.c_str() << " \n";
   while (std::getline(infile, line)) {
     if (line.empty()) {
       continue;
     }
     else {
+      std::cout << "Image Index = " << index << " File = " << file.c_str() << "\n";
       ImageFilesVec.push_back(line);
       LablesVec.push_back(index);
       index++;
@@ -76,21 +78,25 @@ std::vector<std::string> Enroll::ReadFile(std::string &file)
   return vec;
 }
 
+bool Enroll::IsEnrollAllowed(std::string faceFile, std::string lableFile)
+{
+  bool retVal(true);
+  if (CheckFileExists(faceFile) &&   CheckFileExists(lableFile)) {
+    ImageFilesVec = ReadFile(FacesFile);
+    if (ImageFilesVec.empty() || LablesVec.empty()) {
+      retVal = false;
+    }
+  }
+  return retVal;
+}
+
 Enroll::Enroll(std::string &facesFile, std::string &lableFile):
   FacesFile(facesFile),
   LableFile(lableFile),
   SessionId("12345"),
   ReadyToEnroll(false)
 {
-  if (CheckFileExists(facesFile) &&   CheckFileExists(lableFile)) {
-    ImageFilesVec = ReadFile(FacesFile);
-    if (ImageFilesVec.empty() || LablesVec.empty()) {
-      ReadyToEnroll = false;
-    }
-    else {
-      ReadyToEnroll = true;
-    }
-  }
+  IsEnrollAllowed(FacesFile, LableFile);
 }
 
 Enroll::~Enroll()
@@ -98,9 +104,12 @@ Enroll::~Enroll()
   // Empty
 }
 
-bool Enroll::Run(std::string &sessId)
+bool Enroll::Run(std::string &sessId, std::string &faceFile, std::string &lableFile)
 {
-  if (ReadyToEnroll) {
+  if (IsEnrollAllowed(faceFile, lableFile)) {
+    FacesFile = faceFile;
+    LableFile = lableFile;
+    SessionId = sessId;
     cv::String predictorPath;
     cv::String faceRecognitionModelPath;
     predictorPath = "/opt/spookfish/shape_predictor_68_face_landmarks.dat";
@@ -158,6 +167,7 @@ bool Enroll::Run(std::string &sessId)
     ofs.close();
   }
   else {
+    std::cout << "ERROR: Enrollment is Not Done\n";
     return false;
   }
   return true;

@@ -262,7 +262,7 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
 
 void NewUiApplication::OnDeleteButtonPressed()
 {
-  Wt::WMessageBox::show("Information", "Sorry, I only belive is constructive Actions! :)", Wt::StandardButton::Ok);
+  Wt::WMessageBox::show("Information", "Sorry, I only belive in constructive Actions! :)", Wt::StandardButton::Ok);
 }
 
 void NewUiApplication::OnEnrollButtonPressed()
@@ -403,10 +403,10 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
         }
         else {
           edit->setStyleClass("alert alert-danger");
-          edit->enterPressed().connect
-            (std::bind(&NewUiApplication::OnPersonNameChanged, this, index));
-          EditVector.push_back(edit);
         }
+        edit->enterPressed().connect
+          (std::bind(&NewUiApplication::OnPersonNameChanged, this, index));
+        EditVector.push_back(edit);
     }
     else {
       Wt::WText *caption = captionDiv->addWidget(std::make_unique<Wt::WText>("Unknown"));
@@ -507,25 +507,36 @@ void NewUiApplication::OnPersonNameChanged(int index)
     }
   }
   std::cout << "Actor Name given: " << actorName.c_str() << "\n";
-  PersonNameVector[index] = actorName;
-  std::string msg("");
+  /*
   for(int i = 0; i < PersonNameVector.size(); i++) {
     std::cout << "index = " << i << " name = " << PersonNameVector[i].c_str() << "\n";
+    EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
     if (PersonNameVector[i].compare("Unknown") == 0) {
-      msg += " " + std::to_string(i+1);
       EditVector[i]->setStyleClass("alert alert-danger");
-      EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
     }
     else if (EditVector[index]->text().toUTF8().compare("Rename Me") != 0) {
       PersonNameVector[index] = actorName;
       EditVector[i]->setStyleClass("alert alert-success");
-      EditVector[i]->setAttributeValue("role", Wt::WString("alert"));
     }
   }
-  if (!msg.empty()) {
-    Wt::WMessageBox::show("Information", "Please Rename remaining Highlighted Person's name with Red background." , Wt::StandardButton::Ok);
+  */
+  bool nameChanged(false);
+  if (PersonNameVector[index].compare("Unknown") || PersonNameVector[index].compare("Rename Me")) {
+    PersonNameVector[index] = actorName;
+    EditVector[index]->setStyleClass("alert alert-success");
+    nameChanged = true;
+    std::cout << "Done Rename to : " << actorName.c_str() << "\n";
   }
-  else {
+
+  bool allowLableFile(true);
+  for(auto &v: PersonNameVector) {
+    if ( (v.compare("Unknown") == 0) || (v.compare("Rename Me") == 0)) {
+      allowLableFile = false;
+      break;
+    }
+  }
+
+  if (allowLableFile && nameChanged) {
     std::string line("Unknown;-1\n");
     for(int i = 0; i < PersonNameVector.size(); i++) {
       line += PersonNameVector[i]+ ";" + std::to_string(i) + "\n";
@@ -534,12 +545,16 @@ void NewUiApplication::OnPersonNameChanged(int index)
     std::string sessId(sessionId());
     //std::string sessId("xcJHt7IOEdHWyOck");
     std::string file("/tmp/images/" + sessId + "/lable_name.txt");
+    std::cout << "Writing the File: " << file.c_str() << "\n";
     IsClusterEnabled = true;
     std::ofstream out(file);
     out << line;
     out.close();
     Wt::WMessageBox::show("Information",
         "Congragulations! you have new faces to Enroll for Face Recognition." , Wt::StandardButton::Ok);
+  }
+  else {
+    Wt::WMessageBox::show("Information", "Please Rename remaining Highlighted Person's name with Red background." , Wt::StandardButton::Ok);
   }
 }
 

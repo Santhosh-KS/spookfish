@@ -41,10 +41,11 @@ class Enroll : public NotCopyable
     std::vector<int> LablesVec;
     bool CheckFileExists(std::string &file);
     std::vector<std::string> ReadFile(std::string &file);
+    bool IsEnrollAllowed(std::string faceFile, std::string lableFile);
   public:
     Enroll(std::string &facesFile, std::string &lableFile);
     ~Enroll();
-    bool Run(std::string &sessId);
+    bool Run(std::string &sessId, std::string &imgFile, std::string &lableFile);
 };
 
 #endif // ENROLL_HPP
