@@ -22,34 +22,29 @@
    SOFTWARE.
 */
 
+#ifndef ENROLL_HPP
+#define ENROLL_HPP
 
-
-
-#ifndef LINK_APP_HPP
-#define LINK_APP_HPP
-
-#include <memory>
-#include <string>
+#include<string>
+#include<vector>
 
 #include "NotCopyable.hpp"
-#include "CaptureVideo.hpp"
-#include "FaceCluster.hpp"
-#include "Enroll.hpp"
 
-class LinkApp: public NotCopyable
+class Enroll : public NotCopyable
 {
-private:
-  std::string DataPathConfig;
-  std::string ClusterConfig;
-  std::unique_ptr<CaptureVideo> VideoCapture;
-  std::unique_ptr<FaceCluster> Cluster;
-  std::unique_ptr<Enroll> Enroller;
-public:
-  LinkApp(std::string);
-  ~LinkApp();
-  int Run(std::string &link, std::string sessId);
-  int ClusterRun(std::string sessId);
-  int EnrollRun(std::string sessId);
+  private:
+    std::string &FacesFile;
+    std::string &LableFile;
+    std::string SessionId;
+    bool ReadyToEnroll;
+    std::vector<std::string> ImageFilesVec;
+    std::vector<int> LablesVec;
+    bool CheckFileExists(std::string &file);
+    std::vector<std::string> ReadFile(std::string &file);
+  public:
+    Enroll(std::string &facesFile, std::string &lableFile);
+    ~Enroll();
+    bool Run(std::string &sessId);
 };
 
-#endif // LINK_APP_HPP
+#endif // ENROLL_HPP

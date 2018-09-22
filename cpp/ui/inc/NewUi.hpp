@@ -76,7 +76,9 @@ private:
   void OnClusterButtonPressed();
   void OnAllImagesButtonPressed();
   void OnSaveButtonPressed();
+  void OnEnrollButtonPressed();
   void OnPersonNameChanged(int index);
+  void OnDeleteButtonPressed();
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);
@@ -90,6 +92,7 @@ private:
   TImageAnchorLinkMap GetImageFiles(std::string &inFile);
   bool CheckFileExists(std::string &file);
   int ExecuteCommand(std::string &cmd);
+  bool SetupDefaultDirectories();
 public:
   NewUiApplication(const Wt::WEnvironment& env);
   ~NewUiApplication();

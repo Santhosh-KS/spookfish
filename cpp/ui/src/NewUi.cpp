@@ -48,6 +48,13 @@
 #include <sys/types.h>
 #include <dirent.h>
 
+bool NewUiApplication::SetupDefaultDirectories()
+{
+  std::string cmd("mkdir -p /tmp/images/" + sessionId());
+  ExecuteCommand(cmd);
+  return true;
+}
+
 int NewUiApplication::ExecuteCommand(std::string &cmd)
 {
   std::cout << "Executing CMD: " << cmd.c_str() << "\n";
@@ -82,6 +89,10 @@ bool NewUiApplication::CheckFileExists(std::string &file)
   bool val(false);
   if ((stat(file.c_str(), &buffer) == 0)) {
     val = true;
+    std::cout << "File " << file.c_str() << " Found.\n";
+  }
+  else {
+    std::cout << "File " << file.c_str() << " Not Found.\n";
   }
   return val;
 }
@@ -124,8 +135,8 @@ void NewUiApplication::TimeOutReached()
   std::cout << "Timeout occured refreshing\n";
   std::string imgAnchFile("");
   std::string basePath("/tmp/images/");
-  //std::string sessId(sessionId());
-  std::string sessId("xcJHt7IOEdHWyOck");
+  std::string sessId(sessionId());
+  //std::string sessId("xcJHt7IOEdHWyOck");
   if (IsClusterEnabled) {
     std::string imgDir("/cluster/");
     imgAnchFile = basePath + sessId + "/clusterImagesAnchor.txt";
@@ -220,36 +231,52 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
   Wt::WPushButton *clusterBtn = clusterBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Cluster"));
   clusterBtn->setStyleClass("btn btn-info");
 
+  Wt::WContainerWidget *enrollBtnDiv = btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
+  enrollBtnDiv->setStyleClass("btn-group");
+  Wt::WPushButton *enrollBtn = enrollBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Enroll-New-Images"));
+  enrollBtn->setStyleClass("btn btn-warning");
+
+  Wt::WContainerWidget *statsBtnDiv= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
+  statsBtnDiv->setStyleClass("btn-group");
+  Wt::WPushButton *statsBtn = statsBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Stats"));
+  statsBtn->setStyleClass("btn btn-primary");
+
   Wt::WContainerWidget *saveBtnDiv= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
   saveBtnDiv->setStyleClass("btn-group");
   Wt::WPushButton *saveBtn = saveBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Save"));
   saveBtn->setStyleClass("btn btn-success");
 
-  Wt::WContainerWidget *btnDiv4= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
-  btnDiv4->setStyleClass("btn-group");
-  Wt::WPushButton *btn4 = btnDiv4->addWidget(std::make_unique<Wt::WPushButton>("Warning"));
-  btn4->setStyleClass("btn btn-warning");
+  Wt::WContainerWidget *delBtnDiv = btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
+  delBtnDiv->setStyleClass("btn-group");
+  Wt::WPushButton *delBtn = delBtnDiv->addWidget(std::make_unique<Wt::WPushButton>("Delete-All-Images"));
+  delBtn->setStyleClass("btn btn-danger");
 
-  Wt::WContainerWidget *btnDiv5= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
-  btnDiv5->setStyleClass("btn-group");
-  Wt::WPushButton *btn5 = btnDiv5->addWidget(std::make_unique<Wt::WPushButton>("Danger"));
-  btn5->setStyleClass("btn btn-danger");
-
-  Wt::WContainerWidget *btnDiv6= btnGrp->addWidget(std::make_unique<Wt::WContainerWidget>());
-  btnDiv6->setStyleClass("btn-group");
-  Wt::WPushButton *btn6 = btnDiv6->addWidget(std::make_unique<Wt::WPushButton>("Default"));
-  btn6->setStyleClass("btn btn-default");
   //MainNavToolDiv->hide();
 
   clusterBtn->clicked().connect(this, &NewUiApplication::OnClusterButtonPressed);
   allImagesBtn->clicked().connect(this, &NewUiApplication::OnAllImagesButtonPressed);
   saveBtn->clicked().connect(this, &NewUiApplication::OnSaveButtonPressed);
+  enrollBtn->clicked().connect(this, &NewUiApplication::OnEnrollButtonPressed);
+  delBtn->clicked().connect(this, &NewUiApplication::OnDeleteButtonPressed);
+}
+
+void NewUiApplication::OnDeleteButtonPressed()
+{
+  Wt::WMessageBox::show("Information", "Sorry, I only belive is constructive Actions! :)", Wt::StandardButton::Ok);
+}
+
+void NewUiApplication::OnEnrollButtonPressed()
+{
+  std::cout << "OnEnrollButtonPressed\n";
+  std::string action("Enroll");
+  std::string val("");
+  SendVideoAnalysisRequest(action, val);
 }
 
 void NewUiApplication::OnSaveButtonPressed()
 {
   std::cout << "OnSaveButtonPressed\n";
-  IsClusterEnabled = false;
+  //IsClusterEnabled = false;
   std::string srcPath("/tmp/images/" + sessionId());
   // TODO: make it configurable.
   std::string dstPath("/opt/spookfish/ImageStorage");
@@ -319,28 +346,34 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
   Wt::WContainerWidget *rowDiv = gallaryDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   int index(0);
   rowDiv->setStyleClass("row");
-  //std::string sessId(sessionId());
-  std::string sessId("xcJHt7IOEdHWyOck");
-  std::string lableFile("/tmp/images/"+sessId+"/label_name.txt");
+  std::string sessId(sessionId());
+  //std::string sessId("xcJHt7IOEdHWyOck");
+  std::string lableFile("/tmp/images/"+sessId+"/lable_name.txt");
   bool lableExist(CheckFileExists(lableFile));
   std::vector<std::string> actorNamesVec;
-  std::ifstream infile(lableFile);
-  int lineNum(0);
-  std::string line("");
-  while (std::getline(infile, line)) {
-    if (lineNum > 0) {
-      int pos = line.find_first_of(";");
-      std::string name(line.substr(0,pos));
-      actorNamesVec.push_back(name);
-      std::string clusterImgFile("/tmp/images/" + sessId + "/faces/" + name);
-      if (!CheckFileExists(clusterImgFile)) {
-        std::string cmd("mkdir -p " + clusterImgFile);
-        ExecuteCommand(cmd);
+  std::vector<std::string> enRollVec;
+  if (lableExist) {
+    std::cout << "Staring to create Face Directory\n";
+    std::ifstream infile(lableFile);
+    int lineNum(0);
+    std::string line("");
+    while (std::getline(infile, line)) {
+      std::cout << "Line : " << line.c_str() << "\n";
+      if (lineNum > 0) {
+        int pos = line.find_first_of(";");
+        std::string name(line.substr(0,pos));
+        actorNamesVec.push_back(name);
+        std::string clusterImgFile("/tmp/images/" + sessId + "/faces/" + name);
+        std::cout << "clusterImgFile = " << clusterImgFile.c_str() <<"\n";
+        if (!CheckFileExists(clusterImgFile)) {
+          std::string cmd("mkdir -p " + clusterImgFile);
+          std::cout << "Creating Directory : " << cmd.c_str() << "\n";
+          ExecuteCommand(cmd);
+        }
       }
+      lineNum++;
     }
-    lineNum++;
   }
-
   for (auto &link: imgAnchorLinkMap) {
     Wt::WContainerWidget *columnDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
     columnDiv->setStyleClass("col col-md-2 col-xs-4");
@@ -361,9 +394,12 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
         if (lableExist) {
           edit->setText(actorNamesVec[index].c_str());
           edit->setStyleClass("alert alert-success");
-          std::string clusterImgFile("/tmp/images/" + sessId + "/faces/" + actorNamesVec[index] + "/");
-          std::string cmd("cp -r " + imgAnchorLink + "\t" + clusterImgFile);
+          std::string clusterImgFilePath("/tmp/images/" + sessId + "/faces/" + actorNamesVec[index] + "/");
+          std::string cmd("cp -r " + imgAnchorLink + "\t" + clusterImgFilePath);
           ExecuteCommand(cmd);
+          int pos = link.second.find_last_of("/");
+          std::string clusterImageFileName(link.second.substr(pos+1));
+          enRollVec.push_back(clusterImgFilePath + clusterImageFileName);
         }
         else {
           edit->setStyleClass("alert alert-danger");
@@ -377,6 +413,18 @@ void NewUiApplication::SetupImageGallary(Wt::WContainerWidget *mainRight, NewUiA
     }
     captionDiv->setId("caption");
     index++;
+  }
+  if (lableExist) {
+    std::string line;
+    for(int i = 0; i < enRollVec.size(); i++) {
+      line += enRollVec[i] + "\n";
+    }
+    std::string file("/tmp/images/" + sessId + "/enroll_images.txt");
+    std::cout << "Creating file : " << file.c_str() << "\n";
+    std::ofstream out(file);
+    out << line;
+    out.close();
+    IsClusterEnabled = true;
   }
   MainImageGallaryDiv->show();
   return;
@@ -453,6 +501,12 @@ void NewUiApplication::CreateServer(Wt::WContainerWidget *ptr)
 void NewUiApplication::OnPersonNameChanged(int index)
 {
   std::string actorName(EditVector[index]->text().toUTF8());
+  if (PersonNameVector.empty()) {
+    for(int i=0; i< 9; i++) {
+      PersonNameVector.push_back("Unknown");
+    }
+  }
+  std::cout << "Actor Name given: " << actorName.c_str() << "\n";
   PersonNameVector[index] = actorName;
   std::string msg("");
   for(int i = 0; i < PersonNameVector.size(); i++) {
@@ -476,15 +530,16 @@ void NewUiApplication::OnPersonNameChanged(int index)
     for(int i = 0; i < PersonNameVector.size(); i++) {
       line += PersonNameVector[i]+ ";" + std::to_string(i) + "\n";
     }
-    //std::string sessId(sessionId());
     // TODO: Remove after testing.
-    std::string sessId("xcJHt7IOEdHWyOck");
-    std::string file("/tmp/images/" + sessId + "/label_name.txt");
+    std::string sessId(sessionId());
+    //std::string sessId("xcJHt7IOEdHWyOck");
+    std::string file("/tmp/images/" + sessId + "/lable_name.txt");
+    IsClusterEnabled = true;
     std::ofstream out(file);
     out << line;
     out.close();
     Wt::WMessageBox::show("Information",
-        "Congragulations! you successfully renamed all the Charecters. You can Create a new model now." , Wt::StandardButton::Ok);
+        "Congragulations! you have new faces to Enroll for Face Recognition." , Wt::StandardButton::Ok);
   }
 }
 
@@ -494,12 +549,14 @@ void NewUiApplication::OnPlayButtonPressed()
   auto url(SearchLineEdit->text().toUTF8());
   // little sanity check on the URL.
   //std::string jsonRequst("{\"URL\":\"youtube.com\"}");
+  std::string sessId(sessionId());
   std::cout << "OnPlayButtonPressed\n";
   if (url.find("https://www.youtube.com") != std::string::npos
       || url.find("http://www.youtube.com") != std::string::npos)  {
     std::string cmd("python ./ui/scripts/youtube.py -u "); // TODO: Change the path.
-    std::string file("/tmp/playablevidlink.txt");
+    std::string file("/tmp/images/"+ sessId + "/playablevidlink.txt");
     std::string redirect(" > " + file );
+    cmd = cmd + url + redirect;
     ExecuteCommand(cmd);
     std::ifstream infile(file);
     std::string line;
@@ -540,6 +597,8 @@ bool NewUiApplication::SendVideoAnalysisRequest(std::string &action, std::string
   // to analyse. And controll the rest of the video processing.
   std::string sessIdVal(sessionId());
 
+  //std::string sessId("xcJHt7IOEdHWyOck");
+  //parser.SetString(sessIdKey, sessId);
   parser.SetString(sessIdKey, sessIdVal);
   parser.SetString(actionKey, action);
   if (action.compare("Play") == 0) {
@@ -580,6 +639,7 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   IsClusterEnabled(false),
   IsClusterResized(false)
 {
+  SetupDefaultDirectories();
   setTitle("Spookfish UI"); // application title
   SetupTheme();
   SetupHeader();

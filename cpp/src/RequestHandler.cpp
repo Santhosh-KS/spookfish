@@ -78,6 +78,16 @@ std::string RequestHandler::ProcessRequest(std::string &str)
     else if (action.compare("Cluster") == 0) {
       std::thread clusterThread(&RequestHandler::Clusterize, this, itr->first);
       ThreadVec.push_back(std::move(clusterThread));
+      return status;
+    }
+    else if (action.compare("Enroll") == 0) {
+      std::thread enrollThread(&RequestHandler::EnrollImages, this, itr->first);
+      ThreadVec.push_back(std::move(enrollThread));
+      status = "200 OK";
+      return status;
+    }
+    else {
+      return status;
     }
   }
   else {
@@ -105,6 +115,14 @@ void RequestHandler::VideoAnalyzer(std::string str, std::string sessId)
 {
   auto link = std::make_shared<LinkApp>("") ;
   link->Run(str, sessId);
+  LinkVec.push_back(link);
+}
+
+void RequestHandler::EnrollImages(std::string sessId)
+{
+  std::cout << "EnrollImages started\n";
+  auto link = std::make_shared<LinkApp>("") ;
+  link->EnrollRun(sessId);
   LinkVec.push_back(link);
 }
 

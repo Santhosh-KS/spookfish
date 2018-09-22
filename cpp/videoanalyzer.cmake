@@ -21,6 +21,7 @@ SET(bin_src src/main.cpp
             src/DrawingUtils.cpp
             src/RequestHandler.cpp
             src/LinkApp.cpp
+            src/Enroll.cpp
             common/src/JsonFileParser.cpp
             common/src/JsonStringParser.cpp
             common/src/TcpServer.cpp)

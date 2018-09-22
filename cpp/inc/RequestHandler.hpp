@@ -54,5 +54,6 @@ public:
   std::string ProcessRequest(std::string &str);
   void VideoAnalyzer(std::string str, std::string sessId);
   void Clusterize(std::string sessId);
+  void EnrollImages(std::string sessId);
 };
 #endif // REQUEST_HANDLER_HPP
