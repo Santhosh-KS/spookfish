@@ -203,10 +203,10 @@ bool FaceCluster::SaveStats(std::string &file)
         lines += line + "\n";
       }
     }
-    lines += "Total Person identified \t:\t" + std::to_string(ClusterStats.TotalClusters) + "\n";
+    lines += "Total Person identified :" + std::to_string(ClusterStats.TotalClusters) + "\n";
     int i(0);
     for(auto &v: ClusterStats.PersonNameVec) {
-      lines += v + "\t:\t" + std::to_string(ClusterStats.TotalFacesInEachCluster[i]) +"\n";
+      lines += v + ":" + std::to_string(ClusterStats.TotalFacesInEachCluster[i]) +"\n";
     }
     std::cout << "Storing Stats file : " << file.c_str() << "\n";
     std::ofstream out(file);

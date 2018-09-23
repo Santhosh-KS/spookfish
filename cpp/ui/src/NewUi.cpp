@@ -268,10 +268,30 @@ void NewUiApplication::OnStatsButtonPressed()
 {
   std::string file("/tmp/images/"+sessionId()+"/Stats.txt");
   std::map<std::string, std::string> statsMap;
+  std::string line("");
   if (CheckFileExists(file)) {
-    std::ifstream infile(file);
-    std::string line("");
+    std::ifstream infile;
+    std::string labelFile("/tmp/images/"+sessionId()+"/lable_name.txt");
+    std::vector<std::string> actorNames;
+    bool lableFileExists(CheckFileExists(labelFile));
+    if (lableFileExists) {
+      infile.open(labelFile);
+      int idx(0);
+      while (std::getline(infile, line)) {
+        if (idx > 0) {
+          int pos = line.find_first_of(";");
+          std::string name = line.substr(0,pos);
+          actorNames.push_back(name);
+        }
+        idx++;
+      }
+      infile.close();
+    }
+
+    infile.open(file);
+    line.clear();
     std::cout << "########## Stats Begin ##############\n";
+    int nameIndex = 0;
     while (std::getline(infile, line)) {
       std::cout << line.c_str() << "\n";
       int pos = line.find_first_of(":");
@@ -279,11 +299,23 @@ void NewUiApplication::OnStatsButtonPressed()
       std::string counts(line.substr(pos+1));
       auto keyPair = std::make_pair(key,counts);
       statsMap.insert(keyPair);
+      auto itr = statsMap.find("cluster_"+std::to_string(nameIndex));
+      if ( actorNames.size() > 0 && itr != statsMap.end()) {
+        std::cout << "Found old key = " << itr->first;
+        counts = itr->second;
+        statsMap.erase(key);
+        std::cout << "Erasing Old key\n";
+        auto mkpair = std::make_pair(actorNames[nameIndex], counts);
+        statsMap.insert(mkpair);
+        std::cout << "new key = " << key.c_str() << "\n";
+        nameIndex++;
+      }
     }
     std::cout << "########## Stats Ends  ##############\n";
+    infile.close();
   }
   for(auto &v: statsMap) {
-    std::cout << "key = " << v.first << " val = " << v.second << "\n";
+    std::cout << "KSS key = " << v.first << " val = " << v.second << "\n";
   }
   SetupStatsDisplay(statsMap);
   /*
@@ -298,11 +330,13 @@ void NewUiApplication::OnStatsButtonPressed()
 
 void NewUiApplication::OnDeleteButtonPressed()
 {
+  MainStatsDiv->hide();
   Wt::WMessageBox::show("Information", "Sorry, I only belive in constructive Actions! :)", Wt::StandardButton::Ok);
 }
 
 void NewUiApplication::OnEnrollButtonPressed()
 {
+  MainStatsDiv->hide();
   std::cout << "OnEnrollButtonPressed\n";
   std::string action("Enroll");
   std::string val("");
@@ -311,6 +345,7 @@ void NewUiApplication::OnEnrollButtonPressed()
 
 void NewUiApplication::OnSaveButtonPressed()
 {
+  MainStatsDiv->hide();
   std::cout << "OnSaveButtonPressed\n";
   //IsClusterEnabled = false;
   /*std::string srcPath("/tmp/images/" + sessionId());
@@ -324,6 +359,7 @@ void NewUiApplication::OnSaveButtonPressed()
 
 void NewUiApplication::OnAllImagesButtonPressed()
 {
+  MainStatsDiv->hide();
   std::cout << "OnAllImagesButtonPressed\n";
   IsClusterEnabled = false;
   TimeOutReached();
@@ -331,6 +367,7 @@ void NewUiApplication::OnAllImagesButtonPressed()
 
 void NewUiApplication::OnClusterButtonPressed()
 {
+  MainStatsDiv->hide();
   std::string action("Cluster");
   std::string val("");
   //SendVideoAnalysisRequest(action, val);
@@ -543,6 +580,10 @@ void NewUiApplication::OnPersonNameChanged(int index)
     }
   }
   std::cout << "Actor Name given: " << actorName.c_str() << "\n";
+  if (actorName.compare("Rename Me") == 0) {
+    std::cout << "Nothing changed return\n";
+    return;
+  }
   /*
   for(int i = 0; i < PersonNameVector.size(); i++) {
     std::cout << "index = " << i << " name = " << PersonNameVector[i].c_str() << "\n";
@@ -680,9 +721,12 @@ bool NewUiApplication::SendVideoAnalysisRequest(std::string &action, std::string
   return true;
 }
 
-//void NewUiApplication::SetupStatsDisplay()
 void NewUiApplication:: SetupStatsDisplay(std::map<std::string, std::string> &statsMap)
 {
+
+ // root()->removeWidget(MainStatsDiv);
+  root()->removeWidget(FooterDiv);
+
   auto textDiv = MainStatsDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   Wt::WContainerWidget *rowDiv = textDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   rowDiv->setStyleClass("row");
@@ -708,7 +752,12 @@ void NewUiApplication:: SetupStatsDisplay(std::map<std::string, std::string> &st
   }
   Wt::WContainerWidget *columnRightDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
   columnRightDiv->setStyleClass("col-md-3  col-xs-1 col-sm-1");
+  std::cout << "Ready to display\n";
   MainStatsDiv->show();
+  SetupFooter();
+  std::cout << "Done Footer creation to display\n";
+  root()->refresh();
+  std::cout << "Done With the table exiting\n";
 }
 
 void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
