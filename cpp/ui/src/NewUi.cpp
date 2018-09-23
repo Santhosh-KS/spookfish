@@ -277,12 +277,12 @@ void NewUiApplication::OnSaveButtonPressed()
 {
   std::cout << "OnSaveButtonPressed\n";
   //IsClusterEnabled = false;
-  std::string srcPath("/tmp/images/" + sessionId());
+  /*std::string srcPath("/tmp/images/" + sessionId());
   // TODO: make it configurable.
   std::string dstPath("/tmp/ImageStorage");
   std::string cmd("cp -r " + srcPath + " " + dstPath);
-  ExecuteCommand(cmd);
-  cmd = "bash /opt/spookfish/scripts/save.sh";
+  ExecuteCommand(cmd);*/
+  std::string cmd = "bash /opt/spookfish/scripts/save.sh";
   ExecuteCommand(cmd);
 }
 
