@@ -148,6 +148,9 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
         ImageAnchorLinkMap[file] = itr->second[val/2];
       }
     }
+    std::string personName("cluster_" + std::to_string(i));
+    ClusterStats.PersonNameVec.push_back(personName);
+    // KSS
     /*
        dlib::array2d<rgb_pixel> loadedImg;
        dlib::load_image(loadedImg, file.c_str());
@@ -166,6 +169,55 @@ void FaceCluster::Save(TFaceCluster &cluster, std::string &path)
   std::ofstream out(file);
   out << "Done\n";
   out.close();
+  int pos = path.find_last_of("/");
+  std::string statsFile(path.substr(0,pos));
+  pos = statsFile.find_last_of("/");
+  statsFile = statsFile.substr(0,pos) + "/Stats.txt";
+  SaveStats(statsFile);
+}
+
+bool FaceCluster::CheckFileExists(std::string &file)
+{
+  struct stat buffer;
+  bool val(false);
+  if ((stat(file.c_str(), &buffer) == 0)) {
+    val = true;
+    std::cout << "File " << file.c_str() << " Found.\n";
+  }
+  else {
+    std::cout << "File " << file.c_str() << " Not Found.\n";
+  }
+  return val;
+}
+
+
+bool FaceCluster::SaveStats(std::string &file)
+{
+  std::string lines("");
+  bool retVal(true);
+  if (ClusterStats.TotalClusters > 0) {
+    if (CheckFileExists(file)) {
+      std::ifstream infile(file);
+      std::string line("");
+      while (std::getline(infile, line)) {
+        lines += line + "\n";
+      }
+    }
+    lines += "Total Person identified \t:\t" + std::to_string(ClusterStats.TotalClusters) + "\n";
+    int i(0);
+    for(auto &v: ClusterStats.PersonNameVec) {
+      lines += v + "\t:\t" + std::to_string(ClusterStats.TotalFacesInEachCluster[i]) +"\n";
+    }
+    std::cout << "Storing Stats file : " << file.c_str() << "\n";
+    std::ofstream out(file);
+    out << lines;
+    out.close();
+  }
+  else {
+    std::cout << "No faces identified in this video\n";
+    retVal = false;
+  }
+  return retVal;
 }
 
 bool FaceCluster::StoreFiles()
@@ -226,6 +278,7 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
   std::vector<unsigned long> labels;
   const auto numClusters = dlib::chinese_whispers(edges, labels);
   std::cout << "number of person found in the images: "<< numClusters << "\n";
+  ClusterStats.TotalClusters = numClusters;
 
   for (unsigned long i = 0 ; i < labels.size(); i++) {
     auto itr = LabelFileNameMap.find(labels[i]);
@@ -241,7 +294,6 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
   }
 
   TFaceCluster cluster;
-  int count(0);
   for (size_t cluster_id = 0; cluster_id < numClusters; ++cluster_id) {
     std::vector<dlib::matrix<dlib::rgb_pixel>> temp;
     for (size_t j = 0; j < labels.size(); ++j) {
@@ -251,6 +303,10 @@ FaceCluster::TFaceCluster FaceCluster::IdentifyAllFaces()
         std::cout << "CLUSTER IMG: " << file.c_str() << "\n";
         save_jpeg(FaceVector[j], file.c_str());*/
       }
+    }
+    std::cout << "KSS total faces in a cluster = "  << temp.size() << "\n";
+    if (temp.size() > 1) {
+      ClusterStats.TotalFacesInEachCluster.push_back(temp.size());
     }
     //std::string file("sant_" + to_string(cluster_id)+ ".jpg");
     //save_jpeg(tile_images(temp),file.c_str());

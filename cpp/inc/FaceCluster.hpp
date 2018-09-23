@@ -60,11 +60,19 @@ class FaceCluster : public NotCopyable
     typedef std::vector<std::vector<dlib::matrix<dlib::rgb_pixel>>> TFaceCluster;
     typedef std::map<std::string, std::string> TImageAnchorLinkMap;
     TImageAnchorLinkMap ImageAnchorLinkMap;
+    struct ClusterImageStats {
+      uint64_t TotalClusters;
+      std::vector<uint64_t> TotalFacesInEachCluster;
+      std::vector<std::string> PersonNameVec;
+    };
+    struct ClusterImageStats ClusterStats;
     FaceCluster() = delete;
     void Save(TFaceCluster &cluster, std::string &path);
     bool GetAllFaces();
     TFaceCluster IdentifyAllFaces();
     bool StoreFiles();
+    bool SaveStats(std::string &file);
+    bool CheckFileExists(std::string &file);
   public:
     FaceCluster(const std::string &config);
     ~FaceCluster();

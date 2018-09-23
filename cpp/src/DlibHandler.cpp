@@ -314,6 +314,36 @@ bool DlibHandler::StoreFiles()
 
 void DlibHandler::PrintStats()
 {
+  std::string line;
+  line += "Total Images \t:\t" + std::to_string(ImgStats.TotalImages)  + "\n";
+  line += "Total Closeup shots\t:\t" + std::to_string(ImgStats.TotalZoomShots)  + "\n";
+  line += "Total Images with Faces in it\t:\t" + std::to_string(ImgStats.TotalFaceRecognizedImages)  + "\n";
+  if (ImgStats.TotalImagesWithOneFace > 0) {
+    line += "Total Images with One Face\t:\t" + std::to_string(ImgStats.TotalImagesWithOneFace)  + "\n";
+  }
+  if (ImgStats.TotalImagesWithTwoFace > 0) {
+    line += "Total Images with Two Face\t:\t" + std::to_string(ImgStats.TotalImagesWithTwoFace)  + "\n";
+  }
+  if (ImgStats.TotalImagesWithThreeFace > 0) {
+    line += "Total Images with Three Face\t:\t" + std::to_string(ImgStats.TotalImagesWithThreeFace)  + "\n";
+  }
+  if (ImgStats.TotalImagesWithFourFace > 0) {
+    line += "Total Images with Four Face\t:\t" + std::to_string(ImgStats.TotalImagesWithFourFace)  + "\n";
+  }
+  if (ImgStats.TotalImagesWithFiveFace > 0) {
+    line += "Total Images with Five Face\t:\t" + std::to_string(ImgStats.TotalImagesWithFiveFace)  + "\n";
+  }
+  if (ImgStats.TotalImagesWithSixOrMoreFace > 0) {
+    line += "Total Images with Six or More Face \t:\t" + std::to_string(ImgStats.TotalImagesWithSixOrMoreFace)  + "\n";
+  }
+  std::cout << line.c_str() << "\n";
+  std::string file(ImgStoragePath + "/Stats.txt");
+  std::cout << "Storing Stats file : " << file.c_str() << "\n";
+  std::ofstream out(file);
+  out << line;
+  out.close();
+
+  /*
   std::cout << " Total Images = " << ImgStats.TotalImages << "\n";
   std::cout << " Total zoom/closeup shots = " << ImgStats.TotalZoomShots << "\n";
   std::cout << " Total Face Rec Images = " << ImgStats.TotalFaceRecognizedImages << "\n";
@@ -323,4 +353,5 @@ void DlibHandler::PrintStats()
   std::cout << " Total 4 Faces in image = " << ImgStats.TotalImagesWithFourFace << "\n";
   std::cout << " Total 5 Faces in image = " << ImgStats.TotalImagesWithFiveFace << "\n";
   std::cout << " Total 6 or more Faces in image = " << ImgStats.TotalImagesWithSixOrMoreFace << "\n";
+  */
 }

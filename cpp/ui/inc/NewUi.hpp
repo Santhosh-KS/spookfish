@@ -54,6 +54,7 @@ private:
   Wt::WContainerWidget *FooterDiv;
   Wt::WContainerWidget *ThumbnailDiv;
   Wt::WContainerWidget *ClusterImageGallaryDiv;
+  Wt::WContainerWidget *MainStatsDiv;
   typedef std::map<std::string, std::string> TImageAnchorLinkMap;
   typedef std::map<std::string, std::vector<std::string>> TClusterActorMap;
   TClusterActorMap ClusterActorMap;
@@ -69,6 +70,8 @@ private:
   void SetupVideoPlayer(Wt::WContainerWidget *mainLeft);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight);
   void SetupImageGallary(Wt::WContainerWidget *mainRight, TImageAnchorLinkMap &imgAnchorLinkMap);
+  //void SetupStatsDisplay();
+  void SetupStatsDisplay(std::map<std::string, std::string> &statsMap);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec, std::string imgDir);
   //void SetupImageGallary(Wt::WContainerWidget *mainRight, std::vector<std::string> &testVec);
   void SetupFooter();
@@ -79,6 +82,7 @@ private:
   void OnEnrollButtonPressed();
   void OnPersonNameChanged(int index);
   void OnDeleteButtonPressed();
+  void OnStatsButtonPressed();
   void SetVideoPlaybackStatus(const std::string str);
   void SetupNavToolBar(Wt::WContainerWidget *navToolDiv);
   void SetupProgressBar(Wt::WContainerWidget *div);

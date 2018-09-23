@@ -38,6 +38,8 @@
 
 #include <Wt/WMessageBox.h>
 #include <Wt/WAnchor.h>
+#include <Wt/WTable.h>
+#include <Wt/WLength.h>
 
 #include "NewUi.hpp"
 #include "TcpClient.hpp"
@@ -258,6 +260,40 @@ void NewUiApplication::SetupNavToolBar(Wt::WContainerWidget *navToolDiv)
   saveBtn->clicked().connect(this, &NewUiApplication::OnSaveButtonPressed);
   enrollBtn->clicked().connect(this, &NewUiApplication::OnEnrollButtonPressed);
   delBtn->clicked().connect(this, &NewUiApplication::OnDeleteButtonPressed);
+  statsBtn->clicked().connect(this, &NewUiApplication::OnStatsButtonPressed);
+  //statsBtn->setLink(Wt::WLink(Wt::LinkType::InternalPath, "/stats"));
+}
+
+void NewUiApplication::OnStatsButtonPressed()
+{
+  std::string file("/tmp/images/"+sessionId()+"/Stats.txt");
+  std::map<std::string, std::string> statsMap;
+  if (CheckFileExists(file)) {
+    std::ifstream infile(file);
+    std::string line("");
+    std::cout << "########## Stats Begin ##############\n";
+    while (std::getline(infile, line)) {
+      std::cout << line.c_str() << "\n";
+      int pos = line.find_first_of(":");
+      std::string key(line.substr(0,pos));
+      std::string counts(line.substr(pos+1));
+      auto keyPair = std::make_pair(key,counts);
+      statsMap.insert(keyPair);
+    }
+    std::cout << "########## Stats Ends  ##############\n";
+  }
+  for(auto &v: statsMap) {
+    std::cout << "key = " << v.first << " val = " << v.second << "\n";
+  }
+  SetupStatsDisplay(statsMap);
+  /*
+  Wt::WLink anchorLink = Wt::WLink(file.c_str());
+  anchorLink.setTarget(Wt::LinkTarget::NewWindow);
+  std::unique_ptr<Wt::WAnchor> anchor = std::make_unique<Wt::WAnchor>(link);
+  anchor->addNew<Wt::WImage>(Wt::WLink("https://www.emweb.be/css/emweb_small.png"));
+*/
+/*  Wt::WContainerWidget *statsDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  Wt::WAnchor *anchor = statsDiv->addWidget(std::make_unique<Wt::WAnchor>(anchorLink));*/
 }
 
 void NewUiApplication::OnDeleteButtonPressed()
@@ -644,6 +680,37 @@ bool NewUiApplication::SendVideoAnalysisRequest(std::string &action, std::string
   return true;
 }
 
+//void NewUiApplication::SetupStatsDisplay()
+void NewUiApplication:: SetupStatsDisplay(std::map<std::string, std::string> &statsMap)
+{
+  auto textDiv = MainStatsDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  Wt::WContainerWidget *rowDiv = textDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  rowDiv->setStyleClass("row");
+
+  Wt::WContainerWidget *columnLeftDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  columnLeftDiv->setStyleClass("col-md-3  col-xs-1 col-sm-1");
+
+  Wt::WContainerWidget *columnCenterDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  columnCenterDiv->setStyleClass("col-md-6  col-xs-1 col-sm-1");
+  //auto text = textDiv->addWidget(std::make_unique<Wt::WText>("SIMPLE STATS HERE"));
+  auto table = columnCenterDiv->addWidget(std::make_unique<Wt::WTable>());
+  table->setHeaderCount(1);
+  table->addStyleClass("table form-inline table-bordered table-striped");
+  table->setWidth(Wt::WLength("100%"));
+  table->elementAt(0, 0)->addWidget(std::make_unique<Wt::WText>("#"));
+  table->elementAt(0, 1)->addWidget(std::make_unique<Wt::WText>("Stats Description"));
+  table->elementAt(0, 2)->addWidget(std::make_unique<Wt::WText>("Count"));
+  int i = 1;
+  for(auto itr = statsMap.begin(); itr != statsMap.end(); itr++, i++) {
+    table->elementAt(i, 0)->addWidget(std::make_unique<Wt::WText>(std::to_string(i).c_str()));
+    table->elementAt(i, 1)->addWidget(std::make_unique<Wt::WText>(itr->first.c_str()));
+    table->elementAt(i, 2)->addWidget(std::make_unique<Wt::WText>(itr->second.c_str()));
+  }
+  Wt::WContainerWidget *columnRightDiv = rowDiv->addWidget(std::make_unique<Wt::WContainerWidget>());
+  columnRightDiv->setStyleClass("col-md-3  col-xs-1 col-sm-1");
+  MainStatsDiv->show();
+}
+
 void NewUiApplication::SetVideoPlaybackStatus(const std::string str)
 {
   VideoPlaybackStatus->setText(str.c_str());
@@ -677,6 +744,8 @@ NewUiApplication::NewUiApplication(const Wt::WEnvironment& env)
   MainImageGallaryDiv->setId("gallary");
   MainImageGallaryDiv->hide();
 
+  MainStatsDiv = root()->addWidget(std::make_unique<Wt::WContainerWidget>());
+  MainStatsDiv->hide();
   SetupFooter();
   std::vector<std::string> tmp;
   ClusterActorMap[sessionId()] = tmp;
