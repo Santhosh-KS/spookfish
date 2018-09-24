@@ -58,11 +58,11 @@ I've tried to keep things simple. All you need to do is go to youtube.com and se
 
 Once you hit the play button, lot of things happen behind the scene. To start with, the Youtube url which you give in the search bar, is not playable as is. We need to find the original content URL. Some times it is called RTP playable URL of the original content. 
 
-To get the RTP content of the video, I've written some python code and used some python modules to achive the same. You can find all the details in my [github link](https://github.com/Santhosh-KS/spookfish).
+To get the playable RTP url of the video. I've written some python code and used some python modules to achive the same. You can find all the details in my [github link](https://github.com/Santhosh-KS/spookfish).
+
 ![Step-2](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/2.png?raw=true)
 
-
-Now you are all set. There will be some basic validation on the URL. For this demo purpose, UI only takes in youtube URL. This could be changed to any other video source. You can even download the video and give it as input. But that is not the purpose of the Web Application tool.
+Now you are all set. There will be some basic validation on the URL. For this demo purpose, UI only takes in youtube URL. This could be changed to any other video source. You can even download the video and give it as input. But that is not the purpose of the Web Application tool. You can also build the VidoeAnalyser as a standalone application and use it to work as a Desktop like standalone application. This is as simple as commenting one line in `CMakeLists` file.
 
 Like any Video player you get some very nice options
 - play
@@ -110,14 +110,19 @@ That looks pretty neat. All the images are perfectly aligned with eyes and these
 You can also click on the clustered image and it will zoomin further.
 
 ##### step-5:
-Once you have  clustred images, you can identify the images for training your new enrollment model. This portion I tried to automate by heavily dependence on the google Image search. Results were not so impressesive. Infact certain resluts were too offensive and not suitable for kids who are under 18. You know what I mean ;). So I have  dropped the idea of reverse google lookup on the images. And settled for user to inputt the character/person's name.
+Once you have  clustred images, you can identify the images for training your new enrollment model. This portion I tried to automate by heavily dependending on the google Image search. Results were not so impressesive. Infact certain resluts were too offensive and sexualy explicit, on certain images and hence not suitable for kids who are under 18. You know what I mean ;). So I have  dropped the idea of reverse google lookup on the images. And settled for user to inputt the character/person's name. 
 If you are curious you can find the script doing the reverse google lookup [here](https://github.com/Santhosh-KS/spookfish/tree/master/scripts).
 
 ![step-5.1](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/6.png?raw=true)
 
-If you can notice there is an editable field called "Rename Me", user has the choice of giving what ever the name they like. and hit enter once done renaming. I know bad UI choices, I'm no UI expert.
-It is also, adviced not to give spaces for example "Jon Snow" is bad choice of naming. Instead use an '_' (under_score)  "Jon_Snow". Once all the renaming is done we do create the folders with the name given here, if the name has some space character then that will cause some problem in creation of directories against that name.
-Once you rename the actor's name background turns green, just a visual clue to the user that name edit went fine. Now the, end results should look something like this.
+If you can notice there is an editable field called "Rename Me", user has the choice of giving what ever the name they like. There are couple of gotchas here.
+- After entering the name user has to hit the `enter` key. 
+- Don't give `<space>` charecter between firstname and last name. Instead use an '_' (under_score)  "Jon_Snow". 
+
+*I Know bad UI choices! Hey, I'm not an UI exptert.*
+
+Once all the renaming is done we do create the folders with the name given here, if the name has some space character then that will cause some problem in creation of directories against that name.
+Once you rename the actor's name background changes from red to green, just a visual clue to the user that name edit went fine. Now the, end results should look something like this.
 
 ![step-5.2](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/8.png?raw=true)
 
@@ -148,13 +153,14 @@ You can also notice that the Names which we gave in Step-6 are created under fac
 
 ![step-8.2](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/13.JPG?raw=true)
 
+#### Final thoughts:
 
 
-Spookfish is still in development stage and has its own share of bug/s and UI needs lot of polishing work. Despite of all that, it is shaping up in the right direction. There is definately scope for improve the performance. With right amount of nurturing, I belive, it can evolve as a wonderful tool for the Computer Vision and AI community.
+Spookfish is still in development stage and has its own share of bug/s and UI needs lot of polishing work. Despite of all that, it is shaping up in the right direction. There is definately scope for improvement in many aspects, like the performance part and storing the image face_chips etc. With right amount of nurturing, I belive, it can evolve as a wonderful tool for the Computer Vision and AI community.
 
 #### References:
 
-Of course I'm really greatful to Satya and LearnOpencv team for making this course. Help me get myself upgraded, with the current technologies.
+Of course I'm really greatful to Satya, Vikas and [LearnOpencv](https://www.learnopencv.com/) team for making this course. Help me get myself upgraded, with the current technologies.
 
 Along with the main course, this Project wouldnot have been possible, without the help of the following resource along with the content provided in the course.
 
