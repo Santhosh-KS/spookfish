@@ -96,11 +96,11 @@ There you go, now you have all the images with the bounding box details across t
 
 ##### step-4:
 
-Step 4 begins when all video analysis ends. Now you have multiple options. But next recommended feature is Image clustering. When we are done with step 3. There will be multiple images, cluttered all over, isn't it nice to create a collage of all the identified faces? 
+Step 4 begins when all video analysis ends. Now you have multiple options. But next recommended feature is Image clustering. When we are done with step 3. There will be multiple images, cluttered all over, isn't it nice to create a collage of all the identified faces? All you need to do is just hit the `cluster` button on the Navigation bar. 
 
 ![step-4.1](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/6.png?raw=true)
 
-Vola! there you go, all the identified faces are nicely clusted into one single image.
+Vola! there you go, all the identified faces are nicely clusted into one single image. You can toggle between all images and clustered images by pressing appropriate buttons on the Nav bar.
 
 Again you can hover over each of the image thumbnails and click on individual images to see what is hidden under that thumbnail.
 
@@ -133,7 +133,7 @@ After step-5 you get a congratulation message about you opening up an Enrollment
 
 ![step-6.1](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/10.png?raw=true)
 
-As you can see, I'm really on time crunch and could not implement the visual clue to say Enrollment is done. Anyways you can see in the logs that Enrollment is done successfully. Now that creates the lable_name.txt and descriptor.csv files in `/tmp/images/<sessionid>/` directory, you can pick those files and load any other video of the characters which were displayed in the cluster image, you will see all the images of characters identified as expected. Giving a single clustered image had improved the Enrollment part of the programme significantly. It takes less than an second to Enroll on my system even with many cluster. There were few more thing which were there in my wish list, say create a master model on each run, but couldn't implement the sam because of time constraints.
+As you can see, I'm really on time crunch and could not implement the visual clue to say Enrollment is done. Anyways you can see in the logs that Enrollment is done successfully. Now that creates the lable_name.txt and descriptor.csv files in `/tmp/images/<sessionid>/` directory, you can pick those files and load any other video of the characters which were displayed in the cluster image, you will see all the images of characters identified as expected. Giving a single clustered image had improved the Enrollment part of the programme significantly. It takes less than an second to Enroll on my system even with many cluster. There were few more thing which were there in my wish list, say create a master model on each run, but couldn't implement the same because of time constraints.
 
 #### Step-7:
 Now once we have all the required data, we are ready to get the stats of the video. Here is the snapshot of stats.
