@@ -156,22 +156,23 @@ Of course I'm really greatful to Satya and LearnOpencv team for making this cour
 
 Along with the main course, this Project wouldnot have been possible, without the help of the following resource along with the content provided in the course.
 
-[MIT opensource course](
+- [MIT opensource course.](
 https://www.youtube.com/watch?v=UtErkpTTmb8&index=38&t=0s&list=LLqF_WPfuINSogjD_rdNiqMQ
 ) Special thanks to Prof. Patrick H. Winston and the MIT open course for uploading Amazing video lectures.
 And [Jessica Nose](https://www.youtube.com/watch?v=UtErkpTTmb8&index=38&t=0s&list=LLqF_WPfuINSogjD_rdNiqMQ) for uploading the follow up recitation lectures on the same. I don't know the name of the, TA who explains the porblems and solutions in the video, she is certainly a great teacher.
-[3blue1brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw) for giving amazing explainations on the Calculus and linear algebra.
-[StatsLecture](https://www.youtube.com/watch?v=enQDKXI2PdA&index=84&list=LLqF_WPfuINSogjD_rdNiqMQ)  for giving an amazing overview of fundamentals fo statistics in 2 mins videos.
-[Wench lab](https://www.youtube.com/watch?v=efR8ybG7Ihs&t=0s&index=42&list=LLqF_WPfuINSogjD_rdNiqMQ) for wonderful explaination on the ML concepts.
-[Computer Philly](https://www.youtube.com/watch?v=yR7k19YBqiw&index=80&list=LLqF_WPfuINSogjD_rdNiqMQ) I really like the style and explaination provided in the video.
-[Santdex](https://www.youtube.com/channel/UCfzlCWGWYyIQ0aLC5w48gBQ) and [Socratica](https://www.youtube.com/channel/UCW6TXMZ5Pq6yL6_k5NZ2e0Q) for giving me great insight in to Python programming.
-[2mins paper](https://www.youtube.com/channel/UCbfYPyITQ-7l4upoX8nvctg). To keep me uptodate with the current happenings with AI technologies.
-[Wt tutorial by Victor Lavrenko](https://www.youtube.com/channel/UCs7alOMRnxhzfKAJ4JjZ7Wg) I wouldn't have dared to take up the UI design with Wt if I've not found these tutorials.
-UI would not have been possible, without the video lectures by [EJ Media](https://www.youtube.com/channel/UC-JQzTHQrVA8j-tamvy66fw). I learnt about HTML, HTML5, CSS, Bootstrap, CSS grid and many more things. Thaks a ton for your simple and effective video series on each of these topics.
+- [3blue1brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw) for giving amazing explainations on the Calculus and linear algebra.
+- [StatsLecture](https://www.youtube.com/watch?v=enQDKXI2PdA&index=84&list=LLqF_WPfuINSogjD_rdNiqMQ)  for giving an amazing overview of fundamentals fo statistics in 2 mins videos.
+- [Wench lab](https://www.youtube.com/watch?v=efR8ybG7Ihs&t=0s&index=42&list=LLqF_WPfuINSogjD_rdNiqMQ) for wonderful explaination on the ML concepts.
+- [Computer Philly](https://www.youtube.com/watch?v=yR7k19YBqiw&index=80&list=LLqF_WPfuINSogjD_rdNiqMQ) I really like the style and explaination provided in the video.
+- [Santdex](https://www.youtube.com/channel/UCfzlCWGWYyIQ0aLC5w48gBQ) and [Socratica](https://www.youtube.com/channel/UCW6TXMZ5Pq6yL6_k5NZ2e0Q) for giving me great insight in to Python programming.
+- [2mins paper](https://www.youtube.com/channel/UCbfYPyITQ-7l4upoX8nvctg). To keep me uptodate with the current happenings with AI technologies.
+- [Wt tutorial by Victor Lavrenko](https://www.youtube.com/channel/UCs7alOMRnxhzfKAJ4JjZ7Wg) I wouldn't have dared to take up the UI design with Wt if I've not found these tutorials.
 
-Last but not the least, OpenCV and DLib community, Without which this project will never seen the light. Infact I'm planning to polish this UI and submit as a tool to DLib community. Dlib's Image lab tool is a real inspiration for me to take up this project as a creation of tool rather than as a commercial application. Hope people start using and start contirbuting it to make it even better tool.
+- UI would not have been possible, without the video lectures by  [EJ Media](https://www.youtube.com/channel/UC-JQzTHQrVA8j-tamvy66fw). I learnt about HTML, HTML5, CSS, Bootstrap, CSS grid and many more things. Thaks a ton for your simple and effective video series on each of these topics.
 
-There are N number of websites and resources, I found useful in my development phase, unfortunately forgot to store most of them. If you find some thing which I've used from your blog/tutorial please drop me an [email](santhoshachar08@gmail.com), I would cetainly love to give credit for your work in this project.
+Last but not the least, OpenCV and DLib community, Without these communities this project would never seen the light of the day. Infact I'm planning to polish this UI and add in new features; and submit as a tool to DLib community.  Dlib's Image lab tool is a real inspiration for me to take up this project as a creation of tool rather than as a commercial application. Hope people start using and start contirbuting it to make it even better tool.
+
+There are N number of websites and resources, I found useful in my development phase, unfortunately forgot to store most of them. If you find some thing which I've used from your blog/tutorial please drop me an [email](santhoshachar08@gmail.com), I would love to give credit for your work in this project.
 
  
 
