@@ -1,15 +1,15 @@
 # Spookfish 
 ### A video Analysis and Statistics Tool.
 ### Motivation
-When I started learning about the "Face Recgnition" in LearnOpencv course. I learnt that most of the effort in designing a very good model related to faces involves having excellent data set to feed it to your neural net. Any one who is new to this field like myself, follow a naive approach. i.e go to google.com and search the images by giving name of an actor/charecter and do a batch download using some  browser (chrome) plugins to download all the images. And try to sort and re-name each and every images meticulously to get some data. After putting hours of hardwork, it feels really disheartening to see, all the hardwork, going in vein, when we observe a poor results of our data model against any neural net. In short, your model is only, as good as your dataset is. That is when, the idea of "spookfish" got seeded in my mind.
+When I started learning about the "Face Recgnition" in LearnOpencv course. I learnt that most of the effort in designing a very good model related to faces involves having excellent data set to feed it to your neural net. Any one who is new to this field like myself, follow a naive approach. i.e go to google.com and search the images by giving name of an actor/charecter and do a batch download using some  browser (chrome) plugins to download all the images. And try to sort and re-name each and every images meticulously to get some data. After putting hours of hardwork, it feels really disheartening to see, all the hardwork, going in vein, when we observe poor performance of our data model against any neural net. In short, your model is only, as good as your dataset is. That is when, the idea of "spookfish" got seeded in my mind.
 
-Of course there are n-number of freely available Image sets of celebrities available. But most of them are limited to Hollywood actors alone. What if I need to create my own dataset actors of Bollywood or Sandlewood? There is no easy way to do so. Even the Hollywood actor/actress datasets are free to use, but not for commercial purposes. 
+Of course there are n-number of freely available Image sets of celebrities available. But most of them are limited to Hollywood actors alone. What if I need to create my own dataset of actors of Bollywood or Sandlewood? What if I want have a dataset of all the CEO's of the famous companies? There is no easy way to get the desired quiality images. Even the Hollywood actor/actress datasets are free to use to some extent, but not for commercial purposes. 
 
-The goal of project "Spookfish" is to bridge the gap of effective data sets with minimal efforts. Then, the next big question is, how can we get high quality images? There are couple of options.
+The goal of project "Spookfish" is to bridge that gap of acquiring effective data sets of any person with minimal efforts. Then, the next big question is, how can we get high quality images? There are couple of options.
 - we can write some python scripts to scrape the images from internet.
 - Buy the Images. (Ofcourse I'm kidding.)
 
-we can write python scripts using, [Beautiful soup](https://medium.freecodecamp.org/how-to-scrape-websites-with-python-and-beautifulsoup-5946935d93fe) to scrape large number of websites. But this approach has downside. Now, after a week if you run the same script again, nothing happens; why? Because lot of websites have changed their design and you are in big trouble. To get data as expected, you need to redo the scripts again. It is obvious that, We need a better solution. A solution, should be independent of the way the websites designed to display the images, Our solutions should be agnostic about the way websites are built. That is when the idea of using youtube/vimeo videos stands out. The UI,look and feel of these websites may change drastically, but the original content remains the same. Now that is the key point to remember.
+we can write python scripts using, [Beautiful soup](https://medium.freecodecamp.org/how-to-scrape-websites-with-python-and-beautifulsoup-5946935d93fe) to scrape large number of websites. But this approach has downside. Suppose, after a week if you run the same script again, nothing happens; why? Because lot of websites have changed their design and you are in big trouble. To get data as expected, you need to redo the scripts again. This involves lot of effort in maintaining the scripts itself. It is obvious that, We need a better solution.  A solution should be agnostic about the way websites are built. That is when the idea of using youtube/vimeo videos stands out. The UI,look and feel of these websites may change drastically, but the original content remains the same. Now that is the key point to remember.
 
 Okay, we played some video and got some images, big deal. What is different about "Spookfish" then? "Spookfish" is not just Image capturing tool, it is a video analysis tool. Using "Spookfish" as a tool, you can capture the images, process the images the way you want it. Such as save images of specific dimention and aspect ratios. Get quality of Face data sets, with aligned face images. If you think about the face alignment option, it is a big deal. Because, the images which you gather from internet are not all aligned, and each image will be of its own dimention and size .Lot of manual work is involved to get the images processed. Once you have these basic critria met, rest assured you are going to get better results in all the models which you intended to build. That is the idea behind this tool. We can also gather the details about the video being choosen for the analysis, and same video can be classified as movie/trailer/discussion/debate/documentary etc.. by extracting certain characteristics about the video. For example A TV interview of an actor about his or her upcoming movie. How to classify it as an interview? It may sound complex, but solution is pretty Simple,
 - First check how many faces were identified in that video(say 5 mins). (Usually it will be two person, one anchor and other actor/actress.)
@@ -19,7 +19,7 @@ Okay, we played some video and got some images, big deal. What is different abou
 
 As you can see once you have the required details, it is just a matter of finding the if and else clauses to identify and classify the video appropriately.
 
-Spookfish is the tool which gives you such an insight about the videos. Now you have the idea of how the video can be classified. This is just for one video. Just imagine the amount of videos available online. The numbers are beyond imaginable. All you need to do is just go to your favourite video site and grab that URL and give it to the tool. Rest of the heavy lifting is done by "Spookfish" tool for you. 
+Spookfish is that tool which gives you such an insight about the videos. Now you have the idea of how the video can be classified. This is just for one video. Just imagine the amount of videos available online. The numbers are beyond imaginable. All you need to do is just go to your favourite video site and grab that URL and give it to the tool. Rest of the heavy lifting is done by "Spookfish" tool for you. 
 
 Yeah, enough of bragging about "Spookfish", Lets see it in action.
 
@@ -53,15 +53,14 @@ Once I got the hang of the Wt symantics I started building the app one component
 Launch the WebApp. Open your favourite browser, and type in "localhost:8080"
 
 ![SomeIMage](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/1.png?raw=true)
-
 ###### Step-2:
-
 I've tried to keep things simple. All you need to do is go to youtube.com and select a video which you are interested in and enter it in the search bar. Hopefully with some actor/person's face in it :)
 
 Once you hit the play button, lot of things happen behind the scene. To start with, the Youtube url which you give in the search bar, is not playable as is. We need to find the original content URL. Some times it is called RTP playable URL of the original content. 
 
 To get the RTP content of the video, I've written some python code and used some python modules to achive the same. You can find all the details in my [github link](https://github.com/Santhosh-KS/spookfish).
 ![Step-2](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/2.png?raw=true)
+
 
 Now you are all set. There will be some basic validation on the URL. For this demo purpose, UI only takes in youtube URL. This could be changed to any other video source. You can even download the video and give it as input. But that is not the purpose of the Web Application tool.
 
@@ -149,6 +148,9 @@ You can also notice that the Names which we gave in Step-6 are created under fac
 
 ![step-8.2](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/13.JPG?raw=true)
 
+
+
+Spookfish is still in development stage and has its own share of bug/s and UI needs lot of polishing work. Despite of all that, it is shaping up in the right direction. There is definately scope for improve the performance. With right amount of nurturing, I belive, it can evolve as a wonderful tool for the Computer Vision and AI community.
 
 #### References:
 
