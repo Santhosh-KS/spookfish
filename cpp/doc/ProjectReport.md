@@ -1,7 +1,7 @@
 # Spookfish 
 ### A video Analysis and Statistics Tool.
 ### Motivation
-When I started learning about the "Face Recgnition" in LearnOpencv course. I learnt that most of the effort in designing a very good model related to faces involves having excellent data set to feed it to your neural net. Any one who is new to this field like myself, follow a naive approach. i.e go to google.com and search the images by giving name of an actor/charecter and do a batch download using some  browser (chrome) plugins to download all the images. And try to sort and re-name each and every images meticulously to get some data. After putting hours of hardwork, it feels really disheartening to see, all the hardwork, going in vein, when we observe poor performance of our data model against any neural net. In short, your model is only, as good as your dataset is. That is when, the idea of "spookfish" got seeded in my mind.
+When I started learning about the "Face Recognition" in LearnOpencv course. I learnt that most of the effort in designing a very good model related to faces involves having excellent data set to feed it to your neural net. Any one who is new to this field like myself, follow a naive approach. i.e go to google.com and search the images by giving name of an actor/charecter and do a batch download using some  browser (chrome) plugins to download all the images. And try to sort and re-name each and every images meticulously to get some data. After putting hours of hardwork, it feels really disheartening to see, all the hardwork, going in vein, when we observe poor performance of our data model against any neural net. In short, your model is only, as good as your dataset is. That is when, the idea of "spookfish" got seeded in my mind.
 
 Of course there are n-number of freely available Image sets of celebrities available. But most of them are limited to Hollywood actors alone. What if I need to create my own dataset of actors of Bollywood or Sandlewood? What if I want have a dataset of all the CEO's of the famous companies? There is no easy way to get the desired quiality images. Even the Hollywood actor/actress datasets are free to use to some extent, but not for commercial purposes. 
 
@@ -110,14 +110,14 @@ That looks pretty neat. All the images are perfectly aligned with eyes and these
 You can also click on the clustered image and it will zoomin further.
 
 ##### step-5:
-Once you have  clustred images, you can identify the images for training your new enrollment model. This portion I tried to automate by heavily dependending on the google Image search. Results were not so impressesive. Infact certain resluts were too offensive and sexualy explicit, on certain images and hence not suitable for kids who are under 18. You know what I mean ;). So I have  dropped the idea of reverse google lookup on the images. And settled for user to inputt the character/person's name. 
+Once you have  clustered images, you can identify the images for training your new enrollment model. This portion I tried to automate by heavily dependending on the google Image search. Results were not so impressesive. Infact certain resluts were too offensive and sexualy explicit, on certain images and hence not suitable for kids who are under 18. You know what I mean ;). So I have  dropped the idea of reverse google lookup on the images. And settled for user to input the character/person's name. 
 If you are curious you can find the script doing the reverse google lookup [here](https://github.com/Santhosh-KS/spookfish/tree/master/scripts).
 
 ![step-5.1](https://github.com/Santhosh-KS/ImageStorage/blob/master/ProjectReport/6.png?raw=true)
 
 If you can notice there is an editable field called "Rename Me", user has the choice of giving what ever the name they like. There are couple of gotchas here.
 - After entering the name user has to hit the `enter` key. 
-- Don't give `<space>` charecter between firstname and last name. Instead use an '_' (under_score)  "Jon_Snow". 
+- Don't give `<space>` character between firstname and last name. Instead use an '_' (under_score)  "Jon_Snow". 
 
 *I Know bad UI choices! Hey, I'm not an UI exptert.*
 
@@ -168,7 +168,7 @@ Along with the main course, this Project wouldnot have been possible, without th
 https://www.youtube.com/watch?v=UtErkpTTmb8&index=38&t=0s&list=LLqF_WPfuINSogjD_rdNiqMQ
 ) Special thanks to Prof. Patrick H. Winston and the MIT open course for uploading Amazing video lectures.
 And [Jessica Nose](https://www.youtube.com/watch?v=UtErkpTTmb8&index=38&t=0s&list=LLqF_WPfuINSogjD_rdNiqMQ) for uploading the follow up recitation lectures on the same. I don't know the name of the, TA who explains the porblems and solutions in the video, she is certainly a great teacher.
-- [3blue1brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw) for giving amazing explainations on the Calculus and linear algebra.
+- [3blue1brown](https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw) for giving an amazing explainations and awesome intution on the Calculus and linear algebra, through mind boggling annimations. Huge Fan!
 - [StatsLecture](https://www.youtube.com/watch?v=enQDKXI2PdA&index=84&list=LLqF_WPfuINSogjD_rdNiqMQ)  for giving an amazing overview of fundamentals fo statistics in 2 mins videos.
 - [Wench lab](https://www.youtube.com/watch?v=efR8ybG7Ihs&t=0s&index=42&list=LLqF_WPfuINSogjD_rdNiqMQ) for wonderful explaination on the ML concepts.
 - [Computer Philly](https://www.youtube.com/watch?v=yR7k19YBqiw&index=80&list=LLqF_WPfuINSogjD_rdNiqMQ) I really like the style and explaination provided in the video.
