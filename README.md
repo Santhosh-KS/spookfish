@@ -13,7 +13,7 @@ Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
 
 ## Install the following dependencies.
 
-Please install the following list dependencies. 
+Please install the following list dependencies. These installation are one time setup on a new machine.
 
     sudo apt-get install g++-5 build-essential checkinstall cmake pkg-config yasm git  gfortran
     sudo apt-get install libqt5opengl5 libqt5opengl5-dev libtiff4-dev libjpeg8-dev libjasper-dev libpng12-dev
@@ -25,7 +25,7 @@ Please install the following list dependencies.
     sudo apt-get install libtbb2 libjpeg-dev libpng-dev libtiff-dev 
     
     
- ### Build OpenCv
+ ### Build and Install OpenCv:
     
     mkdir -p /opt
     cd /opt
@@ -52,7 +52,7 @@ Please install the following list dependencies.
     cd /opt
     git clone https://github.com/Tencent/rapidjson.git
     
- ### Install Wt (Optional):
+ ### Build and Install Wt (Optional):
  Wt is optional. If you want to re-use the UI then this step is mandatory.
  
     cd /opt
@@ -73,7 +73,7 @@ Once you successfully install the dependencies, you are all set to build the too
     ./analyser.sh
     ./Spookfish.sh
 
-If you want to change the Wt user configuration like chaning the `port number` or `docroot` just edit the following line.
+If you want to change the Wt user configuration like changing the `port number` or `docroot` just edit the following line in `Spookfish.sh` file. 
 `./build/NewUiWt --docroot ./ui --http-address 0.0.0.0 --http-port 8080 `
 
 
