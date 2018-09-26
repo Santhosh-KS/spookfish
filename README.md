@@ -13,7 +13,7 @@ Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
 
 ## Install the following dependencies.
 
-Please install the following list dependencies. These installation are one time setup on a new machine.
+Please install the following list of dependencies. These installations are one time job to setup on a new machine.
 
     sudo apt-get install g++-5 build-essential checkinstall cmake pkg-config yasm git  gfortran
     sudo apt-get install libqt5opengl5 libqt5opengl5-dev libtiff4-dev libjpeg8-dev libjasper-dev libpng12-dev
