@@ -1,7 +1,15 @@
+## About project Spookfish:
+
+If You want to know about the motive behind this project please read [here](https://github.com/Santhosh-KS/spookfish/blob/master/cpp/doc/ProjectReport.md).
+
+Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
+
+## Current Build status:
 
 | Build | Status |
 | ------ | ------ |
 | Beta |[![Build Status](https://travis-ci.org/Santhosh-KS/spookfish.svg?branch=master)](https://travis-ci.org/Santhosh-KS/spookfish)|
+
 
 ## Install the following dependencies.
 
@@ -34,9 +42,8 @@ Please install the following list dependencies.
     sudo make install
     sudo sh -c 'echo "/usr/local/lib" >> /etc/ld.so.conf.d/opencv.conf'
     sudo ldconfig
-    source ~/.bashrc
- 
- 
+    source ~/.bashrc 
+    
  ### Install Dlib:
     cd /opt
     git clone https://github.com/davisking/dlib.git dlib
@@ -58,3 +65,15 @@ Please install the following list dependencies.
     make -j4
     sudo make install
   
+### How to build the Spookfish tool:
+Once you successfully install the dependencies, you are all set to build the tool.
+
+    git clone https://github.com/Santhosh-KS/spookfish.git
+    cd spookfish/cpp
+    ./analyser.sh
+    ./Spookfish.sh
+
+If you want to change the Wt user configuration like chaning the `port number` or `docroot` just edit the following line.
+`./build/NewUiWt --docroot ./ui --http-address 0.0.0.0 --http-port 8080 `
+
+
