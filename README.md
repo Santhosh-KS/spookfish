@@ -13,6 +13,10 @@ Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
 
 ## Install the following dependencies.
 
+You can simply run the script `install_dependencies.sh` and take a break and wait for the installations to complete. Or you can do it
+manually.
+
+
 Please install the following list of dependencies. These installations are one time job to setup on a new machine.
 
     sudo apt-get install g++-5 build-essential checkinstall cmake pkg-config yasm git  gfortran
