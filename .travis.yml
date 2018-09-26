@@ -82,6 +82,14 @@ script:
   - sudo ldconfig
   - source ~/.bashrc
   - cd /opt
-  - cd spookfish/cpp
+  - wget https://github.com/emweb/wt/archive/4.0.4.tar.gz
+  - tar -xvzf 4.0.4.tar.gz
+  - cd /opt/wt-4.0.4
+  - mkdir -p /opt/wt-4.0.4/build
+  - cd /opt/wt-4.0.4/build
+  - cmake ..
+  - make -j4
+  - sudo make install
+  - cd /opt/spookfish/cpp
   - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake -D ENABLE_COVERAGE:BOOL=TRUE .
   - cmake --build . --config Release -- -j2
