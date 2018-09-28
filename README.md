@@ -13,8 +13,8 @@ Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
 
 ## Install the following dependencies.
 
-You can simply run the script `install_dependencies.sh` and take a break and wait for the installations to complete. Or you can do it
-manually.
+If you are trying to run on a system without the prior Opencv or Dlib installation, You can simply run the script `install_dependencies.sh` and take a break and wait for the installations to complete. Or you can do it
+manually. If you are trying run on an existing setup, I suggest you to install only the components which you need to install.
 
 
 Please install the following list of dependencies. These installations are one time job to setup on a new machine.
