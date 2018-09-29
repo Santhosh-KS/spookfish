@@ -26,7 +26,8 @@ Please install the following list of dependencies. These installations are one t
     sudo apt-get install qt5-default qttools5-dev qttools5-dev-tools libgtk2.0-dev libtbb-dev libatlas-base-dev 
     sudo apt-get install libfaac-dev libmp3lame-dev libtheora-dev libvorbis-dev libxvidcore-dev libopencore-amrnb-dev 
     sudo apt-get install libopencore-amrwb-dev x264 v4l-utils python3.5 python3.5-dev python-dev python-numpy 
-    sudo apt-get install libtbb2 libjpeg-dev libpng-dev libtiff-dev 
+    sudo apt-get install libtbb2 libjpeg-dev libpng-dev libtiff-dev libboost-all-dev
+    sudo pip3 install pafy youtube-dl 
     
     
  ### Build and Install OpenCv:
