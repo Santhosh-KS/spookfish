@@ -44,6 +44,7 @@ private:
   TcpClient() = delete;
 public:
   void Connect();
+  void Connect(std::string &str);
   TcpClient(std::string server, int portNum);
   ~TcpClient();
 };

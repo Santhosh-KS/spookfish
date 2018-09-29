@@ -86,3 +86,33 @@ void TcpClient::Connect()
   std::cout << "Server Response: " << Buffer << "\n";
   close(SocketFd);
 }
+
+void TcpClient::Connect(std::string &str)
+{
+  if (SocketFd < 1) {
+    std::cerr << "ERROR in SocketFd\n";
+    return;
+  }
+  if (connect(SocketFd, (struct sockaddr *) &ServerAddress, sizeof(ServerAddress)) < 0) {
+    std::cerr << "ERROR connecting\n";
+    return;
+  }
+//  std::cout << "Please enter the message: ";
+  bzero(Buffer, sizeof(Buffer));
+  //fgets(Buffer, sizeof(Buffer),stdin);
+  str.copy(Buffer, str.length());
+  Buffer[str.length()+1] = '\0';
+  int n = write(SocketFd, Buffer, strlen(Buffer));
+  if (n < 0) {
+    std::cerr << "ERROR writing to socket";
+    return;
+  }
+  bzero(Buffer,sizeof(Buffer));
+  n = read(SocketFd, Buffer, sizeof(Buffer));
+  if (n < 0) {
+    std::cerr << "ERROR reading from socket";
+    return;
+  }
+  std::cout << "Server Response: " << Buffer << "\n";
+  close(SocketFd);
+}

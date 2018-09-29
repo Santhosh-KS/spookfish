@@ -15,7 +15,7 @@ def GetCommandLineArgs():
     if not args.url:
       print('Invalid Command aruguments.')
       print('Usage:') 
-      print('"python path.py -h" for more details')
+      print('"python youtube.py -u <youtube_url>"')
       exit()
     else:
       url = args.url

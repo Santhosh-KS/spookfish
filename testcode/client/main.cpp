@@ -24,19 +24,30 @@
 
 
 #include <iostream>
+#include <fstream>
 #include <string>
 
 #include "TcpClient.hpp"
 
 int main(int argc, char** argv)
 {
-  if (argc != 3) {
-    std::cout << "Usage: ./client <server_ip> <port>\n";
+  if (argc != 4) {
+    std::cout << "Usage: ./client <server_ip> <port> <json_file> \n";
     return -1;
   }
   std::string serverIp(argv[1]);
   std::string port(argv[2]);
+  std::string jsonFile(argv[3]);
+  std::string line("");
+  std::string msg("");
+
+  std::ifstream infile(jsonFile);
+  while (std::getline(infile, line)) {
+    //std::cout << "New line" << line.c_str() << "\n";
+    msg += line + "\n";
+  }
+  std::cout << msg.c_str() << "\n";
   TcpClient client(serverIp, std::stoi(port));
-  client.Connect();
+  client.Connect(msg);
   return 0;
 }
