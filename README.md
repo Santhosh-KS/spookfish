@@ -2,7 +2,7 @@
 
 If You want to know about the motive behind this project please read [here](https://github.com/Santhosh-KS/spookfish/blob/master/cpp/doc/ProjectReport.md).
 
-Here is the [quick demo](https://youtu.be/fslaO9itYE4) of the project.
+Here is the [quick demo](https://www.youtube.com/watch?v=wpEc33XGWqQ) of the project.
 
 ## Current Build status:
 
